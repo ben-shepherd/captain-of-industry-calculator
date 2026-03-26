@@ -69,13 +69,13 @@
 
 #### ✅ 5. App State
 
-* [ ] Create `assets/js/app/state.js`
-* [ ] Define state shape:
+* [x] Create `assets/js/app/state.js`
+* [x] Define state shape:
 
   * selectedResource
   * targetRate
   * userProduction map
-* [ ] Add getters/setters (optional but recommended)
+* [x] Add getters/setters (optional but recommended)
 
 ---
 
@@ -117,12 +117,12 @@
 
 #### ✅ 9. Basic UI Controller
 
-* [ ] Create `assets/js/ui/controller.js`
-* [ ] Connect:
+* [x] Create `assets/js/ui/controller.js`
+* [x] Connect:
 
   * Inputs → state
   * State → calculator
-* [ ] Render:
+* [x] Render:
 
   * Results to DOM
 
@@ -130,8 +130,8 @@
 
 #### ✅ 10. Event Handling
 
-* [ ] Create `assets/js/ui/events.js`
-* [ ] Handle:
+* [x] Create `assets/js/ui/events.js`
+* [x] Handle:
 
   * Resource selection
   * Target rate input
@@ -141,7 +141,7 @@
 
 #### ✅ 11. Basic HTML Interface
 
-* [ ] Add:
+* [x] Add:
 
   * Resource selector (dropdown/search)
   * Input for target rate
@@ -153,13 +153,13 @@
 
 #### ✅ 12. CSS Structure
 
-* [ ] Use `assets/css/styles.css`
-* [ ] Add sections:
+* [x] Use `assets/css/styles.css`
+* [x] Add sections:
 
   * Layout
   * Inputs
   * Results
-* [ ] Ensure:
+* [x] Ensure:
 
   * Clear section comments
   * Responsive basics
@@ -168,36 +168,36 @@
 
 ### Phase 6 — Enhancements (After Core Works)
 
-#### 🔲 13. Validation
+#### ✅ 13. Validation
 
-* [ ] Prevent invalid inputs (negative numbers, empty values)
-* [ ] Handle missing resources gracefully
+* [x] Prevent invalid inputs (negative numbers, empty values)
+* [x] Handle missing resources gracefully
 
 ---
 
-#### 🔲 14. Overrides System
+#### ✅ 14. Overrides System
 
-* [ ] Allow user to:
+* [x] Allow user to:
 
   * Manually set production per resource
-* [ ] Integrate into net calculation
+* [x] Integrate into net calculation
 
 ---
 
-#### 🔲 15. Performance Improvements
+#### ✅ 15. Performance Improvements
 
-* [ ] Add memoization to resolver
-* [ ] Avoid unnecessary recalculations
+* [x] Add memoization to resolver
+* [x] Avoid unnecessary recalculations
 
 ---
 
-#### 🔲 16. UX Improvements
+#### ✅ 16. UX Improvements
 
-* [ ] Highlight:
+* [x] Highlight:
 
   * Bottlenecks (deficits)
   * Surpluses
-* [ ] Improve readability of tree output
+* [x] Improve readability of tree output
 
 ---
 

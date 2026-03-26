@@ -18,10 +18,23 @@ import { resources } from "../data/resources.js";
  * @property {DependencyNode[]} children – Inputs needed by the chosen recipe
  */
 
+const cache = new Map();
+
 export function resolve(resourceId, amount, recipeIdx = 0) {
+  const key = `${resourceId}|${amount}|${recipeIdx}`;
+  if (cache.has(key)) return cache.get(key);
+
   const totals = {};
   const tree = buildTree(resourceId, amount, recipeIdx, totals);
-  return { totals, tree };
+  const result = { totals, tree };
+
+  cache.set(key, result);
+  return result;
+}
+
+/** Flush the resolve cache (call when resource data changes). */
+export function clearResolveCache() {
+  cache.clear();
 }
 
 /**

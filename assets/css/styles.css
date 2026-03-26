@@ -1,0 +1,274 @@
+/* =========================
+   Variables
+========================= */
+:root {
+  --color-bg: #1a1a2e;
+  --color-surface: #16213e;
+  --color-border: #0f3460;
+  --color-text: #e0e0e0;
+  --color-heading: #ffffff;
+  --color-accent: #e94560;
+  --color-surplus: #4ecca3;
+  --color-deficit: #e94560;
+  --color-balanced: #a0a0a0;
+  --radius: 8px;
+  --gap: 1.5rem;
+}
+
+/* =========================
+   Reset & Base
+========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: var(--gap);
+}
+
+/* =========================
+   Layout
+========================= */
+.app-header {
+  text-align: center;
+  margin-bottom: var(--gap);
+}
+
+.app-header h1 {
+  color: var(--color-heading);
+  font-size: 1.75rem;
+}
+
+.subtitle {
+  color: var(--color-balanced);
+  font-size: 0.9rem;
+}
+
+.app-main {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+}
+
+@media (max-width: 700px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   Panels
+========================= */
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+}
+
+.panel h2 {
+  color: var(--color-heading);
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel h3 {
+  color: var(--color-heading);
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* =========================
+   Form Fields
+========================= */
+.field {
+  margin-bottom: 0.75rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  color: var(--color-balanced);
+}
+
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+select:focus,
+input[type="number"]:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+input.input-invalid {
+  border-color: var(--color-deficit);
+  outline: 2px solid var(--color-deficit);
+  outline-offset: 1px;
+}
+
+/* =========================
+   Production Override Fields
+========================= */
+.production-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.production-row label {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--color-balanced);
+}
+
+.production-row input {
+  width: 6rem;
+}
+
+/* =========================
+   Data Tables
+========================= */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table th {
+  color: var(--color-balanced);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* =========================
+   Net Flow Status Rows
+========================= */
+.net-surplus td:nth-child(4),
+.net-surplus td:nth-child(5) {
+  color: var(--color-surplus);
+  font-weight: 600;
+}
+
+.net-deficit td:nth-child(4),
+.net-deficit td:nth-child(5) {
+  color: var(--color-deficit);
+  font-weight: 600;
+}
+
+.net-deficit {
+  background: rgba(233, 69, 96, 0.08);
+}
+
+.net-surplus {
+  background: rgba(78, 204, 163, 0.08);
+}
+
+.net-balanced td:nth-child(4),
+.net-balanced td:nth-child(5) {
+  color: var(--color-balanced);
+}
+
+.net-status-badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.net-deficit .net-status-badge {
+  background: rgba(233, 69, 96, 0.2);
+  color: var(--color-deficit);
+}
+
+.net-surplus .net-status-badge {
+  background: rgba(78, 204, 163, 0.2);
+  color: var(--color-surplus);
+}
+
+.net-balanced .net-status-badge {
+  background: rgba(160, 160, 160, 0.15);
+  color: var(--color-balanced);
+}
+
+/* =========================
+   Dependency Tree
+========================= */
+.tree-container {
+  margin-bottom: 1.25rem;
+}
+
+.tree-node {
+  position: relative;
+  padding: 0.35rem 0 0.35rem 0.75rem;
+  font-size: 0.9rem;
+  border-left: 2px solid var(--color-border);
+}
+
+.tree-node.tree-depth-0 {
+  border-left: none;
+  padding-left: 0;
+}
+
+.tree-node::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  width: 0.5rem;
+  height: 0;
+  border-top: 2px solid var(--color-border);
+}
+
+.tree-node.tree-depth-0::before {
+  display: none;
+}
+
+.tree-label {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.tree-amount {
+  color: var(--color-balanced);
+  font-size: 0.85rem;
+  margin-left: 0.25rem;
+}
+
+.tree-arrow {
+  color: var(--color-border);
+  margin-right: 0.25rem;
+}
