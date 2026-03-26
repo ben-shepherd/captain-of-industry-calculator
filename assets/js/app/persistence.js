@@ -1,0 +1,95 @@
+/**
+ * Persist and restore user state via localStorage.
+ *
+ * State shape (extend as the app grows):
+ *   {
+ *     resourceId:  string,
+ *     targetRate:  number,
+ *     production:  Record<string, number>,
+ *     recipeChoices: Record<string, number>
+ *   }
+ *
+ * A `version` field is stamped on every write so future code
+ * can detect stale data and migrate it.
+ */
+
+const STORAGE_KEY = "coi-calculator-state";
+const STATE_VERSION = 1;
+
+/**
+ * Write the current application state to localStorage.
+ *
+ * @param {Object} state – Plain object representing user state
+ */
+export function saveState(state) {
+  const envelope = {
+    version: STATE_VERSION,
+    savedAt: Date.now(),
+    data: state,
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(envelope));
+  } catch {
+    console.warn("Could not save state to localStorage.");
+  }
+}
+
+/**
+ * Read and return the persisted state, or null if nothing usable exists.
+ *
+ * @returns {Object|null} The previously saved `data` payload, or null.
+ */
+export function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+
+    const envelope = JSON.parse(raw);
+
+    if (!envelope || typeof envelope.version !== "number") return null;
+
+    if (envelope.version < STATE_VERSION) {
+      return migrate(envelope);
+    }
+
+    return envelope.data ?? null;
+  } catch {
+    console.warn("Could not load state from localStorage.");
+    return null;
+  }
+}
+
+/**
+ * Remove persisted state entirely.
+ */
+export function clearState() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    console.warn("Could not clear state from localStorage.");
+  }
+}
+
+/**
+ * Migrate an older envelope to the current version.
+ * Add migration cases as STATE_VERSION increments.
+ *
+ * @param {{ version: number, data: Object }} envelope
+ * @returns {Object|null}
+ */
+function migrate(envelope) {
+  let { version, data } = envelope;
+
+  // Example: when STATE_VERSION becomes 2, add a case here:
+  // if (version === 1) { data = migrateV1toV2(data); version = 2; }
+
+  if (version !== STATE_VERSION) {
+    console.warn(`Unable to migrate state from v${envelope.version} to v${STATE_VERSION}. Discarding.`);
+    clearState();
+    return null;
+  }
+
+  saveState(data);
+  return data;
+}

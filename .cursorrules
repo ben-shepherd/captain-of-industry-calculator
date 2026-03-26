@@ -1,0 +1,57 @@
+Project Structure & Standards
+General Requirements
+Follow latest web standards (ES modules, modern syntax, accessibility, semantic HTML where applicable).
+Write clean, maintainable, and well-structured code.
+Keep concerns separated and modular at all times.
+Styling
+All styles must be written in:
+assets/css/styles.css
+CSS must:
+Be well-organized and clearly separated by sections
+
+Use clear section comments, for example:
+
+/* =========================
+   Layout
+========================= */
+
+/* =========================
+   Components - Calculator
+========================= */
+Follow modern best practices (CSS variables, responsive design, minimal duplication)
+JavaScript Structure
+All JavaScript must live inside:
+assets/js/
+Code organization rules:
+Use a folder-per-concept structure
+Each file should:
+Have a single responsibility
+Be small and focused
+Prefer modular ES imports/exports
+Example Structure
+assets/js/
+  calculator/
+    service.js
+    utils.js
+    formatters.js
+You may expand this structure as needed, but keep the same philosophy:
+service.js → core logic
+utils.js → reusable helpers
+formatters.js → output/data formatting
+Code Quality
+All code must be:
+Clearly commented, especially for non-obvious logic
+Easy to read and reason about
+Consistent in naming and structure
+Use:
+Descriptive function and variable names
+JSDoc-style comments where helpful
+Goal
+
+Build a scalable, maintainable resource calculator that:
+
+Can be easily extended with new resource chains
+Keeps logic decoupled from UI
+Is structured in a way that supports future growth
+
+Act like a senior frontend engineer and prioritize clarity, maintainability, and scalability in every decision.
