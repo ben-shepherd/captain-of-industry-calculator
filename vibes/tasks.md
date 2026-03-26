@@ -4,31 +4,31 @@
 
 #### ✅ 1. Resource Data
 
-* [ ] Create `assets/js/data/resources.js`
-* [ ] Define initial dataset:
+* [x] Create `assets/js/data/resources.js`
+* [x] Define initial dataset:
 
   * steel
   * iron
   * ore
-* [ ] Ensure:
+* [x] Ensure:
 
   * Supports multiple recipes
   * Uses consistent units (per minute)
-* [ ] Export as ES module
+* [x] Export as ES module
 
 ---
 
 #### ✅ 2. Resolver (Critical Logic)
 
-* [ ] Create `assets/js/calculator/resolver.js`
-* [ ] Implement recursive function:
+* [x] Create `assets/js/calculator/resolver.js`
+* [x] Implement recursive function:
 
   * `resolve(resourceId, amount)`
-* [ ] Return:
+* [x] Return:
 
   * Flat totals `{ resource: amount }`
   * Dependency tree structure
-* [ ] Handle:
+* [x] Handle:
 
   * Resources with no inputs (base resources)
 * [ ] Add recursion safety (prevent infinite loops)
@@ -37,12 +37,12 @@
 
 #### ✅ 3. Calculator Service
 
-* [ ] Create `assets/js/calculator/service.js`
-* [ ] Implement:
+* [x] Create `assets/js/calculator/service.js`
+* [x] Implement:
 
   * `calculate(resourceId, targetRate)`
-* [ ] Use resolver internally
-* [ ] Return structured result:
+* [x] Use resolver internally
+* [x] Return structured result:
 
   * totals
   * tree
@@ -51,14 +51,14 @@
 
 #### ✅ 4. Net Flow Calculation
 
-* [ ] Create `assets/js/calculator/net.js`
-* [ ] Implement:
+* [x] Create `assets/js/calculator/net.js`
+* [x] Implement:
 
   * Compare required vs user production
-* [ ] Output:
+* [x] Output:
 
   * `{ resource: netValue }`
-* [ ] Ensure:
+* [x] Ensure:
 
   * Positive = surplus
   * Negative = deficit
@@ -81,15 +81,15 @@
 
 #### ✅ 6. Persistence (LocalStorage)
 
-* [ ] Create `assets/js/app/persistence.js`
-* [ ] Implement:
+* [x] Create `assets/js/app/persistence.js`
+* [x] Implement:
 
   * `saveState(state)`
   * `loadState()`
-* [ ] Include:
+* [x] Include:
 
   * Versioning
-* [ ] Handle:
+* [x] Handle:
 
   * Missing/invalid data safely
 
@@ -99,17 +99,17 @@
 
 #### ✅ 7. Flat Formatter
 
-* [ ] Create `assets/js/formatters/flatFormatter.js`
-* [ ] Convert totals into UI-friendly structure
-* [ ] Sort or group if needed
+* [x] Create `assets/js/formatters/flatFormatter.js`
+* [x] Convert totals into UI-friendly structure
+* [x] Sort or group if needed
 
 ---
 
 #### ✅ 8. Tree Formatter
 
-* [ ] Create `assets/js/formatters/treeFormatter.js`
-* [ ] Format dependency tree for display
-* [ ] Ensure nested structure is clean and readable
+* [x] Create `assets/js/formatters/treeFormatter.js`
+* [x] Format dependency tree for display
+* [x] Ensure nested structure is clean and readable
 
 ---
 
