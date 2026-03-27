@@ -127,6 +127,9 @@ export function bindEvents(els: AppElements): void {
     importSavedDataButton,
     importSavedDataInput,
     resetSavedDataButton,
+    totalsBody,
+    treeList,
+    netBody,
   } = els;
   const resultEls: ResultElements = {
     totalsBody: els.totalsBody,
@@ -165,6 +168,18 @@ export function bindEvents(els: AppElements): void {
     setResourceId(id);
     updateResults(resultEls);
   }
+
+  function handleResultPanelTargetClick(e: Event): void {
+    const targetBtn = (e.target as HTMLElement).closest(
+      "button[data-production-target]",
+    ) as HTMLButtonElement | null;
+    if (!targetBtn?.dataset.productionTarget) return;
+    applyTargetResource(targetBtn.dataset.productionTarget);
+  }
+
+  totalsBody.addEventListener("click", handleResultPanelTargetClick);
+  treeList.addEventListener("click", handleResultPanelTargetClick);
+  netBody.addEventListener("click", handleResultPanelTargetClick);
 
   resourceSearchInput.addEventListener("input", () => {
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);

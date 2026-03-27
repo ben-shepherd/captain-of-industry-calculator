@@ -240,6 +240,26 @@ function syncProductionPanel(
   }
 }
 
+/**
+ * Same semantics as production panel: click sets target resource.
+ * Optional `extraClass` (e.g. `tree-label`) for section-specific typography.
+ */
+function resourceTargetButton(
+  id: string,
+  label: string,
+  extraClass?: string,
+): string {
+  const pressed = id === getResourceId() ? "true" : "false";
+  const cls = extraClass
+    ? `production-row-target ${extraClass}`
+    : "production-row-target";
+  return (
+    `<button type="button" class="${cls}" `
+    + `data-production-target="${id}" aria-pressed="${pressed}" `
+    + `aria-label="Set ${label} as target resource">${label}</button>`
+  );
+}
+
 function renderTotals(tbody: HTMLElement, totals: Record<string, number>): void {
   const rows = formatTotals(totals);
   if (rows.length === 0) {
@@ -247,7 +267,13 @@ function renderTotals(tbody: HTMLElement, totals: Record<string, number>): void 
     return;
   }
   tbody.innerHTML = rows
-    .map((r) => row([r.label, r.amount.toFixed(2), r.unit]))
+    .map((r) =>
+      row([
+        resourceTargetButton(r.id, r.label),
+        r.amount.toFixed(2),
+        r.unit,
+      ]),
+    )
     .join("");
 }
 
@@ -261,7 +287,7 @@ function renderTree(
       (n) =>
         `<div class="tree-node tree-depth-${n.depth}" style="margin-left:${n.depth * 1.25}rem">`
         + (n.depth > 0 ? `<span class="tree-arrow">&#x2514;</span>` : "")
-        + `<span class="tree-label">${n.label}</span> `
+        + `${resourceTargetButton(n.id, n.label, "tree-label")} `
         + `<span class="tree-amount">${n.amount.toFixed(2)} ${n.unit}</span>`
         + `</div>`,
     )
@@ -285,7 +311,7 @@ function renderNet(
     .map(
       (r) =>
         `<tr class="net-${r.status}">`
-        + `<td>${r.label}</td>`
+        + `<td>${resourceTargetButton(r.id, r.label)}</td>`
         + `<td>${r.required.toFixed(2)}</td>`
         + `<td>${r.production.toFixed(2)}</td>`
         + `<td>${r.net > 0 ? "+" : ""}${r.net.toFixed(2)}</td>`

@@ -599,6 +599,18 @@ input.input-invalid {
   letter-spacing: 0.04em;
 }
 
+.data-table td .production-row-target {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.tree-node .tree-label.production-row-target {
+  display: inline;
+  width: auto;
+  vertical-align: baseline;
+}
+
 /* =========================
    Net Flow Status Rows
 ========================= */
