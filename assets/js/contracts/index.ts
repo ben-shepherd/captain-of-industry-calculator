@@ -89,6 +89,13 @@ export interface ResultsSectionsState {
   tree: boolean;
 }
 
+/** Which configuration panel sections are expanded (`<details open>`). */
+export interface InputsSectionsState {
+  target: boolean;
+  production: boolean;
+  presets: boolean;
+}
+
 export interface AppState {
   resourceId: string;
   targetRate: number;
@@ -101,6 +108,8 @@ export interface AppState {
   productionPresets: ProductionPreset[];
   /** Collapsible results sections (Base / Net Flow / Dependency Tree). */
   resultsSections: ResultsSectionsState;
+  /** Collapsible configuration sections (target / production / presets). */
+  inputsSections: InputsSectionsState;
 }
 
 export interface PersistedEnvelope {

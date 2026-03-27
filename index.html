@@ -63,61 +63,76 @@
     <section class="panel panel-inputs">
       <h2>Configuration</h2>
 
-      <div class="field field-resource-target">
-        <label for="resource-select">Target Resource</label>
-        <div class="resource-search-wrap">
-          <input
-            type="search"
-            id="resource-search"
-            placeholder="Search resources…"
-            autocomplete="off"
-            aria-label="Search target resources"
-            aria-expanded="false"
-            aria-controls="resource-search-results"
-            aria-autocomplete="list"
-          />
-          <ul
-            id="resource-search-results"
-            class="resource-search-results"
-            role="listbox"
-            aria-label="Matching resources"
-            hidden
-          ></ul>
-        </div>
-        <select id="resource-select"></select>
-      </div>
+      <details class="results-section" id="config-section-target" open>
+        <summary class="results-section-summary">Target resource &amp; rate</summary>
+        <div class="results-section-body">
+          <div class="field field-resource-target">
+            <label for="resource-select">Target Resource</label>
+            <div class="resource-search-wrap">
+              <input
+                type="search"
+                id="resource-search"
+                placeholder="Search resources…"
+                autocomplete="off"
+                aria-label="Search target resources"
+                aria-expanded="false"
+                aria-controls="resource-search-results"
+                aria-autocomplete="list"
+              />
+              <ul
+                id="resource-search-results"
+                class="resource-search-results"
+                role="listbox"
+                aria-label="Matching resources"
+                hidden
+              ></ul>
+            </div>
+            <select id="resource-select"></select>
+          </div>
 
-      <div class="field">
-        <label for="target-rate">Target Rate (per min)</label>
-        <input id="target-rate" type="number" min="0.01" step="any" />
-      </div>
-
-      <div class="production-heading-row">
-        <h3>Your Production</h3>
-        <a href="#" id="production-clear-all" class="production-clear-all">Clear all</a>
-      </div>
-      <p class="production-hint">Shows your dependency chain, saved rates, and added resources. × clears the row; chain resources stay hidden until you change target or add them again.</p>
-      <div id="production-fields"></div>
-      <div class="field production-add-field">
-        <label for="production-add-select">Add resource</label>
-        <select id="production-add-select" aria-label="Add production for another resource"></select>
-      </div>
-      <div class="production-presets">
-        <div class="production-presets-grid">
-          <label for="production-preset-select">Presets</label>
-          <select id="production-preset-select" aria-label="Choose a saved production preset"></select>
-          <div class="production-presets-actions-buttons">
-            <button type="button" id="production-preset-load-merge" class="btn btn-secondary" title="Add preset rates to your current production; overlapping resources use the preset’s values.">Load (keep rows)</button>
-            <button type="button" id="production-preset-load-replace" class="btn btn-secondary" title="Replace your production with this preset only.">Load (replace)</button>
-            <button type="button" id="production-preset-delete" class="btn btn-secondary">Delete</button>
+          <div class="field">
+            <label for="target-rate">Target Rate (per min)</label>
+            <input id="target-rate" type="number" min="0.01" step="any" />
           </div>
         </div>
-        <div class="production-presets-row production-presets-save">
-          <label for="production-preset-name">Save as</label>
-          <input id="production-preset-name" type="text" placeholder="e.g. Main bus" autocomplete="off" />
-          <button type="button" id="production-preset-save" class="btn">Save preset</button>
+      </details>
+
+      <details class="results-section" id="config-section-production" open>
+        <summary class="results-section-summary production-section-summary">
+          <span class="production-section-summary-title">Your Production</span>
+          <a href="#" id="production-clear-all" class="production-clear-all">Clear all</a>
+        </summary>
+        <div class="results-section-body">
+          <p class="production-hint">Shows your dependency chain, saved rates, and added resources. × clears the row; chain resources stay hidden until you change target or add them again.</p>
+          <div id="production-fields"></div>
+          <div class="field production-add-field">
+            <label for="production-add-select">Add resource</label>
+            <select id="production-add-select" aria-label="Add production for another resource"></select>
+          </div>
         </div>
-      </div>
+      </details>
+
+      <details class="results-section" id="config-section-presets" open>
+        <summary class="results-section-summary">Presets</summary>
+        <div class="results-section-body">
+          <div class="production-presets">
+            <div class="production-presets-grid">
+              <label for="production-preset-select">Saved preset</label>
+              <select id="production-preset-select" aria-label="Choose a saved production preset"></select>
+              <div class="production-presets-actions-buttons">
+                <button type="button" id="production-preset-load-merge" class="btn btn-secondary" title="Add preset rates to your current production; overlapping resources use the preset’s values.">Load (keep rows)</button>
+                <button type="button" id="production-preset-load-replace" class="btn btn-secondary" title="Replace your production with this preset only.">Load (replace)</button>
+                <button type="button" id="production-preset-delete" class="btn btn-secondary">Delete</button>
+              </div>
+            </div>
+            <div class="production-presets-row production-presets-save">
+              <label for="production-preset-name">Save as</label>
+              <input id="production-preset-name" type="text" placeholder="e.g. Main bus" autocomplete="off" />
+              <button type="button" id="production-preset-save" class="btn">Save preset</button>
+            </div>
+          </div>
+        </div>
+      </details>
     </section>
 
     <!-- Results -->

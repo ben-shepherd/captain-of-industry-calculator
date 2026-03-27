@@ -12,6 +12,9 @@ import {
   deleteProductionPreset,
   getResultsSections,
   setResultsSectionExpanded,
+  getInputsSections,
+  setInputsSectionExpanded,
+  type InputsSectionKey,
   clearAllProductionRates,
   getResourceId,
   getTargetRate,
@@ -64,6 +67,12 @@ const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
   "results-section-tree": "tree",
 };
 
+const INPUTS_SECTION_IDS: Record<string, InputsSectionKey> = {
+  "config-section-target": "target",
+  "config-section-production": "production",
+  "config-section-presets": "presets",
+};
+
 /**
  * Sync `<details open>` for results panels from persisted state.
  */
@@ -73,6 +82,18 @@ export function applyResultsSectionOpenStateFromStore(): void {
     const el = document.getElementById(id) as HTMLDetailsElement | null;
     if (!el) continue;
     el.open = rs[key];
+  }
+}
+
+/**
+ * Sync `<details open>` for configuration panels from persisted state.
+ */
+export function applyInputsSectionOpenStateFromStore(): void {
+  const ins = getInputsSections();
+  for (const [id, key] of Object.entries(INPUTS_SECTION_IDS)) {
+    const el = document.getElementById(id) as HTMLDetailsElement | null;
+    if (!el) continue;
+    el.open = ins[key];
   }
 }
 
@@ -131,6 +152,7 @@ export function bindEvents(els: AppElements): void {
     productionPresetName.value = "";
     productionPresetSelect.value = "";
     applyResultsSectionOpenStateFromStore();
+    applyInputsSectionOpenStateFromStore();
     updateResults(resultEls);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
   }
@@ -365,6 +387,7 @@ export function bindEvents(els: AppElements): void {
   if (productionClearAll) {
     productionClearAll.addEventListener("click", (e: Event) => {
       e.preventDefault();
+      e.stopPropagation();
       if (
         !window.confirm(
           "Clear all entered production rates?",
@@ -394,6 +417,13 @@ export function bindEvents(els: AppElements): void {
   if (panelResults) {
     bindResultsSectionPersistence(panelResults);
   }
+
+  const panelInputs = document.querySelector(
+    ".panel-inputs",
+  ) as HTMLElement | null;
+  if (panelInputs) {
+    bindInputsSectionPersistence(panelInputs);
+  }
 }
 
 /**
@@ -408,5 +438,20 @@ function bindResultsSectionPersistence(panelResults: HTMLElement): void {
     const key = RESULTS_SECTION_IDS[t.id];
     if (!key) return;
     setResultsSectionExpanded(key, t.open);
+  });
+}
+
+/**
+ * Apply saved expansion to configuration `<details>` and persist toggles.
+ */
+function bindInputsSectionPersistence(panelInputs: HTMLElement): void {
+  applyInputsSectionOpenStateFromStore();
+
+  panelInputs.addEventListener("toggle", (e: Event) => {
+    const t = e.target;
+    if (!(t instanceof HTMLDetailsElement)) return;
+    const key = INPUTS_SECTION_IDS[t.id];
+    if (!key) return;
+    setInputsSectionExpanded(key, t.open);
   });
 }

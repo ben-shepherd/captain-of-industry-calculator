@@ -34,10 +34,17 @@ const defaultResultsSections: AppState["resultsSections"] = {
   tree: false,
 };
 
+const defaultInputsSections: AppState["inputsSections"] = {
+  target: true,
+  production: true,
+  presets: true,
+};
+
 const emptyV4 = {
   productionDismissedIds: [] as string[],
   productionPresets: [] as AppState["productionPresets"],
   resultsSections: { ...defaultResultsSections },
+  inputsSections: { ...defaultInputsSections },
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -140,7 +147,7 @@ describe("clearState", () => {
 });
 
 describe("migration", () => {
-  it("migrates v1 envelope to v4 with new fields", () => {
+  it("migrates v1 envelope to current version with new fields", () => {
     localStorage.setItem(
       "coi-calculator-state",
       JSON.stringify({
@@ -161,10 +168,11 @@ describe("migration", () => {
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
     });
   });
 
-  it("migrates v2 envelope to v4", () => {
+  it("migrates v2 envelope to current version", () => {
     localStorage.setItem(
       "coi-calculator-state",
       JSON.stringify({
@@ -186,10 +194,11 @@ describe("migration", () => {
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
     });
   });
 
-  it("migrates v3 envelope without resultsSections to v4", () => {
+  it("migrates v3 envelope without resultsSections", () => {
     localStorage.setItem(
       "coi-calculator-state",
       JSON.stringify({
@@ -213,6 +222,36 @@ describe("migration", () => {
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
+    });
+  });
+
+  it("migrates v4 envelope without inputsSections to v5", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 4,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: {},
+          productionExtraIds: [],
+          productionDismissedIds: [],
+          productionPresets: [],
+          resultsSections: { ...defaultResultsSections },
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
     });
   });
 });
@@ -230,7 +269,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
     expect(parsePersistedEnvelope(json)).toEqual(state);
   });
 
-  it("migrates v1 JSON string to v4 AppState", () => {
+  it("migrates v1 JSON string to current AppState", () => {
     const raw = JSON.stringify({
       version: 1,
       savedAt: Date.now(),
@@ -248,6 +287,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
     });
   });
 

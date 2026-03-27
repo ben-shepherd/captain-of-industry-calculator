@@ -1,7 +1,12 @@
 import { resources } from '../data/resources';
 import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
 import { clearState, loadState, saveState } from './persistence';
-import type { AppState, ProductionPreset, ResultsSectionsState } from '../contracts';
+import type {
+  AppState,
+  InputsSectionsState,
+  ProductionPreset,
+  ResultsSectionsState,
+} from '../contracts';
 
 /**
  * Central application state.
@@ -16,6 +21,12 @@ const DEFAULT_RESULTS_SECTIONS: ResultsSectionsState = {
   tree: false,
 };
 
+const DEFAULT_INPUTS_SECTIONS: InputsSectionsState = {
+  target: true,
+  production: true,
+  presets: true,
+};
+
 const DEFAULT_STATE: AppState = {
   resourceId: "",
   targetRate: 12,
@@ -24,6 +35,7 @@ const DEFAULT_STATE: AppState = {
   productionDismissedIds: [],
   productionPresets: [],
   resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
+  inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -57,6 +69,7 @@ export function applyLoadedState(saved: AppState): void {
   );
   state.productionPresets = sanitizePresets(state.productionPresets ?? []);
   state.resultsSections = normalizeResultsSections(state.resultsSections);
+  state.inputsSections = normalizeInputsSections(state.inputsSections);
   persist();
 }
 
@@ -78,6 +91,16 @@ function normalizeResultsSections(
     base: rs?.base ?? true,
     net: rs?.net ?? true,
     tree: rs?.tree ?? false,
+  };
+}
+
+function normalizeInputsSections(
+  is: AppState["inputsSections"] | undefined,
+): InputsSectionsState {
+  return {
+    target: is?.target ?? true,
+    production: is?.production ?? true,
+    presets: is?.presets ?? true,
   };
 }
 
@@ -280,6 +303,24 @@ export function setResultsSectionExpanded(
   persist();
 }
 
+export type InputsSectionKey = keyof InputsSectionsState;
+
+export function getInputsSections(): InputsSectionsState {
+  return { ...state.inputsSections };
+}
+
+export function setInputsSectionExpanded(
+  key: InputsSectionKey,
+  expanded: boolean,
+): void {
+  if (state.inputsSections[key] === expanded) return;
+  state.inputsSections = {
+    ...state.inputsSections,
+    [key]: expanded,
+  };
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -297,6 +338,7 @@ export function getSnapshot(): AppState {
       productionExtraIds: [...p.productionExtraIds],
     })),
     resultsSections: { ...state.resultsSections },
+    inputsSections: { ...state.inputsSections },
   };
 }
 
@@ -308,6 +350,7 @@ export function resetState(): void {
     productionDismissedIds: [],
     productionPresets: [],
     resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
+    inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
   };
   persist();
 }
@@ -325,6 +368,7 @@ export function wipeAllPersistedDataAndResetToDefaults(): void {
     productionDismissedIds: [],
     productionPresets: [],
     resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
+    inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
   };
 }
 
