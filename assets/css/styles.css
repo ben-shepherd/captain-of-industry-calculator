@@ -15,6 +15,9 @@
   --color-on-accent: #111111;
   --radius: 8px;
   --gap: 1.5rem;
+  --layout-max-width: 960px;
+  --hero-banner-max: 520px;
+  --hero-logo-max: 420px;
 }
 
 /* =========================
@@ -54,7 +57,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: min(90vw, 520px);
+  max-width: min(90vw, var(--hero-banner-max));
   margin-left: auto;
   margin-right: auto;
   padding: 1.25rem var(--gap) var(--gap);
@@ -66,7 +69,7 @@ body {
 
 .app-logo {
   display: block;
-  max-width: min(90vw, 420px);
+  max-width: min(90vw, var(--hero-logo-max));
   width: 100%;
   height: auto;
   margin-bottom: 0.85rem;
@@ -85,11 +88,25 @@ body {
 }
 
 .app-main {
-  max-width: 960px;
+  max-width: min(100%, var(--layout-max-width));
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--gap);
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --layout-max-width: 1280px;
+    --hero-banner-max: 640px;
+    --hero-logo-max: 520px;
+  }
+}
+
+@media (min-width: 1536px) {
+  :root {
+    --layout-max-width: 1440px;
+  }
 }
 
 @media (max-width: 700px) {
@@ -107,6 +124,12 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: var(--gap);
+}
+
+.panel.panel-inputs,
+.panel.panel-results {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .panel h2:first-of-type {
