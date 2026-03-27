@@ -79,12 +79,18 @@ export function refreshResourceSearchResults(
  * Populate the resource <select> dropdown with all known resources
  * (grouped by level, sorted A–Z within each group).
  */
+const TARGET_RESOURCE_PLACEHOLDER = "Choose a resource";
+
 export function renderResourceOptions(
   selectEl: HTMLSelectElement,
   searchInput?: HTMLInputElement,
   searchResultsList?: HTMLUListElement,
 ): void {
   selectEl.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = TARGET_RESOURCE_PLACEHOLDER;
+  selectEl.appendChild(placeholder);
   for (const group of getResourcePickerGroups()) {
     const og = document.createElement("optgroup");
     og.label = group.label;
@@ -115,6 +121,20 @@ export function updateResults(els: ResultElements): void {
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
   const production = getProduction();
+
+  if (!resourceId) {
+    totalsBody.innerHTML = row(
+      ["Choose a target resource above to see base requirements"],
+      3,
+    );
+    treeList.innerHTML = "";
+    netBody.innerHTML = row(
+      ["Choose a target resource above to see net flow"],
+      5,
+    );
+    syncProductionPanel(els, {});
+    return;
+  }
 
   let result;
   try {

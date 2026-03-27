@@ -17,7 +17,7 @@ const DEFAULT_RESULTS_SECTIONS: ResultsSectionsState = {
 };
 
 const DEFAULT_STATE: AppState = {
-  resourceId: Object.keys(resources)[0]!,
+  resourceId: "",
   targetRate: 12,
   production: {},
   productionExtraIds: [],
@@ -78,7 +78,7 @@ export function getResourceId(): string {
 }
 
 export function setResourceId(id: string): void {
-  if (!resources[id]) return;
+  if (id !== "" && !resources[id]) return;
   state.resourceId = id;
   state.productionDismissedIds = [];
   persist();

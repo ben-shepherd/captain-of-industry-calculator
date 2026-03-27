@@ -237,11 +237,16 @@ export function bindEvents(els: AppElements): void {
       ) {
         return;
       }
+      const rid = getResourceId();
       let totals: Record<string, number>;
-      try {
-        totals = calculate(getResourceId(), getTargetRate()).totals;
-      } catch {
-        return;
+      if (!rid) {
+        totals = {};
+      } else {
+        try {
+          totals = calculate(rid, getTargetRate()).totals;
+        } catch {
+          return;
+        }
       }
       clearAllProductionRates(totals);
       updateResults(resultEls);
