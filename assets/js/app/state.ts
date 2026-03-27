@@ -1,5 +1,6 @@
-import { resources } from "../data/resources.js";
-import { loadState, saveState } from "./persistence.js";
+import { resources } from '../data/resources';
+import { loadState, saveState } from './persistence';
+import type { AppState } from '../contracts';
 
 /**
  * Central application state.
@@ -8,60 +9,53 @@ import { loadState, saveState } from "./persistence.js";
  * auto-persist to localStorage on every mutation.
  */
 
-const DEFAULT_STATE = {
-  resourceId: Object.keys(resources)[0],
+const DEFAULT_STATE: AppState = {
+  resourceId: Object.keys(resources)[0]!,
   targetRate: 12,
   production: {},
 };
 
-let state = { ...DEFAULT_STATE };
+let state: AppState = { ...DEFAULT_STATE };
 
 /**
  * Initialise state from localStorage (if available) or use defaults.
  * Call once at app startup.
  */
-export function initState() {
+export function initState(): void {
   const saved = loadState();
   if (saved) {
     state = { ...DEFAULT_STATE, ...saved };
   }
 }
 
-/** @returns {string} */
-export function getResourceId() {
+export function getResourceId(): string {
   return state.resourceId;
 }
 
-/** @param {string} id */
-export function setResourceId(id) {
+export function setResourceId(id: string): void {
   if (!resources[id]) return;
   state.resourceId = id;
   persist();
 }
 
-/** @returns {number} */
-export function getTargetRate() {
+export function getTargetRate(): number {
   return state.targetRate;
 }
 
-/** @param {number} rate */
-export function setTargetRate(rate) {
+export function setTargetRate(rate: number): void {
   if (typeof rate !== "number" || rate <= 0 || !isFinite(rate)) return;
   state.targetRate = rate;
   persist();
 }
 
-/** @returns {Record<string, number>} */
-export function getProduction() {
+export function getProduction(): Record<string, number> {
   return { ...state.production };
 }
 
 /**
  * Set the user's production rate for a single resource.
- * @param {string} id
- * @param {number} amount
  */
-export function setProduction(id, amount) {
+export function setProduction(id: string, amount: number): void {
   if (typeof amount !== "number" || !isFinite(amount)) return;
   if (amount <= 0) {
     delete state.production[id];
@@ -73,9 +67,8 @@ export function setProduction(id, amount) {
 
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
- * @returns {{ resourceId: string, targetRate: number, production: Record<string, number> }}
  */
-export function getSnapshot() {
+export function getSnapshot(): AppState {
   return {
     resourceId: state.resourceId,
     targetRate: state.targetRate,
@@ -83,12 +76,11 @@ export function getSnapshot() {
   };
 }
 
-/** @returns void */
-export function resetState() {
+export function resetState(): void {
   state = { ...DEFAULT_STATE, production: {} };
   persist();
 }
 
-function persist() {
+function persist(): void {
   saveState(getSnapshot());
 }

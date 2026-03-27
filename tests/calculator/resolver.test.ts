@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolve } from "../../assets/js/calculator/resolver.js";
+import { resolve } from "../../assets/js/calculator/resolver";
 
 describe("resolve", () => {
   describe("base resource (ore)", () => {
@@ -30,9 +30,9 @@ describe("resolve", () => {
       expect(tree.id).toBe("iron");
       expect(tree.amount).toBe(24);
       expect(tree.children).toHaveLength(1);
-      expect(tree.children[0].id).toBe("ore");
-      expect(tree.children[0].amount).toBe(24);
-      expect(tree.children[0].children).toHaveLength(0);
+      expect(tree.children[0]!.id).toBe("ore");
+      expect(tree.children[0]!.amount).toBe(24);
+      expect(tree.children[0]!.children).toHaveLength(0);
     });
   });
 
@@ -48,11 +48,11 @@ describe("resolve", () => {
       expect(tree.id).toBe("steel");
       expect(tree.amount).toBe(12);
 
-      const ironNode = tree.children[0];
+      const ironNode = tree.children[0]!;
       expect(ironNode.id).toBe("iron");
       expect(ironNode.amount).toBe(24);
 
-      const oreNode = ironNode.children[0];
+      const oreNode = ironNode.children[0]!;
       expect(oreNode.id).toBe("ore");
       expect(oreNode.amount).toBe(24);
       expect(oreNode.children).toHaveLength(0);
@@ -73,8 +73,8 @@ describe("resolve", () => {
     it("scales tree node amounts correctly", () => {
       const { tree } = resolve("steel", 6);
       expect(tree.amount).toBe(6);
-      expect(tree.children[0].amount).toBe(12);
-      expect(tree.children[0].children[0].amount).toBe(12);
+      expect(tree.children[0]!.amount).toBe(12);
+      expect(tree.children[0]!.children[0]!.amount).toBe(12);
     });
   });
 

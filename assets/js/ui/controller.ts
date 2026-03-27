@@ -1,19 +1,24 @@
-import { resources } from "../data/resources.js";
-import { calculate } from "../calculator/service.js";
-import { calculateNet } from "../calculator/net.js";
-import { formatTotals, formatNetTotals } from "../formatters/flatFormatter.js";
-import { flattenTree } from "../formatters/treeFormatter.js";
+import { resources } from '../data/resources';
+import { calculate } from '../calculator/service';
+import { calculateNet } from '../calculator/net';
+import { formatTotals, formatNetTotals } from '../formatters/flatFormatter';
+import { flattenTree } from '../formatters/treeFormatter';
 import {
   getResourceId,
   getTargetRate,
   getProduction,
-} from "../app/state.js";
+} from '../app/state';
+
+export interface ResultElements {
+  totalsBody: HTMLElement;
+  treeList: HTMLElement;
+  netBody: HTMLElement;
+}
 
 /**
  * Populate the resource <select> dropdown with all known resources.
- * @param {HTMLSelectElement} selectEl
  */
-export function renderResourceOptions(selectEl) {
+export function renderResourceOptions(selectEl: HTMLSelectElement): void {
   selectEl.innerHTML = "";
   for (const [id, res] of Object.entries(resources)) {
     const opt = document.createElement("option");
@@ -27,13 +32,8 @@ export function renderResourceOptions(selectEl) {
 /**
  * Run the full calculation pipeline using current state and render
  * results into the provided DOM containers.
- *
- * @param {Object} els – DOM element references
- * @param {HTMLElement} els.totalsBody   – <tbody> for flat totals table
- * @param {HTMLElement} els.treeList     – <ul> or container for the dependency tree
- * @param {HTMLElement} els.netBody      – <tbody> for net flow table
  */
-export function updateResults({ totalsBody, treeList, netBody }) {
+export function updateResults({ totalsBody, treeList, netBody }: ResultElements): void {
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
   const production = getProduction();
@@ -53,12 +53,7 @@ export function updateResults({ totalsBody, treeList, netBody }) {
   renderNet(netBody, result.totals, production);
 }
 
-/**
- * Render the flat base-resource totals into a <tbody>.
- * @param {HTMLElement} tbody
- * @param {Record<string, number>} totals
- */
-function renderTotals(tbody, totals) {
+function renderTotals(tbody: HTMLElement, totals: Record<string, number>): void {
   const rows = formatTotals(totals);
   if (rows.length === 0) {
     tbody.innerHTML = row(["No base resources required"], 3);
@@ -69,12 +64,10 @@ function renderTotals(tbody, totals) {
     .join("");
 }
 
-/**
- * Render the dependency tree as a flat indented list.
- * @param {HTMLElement} container
- * @param {import("../calculator/resolver.js").DependencyNode} tree
- */
-function renderTree(container, tree) {
+function renderTree(
+  container: HTMLElement,
+  tree: import('../contracts').DependencyNode,
+): void {
   const nodes = flattenTree(tree);
   container.innerHTML = nodes
     .map(
@@ -88,13 +81,11 @@ function renderTree(container, tree) {
     .join("");
 }
 
-/**
- * Render the net surplus / deficit table.
- * @param {HTMLElement} tbody
- * @param {Record<string, number>} totals
- * @param {Record<string, number>} production
- */
-function renderNet(tbody, totals, production) {
+function renderNet(
+  tbody: HTMLElement,
+  totals: Record<string, number>,
+  production: Record<string, number>,
+): void {
   const net = calculateNet(totals, production);
   const rows = formatNetTotals(net);
 
@@ -119,10 +110,8 @@ function renderNet(tbody, totals, production) {
 
 /**
  * Helper: build a single <tr> with the given cell values.
- * @param {string[]} cells
- * @param {number} [colspan] – if provided, renders a single cell spanning columns
  */
-function row(cells, colspan) {
+function row(cells: string[], colspan?: number): string {
   if (colspan) {
     return `<tr><td colspan="${colspan}">${cells[0]}</td></tr>`;
   }

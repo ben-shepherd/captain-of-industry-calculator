@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { formatTree, flattenTree } from "../../assets/js/formatters/treeFormatter.js";
-import { resolve } from "../../assets/js/calculator/resolver.js";
+import { formatTree, flattenTree } from "../../assets/js/formatters/treeFormatter";
+import { resolve } from "../../assets/js/calculator/resolver";
 
 const steelTree = resolve("steel", 12).tree;
 
@@ -16,8 +16,8 @@ describe("formatTree", () => {
 
   it("increments depth for each level of nesting", () => {
     const formatted = formatTree(steelTree);
-    const ironNode = formatted.children[0];
-    const oreNode = ironNode.children[0];
+    const ironNode = formatted.children[0]!;
+    const oreNode = ironNode.children[0]!;
 
     expect(ironNode.depth).toBe(1);
     expect(oreNode.depth).toBe(2);
@@ -26,15 +26,15 @@ describe("formatTree", () => {
   it("preserves children structure", () => {
     const formatted = formatTree(steelTree);
     expect(formatted.children).toHaveLength(1);
-    expect(formatted.children[0].children).toHaveLength(1);
-    expect(formatted.children[0].children[0].children).toHaveLength(0);
+    expect(formatted.children[0]!.children).toHaveLength(1);
+    expect(formatted.children[0]!.children[0]!.children).toHaveLength(0);
   });
 
   it("adds unit to every node", () => {
     const formatted = formatTree(steelTree);
     expect(formatted.unit).toBe("t/m");
-    expect(formatted.children[0].unit).toBe("t/m");
-    expect(formatted.children[0].children[0].unit).toBe("t/m");
+    expect(formatted.children[0]!.unit).toBe("t/m");
+    expect(formatted.children[0]!.children[0]!.unit).toBe("t/m");
   });
 });
 

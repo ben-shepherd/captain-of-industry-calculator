@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateNet } from "../../assets/js/calculator/net.js";
+import { calculateNet } from "../../assets/js/calculator/net";
 
 describe("calculateNet", () => {
   it("reports a deficit when production < required", () => {
@@ -68,8 +68,8 @@ describe("calculateNet", () => {
       { ore: 40, iron: 5, steel: 2 },
     );
 
-    expect(result.ore.status).toBe("surplus");
-    expect(result.iron.status).toBe("deficit");
-    expect(result.steel.status).toBe("surplus");
+    expect(result.ore?.status).toBe("surplus");
+    expect(result.iron?.status).toBe("deficit");
+    expect(result.steel?.status).toBe("surplus");
   });
 });

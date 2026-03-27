@@ -1,13 +1,7 @@
+import type { AppState, PersistedEnvelope } from '../contracts';
+
 /**
  * Persist and restore user state via localStorage.
- *
- * State shape (extend as the app grows):
- *   {
- *     resourceId:  string,
- *     targetRate:  number,
- *     production:  Record<string, number>,
- *     recipeChoices: Record<string, number>
- *   }
  *
  * A `version` field is stamped on every write so future code
  * can detect stale data and migrate it.
@@ -18,11 +12,9 @@ const STATE_VERSION = 1;
 
 /**
  * Write the current application state to localStorage.
- *
- * @param {Object} state – Plain object representing user state
  */
-export function saveState(state) {
-  const envelope = {
+export function saveState(state: AppState): void {
+  const envelope: PersistedEnvelope = {
     version: STATE_VERSION,
     savedAt: Date.now(),
     data: state,
@@ -37,20 +29,18 @@ export function saveState(state) {
 
 /**
  * Read and return the persisted state, or null if nothing usable exists.
- *
- * @returns {Object|null} The previously saved `data` payload, or null.
  */
-export function loadState() {
+export function loadState(): AppState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
 
-    const envelope = JSON.parse(raw);
+    const envelope = JSON.parse(raw) as Partial<PersistedEnvelope> | null;
 
     if (!envelope || typeof envelope.version !== "number") return null;
 
     if (envelope.version < STATE_VERSION) {
-      return migrate(envelope);
+      return migrate(envelope as PersistedEnvelope);
     }
 
     return envelope.data ?? null;
@@ -63,7 +53,7 @@ export function loadState() {
 /**
  * Remove persisted state entirely.
  */
-export function clearState() {
+export function clearState(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch {
@@ -74,18 +64,17 @@ export function clearState() {
 /**
  * Migrate an older envelope to the current version.
  * Add migration cases as STATE_VERSION increments.
- *
- * @param {{ version: number, data: Object }} envelope
- * @returns {Object|null}
  */
-function migrate(envelope) {
-  let { version, data } = envelope;
+function migrate(envelope: PersistedEnvelope): AppState | null {
+  const { version, data } = envelope;
 
   // Example: when STATE_VERSION becomes 2, add a case here:
   // if (version === 1) { data = migrateV1toV2(data); version = 2; }
 
   if (version !== STATE_VERSION) {
-    console.warn(`Unable to migrate state from v${envelope.version} to v${STATE_VERSION}. Discarding.`);
+    console.warn(
+      `Unable to migrate state from v${envelope.version} to v${STATE_VERSION}. Discarding.`,
+    );
     clearState();
     return null;
   }

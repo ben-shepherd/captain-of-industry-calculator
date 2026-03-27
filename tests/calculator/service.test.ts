@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculate } from "../../assets/js/calculator/service.js";
+import { calculate } from "../../assets/js/calculator/service";
 
 describe("calculate", () => {
   it("returns resourceId and targetRate in the result", () => {
@@ -43,6 +43,7 @@ describe("calculate", () => {
     });
 
     it("throws when targetRate is not a number", () => {
+      // @ts-expect-error testing invalid input
       expect(() => calculate("steel", "12")).toThrow("targetRate must be a positive finite number");
     });
   });

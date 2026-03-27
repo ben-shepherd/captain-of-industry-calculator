@@ -19,8 +19,8 @@ Use clear section comments, for example:
    Components - Calculator
 ========================= */
 Follow modern best practices (CSS variables, responsive design, minimal duplication)
-JavaScript Structure
-All JavaScript must live inside:
+TypeScript Structure
+All TypeScript source must live inside:
 assets/js/
 Code organization rules:
 Use a folder-per-concept structure
@@ -28,16 +28,31 @@ Each file should:
 Have a single responsibility
 Be small and focused
 Prefer modular ES imports/exports
+Shared type definitions (interfaces, type aliases) live in:
+assets/js/contracts/
 Example Structure
 assets/js/
+  contracts/
+    index.ts
   calculator/
-    service.js
-    utils.js
-    formatters.js
+    service.ts
+    resolver.ts
+    net.ts
+  formatters/
+    flatFormatter.ts
+    treeFormatter.ts
+  app/
+    state.ts
+    persistence.ts
+  ui/
+    controller.ts
+    events.ts
+    utils.ts
 You may expand this structure as needed, but keep the same philosophy:
-service.js → core logic
-utils.js → reusable helpers
-formatters.js → output/data formatting
+service.ts → core logic
+utils.ts → reusable helpers
+formatters/ → output/data formatting
+contracts/ → shared types and interfaces
 Code Quality
 All code must be:
 Clearly commented, especially for non-obvious logic
@@ -45,7 +60,9 @@ Easy to read and reason about
 Consistent in naming and structure
 Use:
 Descriptive function and variable names
-JSDoc-style comments where helpful
+TypeScript type annotations on all function signatures
+Shared interfaces from contracts/ for data shapes
+strict mode enabled in tsconfig.json
 Goal
 
 Build a scalable, maintainable resource calculator that:

@@ -1,3 +1,5 @@
+import type { ResourcesMap } from '../contracts';
+
 /**
  * Resource definitions for the Captain of Industry calculator.
  *
@@ -18,7 +20,7 @@
  *   • inputs reference other resource ids, keeping the graph self-contained.
  */
 
-export const resources = {
+export const resources: ResourcesMap = {
   ore: {
     label: "Iron Ore",
     unit: "t/m",

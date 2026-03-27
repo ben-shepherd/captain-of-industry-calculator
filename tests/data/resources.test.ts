@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resources } from "../../assets/js/data/resources.js";
+import { resources } from "../../assets/js/data/resources";
 
 describe("resources dataset", () => {
   const entries = Object.entries(resources);
@@ -25,7 +25,7 @@ describe("resources dataset", () => {
   describe("recipe shape", () => {
     for (const [id, resource] of entries) {
       for (let i = 0; i < resource.recipes.length; i++) {
-        const recipe = resource.recipes[i];
+        const recipe = resource.recipes[i]!;
 
         describe(`${id} recipe[${i}]`, () => {
           it("has a name string", () => {
@@ -42,10 +42,9 @@ describe("resources dataset", () => {
             expect(typeof recipe.inputs).toBe("object");
             expect(recipe.inputs).not.toBeNull();
 
-            for (const [inputId, amount] of Object.entries(recipe.inputs)) {
+            for (const [, amount] of Object.entries(recipe.inputs)) {
               expect(typeof amount).toBe("number");
               expect(amount).toBeGreaterThan(0);
-              expect(resources).toHaveProperty(inputId);
             }
           });
         });

@@ -1,13 +1,11 @@
-import { resources } from "../data/resources.js";
+import { resources } from '../data/resources';
+import type { FormattedTotal, FormattedNetTotal, NetEntry } from '../contracts';
 
 /**
  * Transform the raw totals map from the resolver into a sorted,
  * UI-ready array of resource entries.
- *
- * @param {Record<string, number>} totals – resource id → amount
- * @returns {Array<{ id: string, label: string, amount: number, unit: string }>}
  */
-export function formatTotals(totals) {
+export function formatTotals(totals: Record<string, number>): FormattedTotal[] {
   return Object.entries(totals)
     .map(([id, amount]) => {
       const res = resources[id];
@@ -23,11 +21,10 @@ export function formatTotals(totals) {
 
 /**
  * Transform the net-calculation result into a sorted, UI-ready array.
- *
- * @param {Record<string, import("../calculator/net.js").NetEntry>} netTotals
- * @returns {Array<{ id: string, label: string, unit: string, required: number, production: number, net: number, status: string }>}
  */
-export function formatNetTotals(netTotals) {
+export function formatNetTotals(
+  netTotals: Record<string, NetEntry>,
+): FormattedNetTotal[] {
   return Object.entries(netTotals)
     .map(([id, entry]) => {
       const res = resources[id];
@@ -39,6 +36,7 @@ export function formatNetTotals(netTotals) {
         production: entry.production,
         net: entry.net,
         status: entry.status,
+        amount: entry.required,
       };
     })
     .sort((a, b) => a.label.localeCompare(b.label));
