@@ -225,6 +225,32 @@ input.input-invalid {
 /* =========================
    Production Override Fields
 ========================= */
+.production-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel .production-heading-row h3 {
+  margin: 0;
+}
+
+.production-clear-all {
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.production-clear-all:hover {
+  color: var(--color-text);
+}
+
 .production-hint {
   font-size: 0.8rem;
   color: var(--color-balanced);

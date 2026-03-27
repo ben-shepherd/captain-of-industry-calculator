@@ -11,8 +11,12 @@ import {
   deleteProductionPreset,
   getResultsSections,
   setResultsSectionExpanded,
+  clearAllProductionRates,
+  getResourceId,
+  getTargetRate,
   type ResultsSectionKey,
 } from "../app/state";
+import { calculate } from "../calculator/service";
 import {
   matchResourcesForSearch,
   refreshResourceSearchResults,
@@ -221,6 +225,28 @@ export function bindEvents(els: AppElements): void {
     productionPresetName.value = "";
     updateResults(resultEls);
   });
+
+  const productionClearAll = document.getElementById("production-clear-all");
+  if (productionClearAll) {
+    productionClearAll.addEventListener("click", (e: Event) => {
+      e.preventDefault();
+      if (
+        !window.confirm(
+          "Clear all entered production rates?",
+        )
+      ) {
+        return;
+      }
+      let totals: Record<string, number>;
+      try {
+        totals = calculate(getResourceId(), getTargetRate()).totals;
+      } catch {
+        return;
+      }
+      clearAllProductionRates(totals);
+      updateResults(resultEls);
+    });
+  }
 
   const panelResults = document.querySelector(
     ".panel-results",

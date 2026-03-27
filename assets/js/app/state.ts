@@ -111,6 +111,24 @@ export function setProduction(id: string, amount: number): void {
   persist();
 }
 
+/**
+ * Clear every saved production rate. Rows that were only visible because of a
+ * non-zero production entry are pinned via `productionExtraIds` so they stay listed.
+ */
+export function clearAllProductionRates(totals: Record<string, number>): void {
+  const extra = [...state.productionExtraIds];
+  const extraSet = new Set(extra);
+  for (const id of Object.keys(state.production)) {
+    if (!(id in totals) && !extraSet.has(id)) {
+      extra.push(id);
+      extraSet.add(id);
+    }
+  }
+  state.productionExtraIds = extra;
+  state.production = {};
+  persist();
+}
+
 export function getProductionExtraIds(): readonly string[] {
   return state.productionExtraIds;
 }
