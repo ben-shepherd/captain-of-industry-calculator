@@ -1,4 +1,5 @@
 import { resources } from '../data/resources';
+import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
 import { loadState, saveState } from './persistence';
 import type { AppState, ProductionPreset } from '../contracts';
 
@@ -119,8 +120,20 @@ export function getProductionDismissedIds(): readonly string[] {
   return state.productionDismissedIds;
 }
 
+/**
+ * Built-in presets (code) first, then user-saved presets (localStorage).
+ */
 export function getProductionPresets(): readonly ProductionPreset[] {
-  return state.productionPresets;
+  return [...BUILTIN_PRODUCTION_PRESETS, ...state.productionPresets];
+}
+
+export function findProductionPresetById(
+  presetId: string,
+): ProductionPreset | undefined {
+  return (
+    BUILTIN_PRODUCTION_PRESETS.find((p) => p.id === presetId)
+    ?? state.productionPresets.find((p) => p.id === presetId)
+  );
 }
 
 function newPresetId(): string {
@@ -157,7 +170,7 @@ export function saveProductionPreset(name: string): void {
 }
 
 export function applyProductionPreset(presetId: string): void {
-  const p = state.productionPresets.find((x) => x.id === presetId);
+  const p = findProductionPresetById(presetId);
   if (!p) return;
   state.production = Object.fromEntries(
     Object.entries(p.production).filter(([id]) => resources[id]),
@@ -170,6 +183,7 @@ export function applyProductionPreset(presetId: string): void {
 }
 
 export function deleteProductionPreset(presetId: string): void {
+  if (BUILTIN_PRODUCTION_PRESETS.some((p) => p.id === presetId)) return;
   state.productionPresets = state.productionPresets.filter((x) => x.id !== presetId);
   persist();
 }

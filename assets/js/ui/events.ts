@@ -10,13 +10,23 @@ import {
   saveProductionPreset,
   deleteProductionPreset,
 } from "../app/state";
-import { updateResults } from "./controller";
+import {
+  matchResourcesForSearch,
+  refreshResourceSearchResults,
+  updateResults,
+} from "./controller";
 import type { ResultElements } from "./controller";
 import { debounce } from "./utils";
 import { isIdRequiredByCurrentTarget } from "./productionView";
 
+function setSearchListExpanded(input: HTMLInputElement, expanded: boolean): void {
+  input.setAttribute("aria-expanded", expanded ? "true" : "false");
+}
+
 export interface AppElements extends ResultElements {
   resourceSelect: HTMLSelectElement;
+  resourceSearchInput: HTMLInputElement;
+  resourceSearchResults: HTMLUListElement;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
   productionAddSelect: HTMLSelectElement;
@@ -34,6 +44,8 @@ export interface AppElements extends ResultElements {
 export function bindEvents(els: AppElements): void {
   const {
     resourceSelect,
+    resourceSearchInput,
+    resourceSearchResults,
     targetRateInput,
     productionFields,
     productionAddSelect,
@@ -54,7 +66,68 @@ export function bindEvents(els: AppElements): void {
 
   const debouncedUpdate = debounce(() => updateResults(resultEls), 120);
 
+  const resourceSearchWrap = resourceSearchInput.closest(
+    ".resource-search-wrap",
+  ) as HTMLElement;
+
+  function selectTargetResourceFromSearch(id: string): void {
+    resourceSelect.value = id;
+    resourceSearchInput.value = "";
+    refreshResourceSearchResults(resourceSearchResults, "");
+    setSearchListExpanded(resourceSearchInput, false);
+    setResourceId(id);
+    updateResults(resultEls);
+  }
+
+  resourceSearchInput.addEventListener("input", () => {
+    refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
+    const q = resourceSearchInput.value.trim();
+    setSearchListExpanded(resourceSearchInput, q !== "");
+  });
+
+  resourceSearchInput.addEventListener("focus", () => {
+    const q = resourceSearchInput.value.trim();
+    if (!q) return;
+    refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
+    setSearchListExpanded(resourceSearchInput, true);
+  });
+
+  resourceSearchInput.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      resourceSearchInput.value = "";
+      refreshResourceSearchResults(resourceSearchResults, "");
+      setSearchListExpanded(resourceSearchInput, false);
+      return;
+    }
+    if (e.key !== "Enter") return;
+    const q = resourceSearchInput.value.trim();
+    if (!q) return;
+    const first = matchResourcesForSearch(q)[0];
+    if (!first) return;
+    e.preventDefault();
+    selectTargetResourceFromSearch(first.id);
+  });
+
+  resourceSearchResults.addEventListener("mousedown", (e: MouseEvent) => {
+    const li = (e.target as HTMLElement).closest(
+      "li[data-resource-id]",
+    ) as HTMLLIElement | null;
+    if (!li?.dataset.resourceId) return;
+    e.preventDefault();
+    selectTargetResourceFromSearch(li.dataset.resourceId);
+  });
+
+  document.addEventListener("click", (e: MouseEvent) => {
+    if (resourceSearchWrap.contains(e.target as Node)) return;
+    if (resourceSearchResults.hidden) return;
+    resourceSearchResults.hidden = true;
+    setSearchListExpanded(resourceSearchInput, false);
+  });
+
   resourceSelect.addEventListener("change", () => {
+    resourceSearchInput.value = "";
+    refreshResourceSearchResults(resourceSearchResults, "");
+    setSearchListExpanded(resourceSearchInput, false);
     setResourceId(resourceSelect.value);
     updateResults(resultEls);
   });

@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const els = {
     resourceSelect: document.getElementById("resource-select") as HTMLSelectElement,
+    resourceSearchInput: document.getElementById(
+      "resource-search",
+    ) as HTMLInputElement,
+    resourceSearchResults: document.getElementById(
+      "resource-search-results",
+    ) as HTMLUListElement,
     targetRateInput: document.getElementById("target-rate") as HTMLInputElement,
     productionFields: document.getElementById("production-fields")!,
     productionAddSelect: document.getElementById(
@@ -32,7 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
     netBody: document.getElementById("net-body")!,
   };
 
-  renderResourceOptions(els.resourceSelect);
+  renderResourceOptions(
+    els.resourceSelect,
+    els.resourceSearchInput,
+    els.resourceSearchResults,
+  );
   els.targetRateInput.value = String(getTargetRate());
 
   bindEvents(els);

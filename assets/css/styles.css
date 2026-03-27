@@ -103,8 +103,56 @@ body {
   color: var(--color-balanced);
 }
 
+.field-resource-target {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.resource-search-wrap {
+  position: relative;
+}
+
+.resource-search-results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  margin: 0;
+  margin-top: 2px;
+  padding: 0.25rem 0;
+  list-style: none;
+  max-height: 14rem;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.resource-search-results li {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.resource-search-results li[role="option"]:hover,
+.resource-search-results li[role="option"]:focus {
+  background: var(--color-border);
+  outline: none;
+}
+
+.resource-search-results .resource-search-empty {
+  cursor: default;
+  color: var(--color-balanced);
+  font-size: 0.85rem;
+}
+
 select,
-input[type="number"] {
+input[type="number"],
+input[type="search"] {
   width: 100%;
   padding: 0.5rem 0.6rem;
   border: 1px solid var(--color-border);
@@ -115,7 +163,8 @@ input[type="number"] {
 }
 
 select:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="search"]:focus {
   outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }

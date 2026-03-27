@@ -1,8 +1,12 @@
-import { getResourcePickerGroups } from '../data/resources';
+import {
+  getResourcePickerGroups,
+  getResourceEntriesInPickerOrder,
+} from '../data/resources';
 import { calculate } from '../calculator/service';
 import { calculateNet } from '../calculator/net';
 import { formatTotals, formatNetTotals } from '../formatters/flatFormatter';
 import { flattenTree } from '../formatters/treeFormatter';
+import type { ProductionPreset } from '../contracts';
 import {
   getResourceId,
   getTargetRate,
@@ -27,10 +31,59 @@ export interface ResultElements {
 }
 
 /**
+ * Resources whose label contains the query (case-insensitive), in picker order.
+ */
+export function matchResourcesForSearch(query: string): { id: string; label: string }[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return getResourceEntriesInPickerOrder().filter((e) =>
+    e.label.toLowerCase().includes(q),
+  );
+}
+
+/**
+ * Fill the search hits list; hides when query is empty.
+ * Shows a message when there are no matches.
+ */
+export function refreshResourceSearchResults(
+  listEl: HTMLUListElement,
+  query: string,
+): void {
+  listEl.replaceChildren();
+  const q = query.trim();
+  if (!q) {
+    listEl.hidden = true;
+    return;
+  }
+  const matches = matchResourcesForSearch(query);
+  if (matches.length === 0) {
+    const li = document.createElement("li");
+    li.className = "resource-search-empty";
+    li.setAttribute("role", "presentation");
+    li.textContent = "No matching resources";
+    listEl.appendChild(li);
+    listEl.hidden = false;
+    return;
+  }
+  listEl.hidden = false;
+  for (const { id, label } of matches) {
+    const li = document.createElement("li");
+    li.role = "option";
+    li.dataset.resourceId = id;
+    li.textContent = label;
+    listEl.appendChild(li);
+  }
+}
+
+/**
  * Populate the resource <select> dropdown with all known resources
  * (grouped by level, sorted A–Z within each group).
  */
-export function renderResourceOptions(selectEl: HTMLSelectElement): void {
+export function renderResourceOptions(
+  selectEl: HTMLSelectElement,
+  searchInput?: HTMLInputElement,
+  searchResultsList?: HTMLUListElement,
+): void {
   selectEl.innerHTML = "";
   for (const group of getResourcePickerGroups()) {
     const og = document.createElement("optgroup");
@@ -44,6 +97,13 @@ export function renderResourceOptions(selectEl: HTMLSelectElement): void {
     selectEl.appendChild(og);
   }
   selectEl.value = getResourceId();
+  if (searchInput) {
+    searchInput.value = "";
+    searchInput.setAttribute("aria-expanded", "false");
+  }
+  if (searchResultsList) {
+    refreshResourceSearchResults(searchResultsList, "");
+  }
 }
 
 /**
@@ -73,6 +133,33 @@ export function updateResults(els: ResultElements): void {
   syncProductionPanel(els, result.totals);
 }
 
+const PRESET_CATEGORY_ORDER = [
+  "Mining",
+  "Smelting",
+  "Construction",
+  "Petrochemical",
+  "Electronics",
+  "Saved",
+];
+
+const PRESET_CATEGORY_RANK = new Map(
+  PRESET_CATEGORY_ORDER.map((c, i) => [c, i]),
+);
+
+function presetCategoryLabel(p: ProductionPreset): string {
+  return p.category ?? "Saved";
+}
+
+function sortCategoryLabels(categories: string[]): string[] {
+  const fallback = PRESET_CATEGORY_ORDER.length;
+  return [...categories].sort((a, b) => {
+    const ra = PRESET_CATEGORY_RANK.get(a) ?? fallback;
+    const rb = PRESET_CATEGORY_RANK.get(b) ?? fallback;
+    if (ra !== rb) return ra - rb;
+    return a.localeCompare(b, "en");
+  });
+}
+
 /**
  * Refresh preset dropdown; keeps the selected preset id when options are unchanged.
  */
@@ -83,12 +170,28 @@ export function renderProductionPresetSelect(selectEl: HTMLSelectElement): void 
   first.value = "";
   first.textContent = "— Select preset —";
   selectEl.appendChild(first);
-  for (const p of getProductionPresets()) {
-    const opt = document.createElement("option");
-    opt.value = p.id;
-    opt.textContent = p.name;
-    selectEl.appendChild(opt);
+
+  const presets = getProductionPresets();
+  const categories = sortCategoryLabels([
+    ...new Set(presets.map(presetCategoryLabel)),
+  ]);
+
+  for (const cat of categories) {
+    const inGroup = presets
+      .filter((p) => presetCategoryLabel(p) === cat)
+      .sort((a, b) => a.name.localeCompare(b.name, "en"));
+    if (inGroup.length === 0) continue;
+    const og = document.createElement("optgroup");
+    og.label = cat;
+    for (const p of inGroup) {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = p.name;
+      og.appendChild(opt);
+    }
+    selectEl.appendChild(og);
   }
+
   if (current && [...selectEl.options].some((o) => o.value === current)) {
     selectEl.value = current;
   }

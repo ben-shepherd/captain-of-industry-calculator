@@ -80,6 +80,8 @@ function migrate(envelope: PersistedEnvelope): AppState | null {
       productionExtraIds: Array.isArray(d.productionExtraIds)
         ? d.productionExtraIds
         : [],
+      productionDismissedIds: [],
+      productionPresets: [],
     };
     version = 2;
   }

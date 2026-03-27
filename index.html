@@ -17,8 +17,27 @@
     <section class="panel panel-inputs">
       <h2>Configuration</h2>
 
-      <div class="field">
+      <div class="field field-resource-target">
         <label for="resource-select">Target Resource</label>
+        <div class="resource-search-wrap">
+          <input
+            type="search"
+            id="resource-search"
+            placeholder="Search resources…"
+            autocomplete="off"
+            aria-label="Search target resources"
+            aria-expanded="false"
+            aria-controls="resource-search-results"
+            aria-autocomplete="list"
+          />
+          <ul
+            id="resource-search-results"
+            class="resource-search-results"
+            role="listbox"
+            aria-label="Matching resources"
+            hidden
+          ></ul>
+        </div>
         <select id="resource-select"></select>
       </div>
 

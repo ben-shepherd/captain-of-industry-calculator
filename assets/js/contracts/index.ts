@@ -76,6 +76,10 @@ export interface ProductionPreset {
   name: string;
   production: Record<string, number>;
   productionExtraIds: string[];
+  /** UI grouping (built-ins); user presets default to "Saved" in the dropdown. */
+  category?: string;
+  /** Shipped presets; never persisted and cannot be deleted. */
+  isBuiltin?: boolean;
 }
 
 export interface AppState {
