@@ -71,10 +71,23 @@ export interface FlattenedNode extends FormattedTotal {
   depth: number;
 }
 
+export interface ProductionPreset {
+  id: string;
+  name: string;
+  production: Record<string, number>;
+  productionExtraIds: string[];
+}
+
 export interface AppState {
   resourceId: string;
   targetRate: number;
   production: Record<string, number>;
+  /** Resources the user explicitly added for production (not in current chain). */
+  productionExtraIds: string[];
+  /** Chain resources hidden from the production panel until target changes or re-added. */
+  productionDismissedIds: string[];
+  /** Saved production + extra-id sets. */
+  productionPresets: ProductionPreset[];
 }
 
 export interface PersistedEnvelope {

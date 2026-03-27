@@ -1,19 +1,30 @@
-import { resources } from '../data/resources';
 import {
   setResourceId,
   setTargetRate,
   setProduction,
-  getProduction,
-  getResourceId,
-} from '../app/state';
-import { updateResults } from './controller';
-import type { ResultElements } from './controller';
-import { debounce } from './utils';
+  addProductionExtraId,
+  removeProductionExtraId,
+  getProductionExtraIds,
+  dismissProductionRow,
+  applyProductionPreset,
+  saveProductionPreset,
+  deleteProductionPreset,
+} from "../app/state";
+import { updateResults } from "./controller";
+import type { ResultElements } from "./controller";
+import { debounce } from "./utils";
+import { isIdRequiredByCurrentTarget } from "./productionView";
 
 export interface AppElements extends ResultElements {
   resourceSelect: HTMLSelectElement;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
+  productionAddSelect: HTMLSelectElement;
+  productionPresetSelect: HTMLSelectElement;
+  productionPresetLoad: HTMLButtonElement;
+  productionPresetDelete: HTMLButtonElement;
+  productionPresetName: HTMLInputElement;
+  productionPresetSave: HTMLButtonElement;
 }
 
 /**
@@ -21,11 +32,24 @@ export interface AppElements extends ResultElements {
  * Call once after DOMContentLoaded.
  */
 export function bindEvents(els: AppElements): void {
-  const { resourceSelect, targetRateInput, productionFields } = els;
+  const {
+    resourceSelect,
+    targetRateInput,
+    productionFields,
+    productionAddSelect,
+    productionPresetSelect,
+    productionPresetLoad,
+    productionPresetDelete,
+    productionPresetName,
+    productionPresetSave,
+  } = els;
   const resultEls: ResultElements = {
     totalsBody: els.totalsBody,
     treeList: els.treeList,
     netBody: els.netBody,
+    productionFields: els.productionFields,
+    productionAddSelect: els.productionAddSelect,
+    productionPresetSelect: els.productionPresetSelect,
   };
 
   const debouncedUpdate = debounce(() => updateResults(resultEls), 120);
@@ -39,7 +63,10 @@ export function bindEvents(els: AppElements): void {
     const val = parseFloat(targetRateInput.value);
     const valid = val > 0 && isFinite(val);
 
-    targetRateInput.classList.toggle("input-invalid", !valid && targetRateInput.value !== "");
+    targetRateInput.classList.toggle(
+      "input-invalid",
+      !valid && targetRateInput.value !== "",
+    );
 
     if (valid) {
       setTargetRate(val);
@@ -52,37 +79,70 @@ export function bindEvents(els: AppElements): void {
     if (!input.dataset.resourceId) return;
 
     const val = parseFloat(input.value);
-    const invalid = input.value !== "" && (isNaN(val) || val < 0);
+    const invalid =
+      input.value !== "" && (isNaN(val) || val < 0);
 
     input.classList.toggle("input-invalid", invalid);
 
     if (!invalid) {
-      setProduction(input.dataset.resourceId, isNaN(val) ? 0 : val);
+      const id = input.dataset.resourceId;
+      const num = isNaN(val) ? 0 : val;
+      setProduction(id, num);
+      if (
+        num <= 0
+        && getProductionExtraIds().includes(id)
+        && !isIdRequiredByCurrentTarget(id)
+      ) {
+        removeProductionExtraId(id);
+        updateResults(resultEls);
+        return;
+      }
       debouncedUpdate();
     }
   });
 
-  renderProductionFields(productionFields);
-}
+  productionFields.addEventListener("click", (e: Event) => {
+    const t = (e.target as HTMLElement).closest(
+      "button[data-remove-resource]",
+    ) as HTMLButtonElement | null;
+    if (!t?.dataset.removeResource) return;
+    const id = t.dataset.removeResource;
+    setProduction(id, 0);
+    if (getProductionExtraIds().includes(id)) {
+      removeProductionExtraId(id);
+    }
+    if (isIdRequiredByCurrentTarget(id)) {
+      dismissProductionRow(id);
+    }
+    updateResults(resultEls);
+  });
 
-/**
- * Build one number input per known resource so the user can
- * specify current production rates.
- */
-function renderProductionFields(container: HTMLElement): void {
-  const production = getProduction();
+  productionAddSelect.addEventListener("change", () => {
+    const v = productionAddSelect.value;
+    if (!v) return;
+    addProductionExtraId(v);
+    productionAddSelect.value = "";
+    updateResults(resultEls);
+  });
 
-  container.innerHTML = Object.entries(resources)
-    .map(([id, res]) => {
-      const val = production[id] ?? "";
-      return (
-        `<div class="production-row">`
-        + `<label for="prod-${id}">${res.label}</label>`
-        + `<input id="prod-${id}" type="number" min="0" step="any" `
-        + `data-resource-id="${id}" value="${val}" `
-        + `placeholder="0" />`
-        + `</div>`
-      );
-    })
-    .join("");
+  productionPresetLoad.addEventListener("click", () => {
+    const id = productionPresetSelect.value;
+    if (!id) return;
+    applyProductionPreset(id);
+    updateResults(resultEls);
+  });
+
+  productionPresetDelete.addEventListener("click", () => {
+    const id = productionPresetSelect.value;
+    if (!id) return;
+    deleteProductionPreset(id);
+    productionPresetSelect.value = "";
+    updateResults(resultEls);
+  });
+
+  productionPresetSave.addEventListener("click", () => {
+    saveProductionPreset(productionPresetName.value);
+    productionPresetName.value = "";
+    updateResults(resultEls);
+  });
 }

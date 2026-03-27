@@ -1,6 +1,6 @@
 import { resources } from '../data/resources';
 import { loadState, saveState } from './persistence';
-import type { AppState } from '../contracts';
+import type { AppState, ProductionPreset } from '../contracts';
 
 /**
  * Central application state.
@@ -13,6 +13,9 @@ const DEFAULT_STATE: AppState = {
   resourceId: Object.keys(resources)[0]!,
   targetRate: 12,
   production: {},
+  productionExtraIds: [],
+  productionDismissedIds: [],
+  productionPresets: [],
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -40,6 +43,13 @@ export function initState(): void {
       if (resources[id]) prod[id] = amt;
     }
     state.production = prod;
+    state.productionExtraIds = (state.productionExtraIds ?? []).filter(
+      (id) => resources[id],
+    );
+    state.productionDismissedIds = (state.productionDismissedIds ?? []).filter(
+      (id) => resources[id],
+    );
+    state.productionPresets = sanitizePresets(state.productionPresets ?? []);
     persist();
   }
 }
@@ -51,6 +61,7 @@ export function getResourceId(): string {
 export function setResourceId(id: string): void {
   if (!resources[id]) return;
   state.resourceId = id;
+  state.productionDismissedIds = [];
   persist();
 }
 
@@ -81,6 +92,88 @@ export function setProduction(id: string, amount: number): void {
   persist();
 }
 
+export function getProductionExtraIds(): readonly string[] {
+  return state.productionExtraIds;
+}
+
+export function addProductionExtraId(id: string): void {
+  if (!resources[id]) return;
+  if (state.productionExtraIds.includes(id)) return;
+  state.productionExtraIds = [...state.productionExtraIds, id];
+  persist();
+}
+
+export function removeProductionExtraId(id: string): void {
+  state.productionExtraIds = state.productionExtraIds.filter((x) => x !== id);
+  persist();
+}
+
+export function dismissProductionRow(id: string): void {
+  if (!resources[id]) return;
+  if (state.productionDismissedIds.includes(id)) return;
+  state.productionDismissedIds = [...state.productionDismissedIds, id];
+  persist();
+}
+
+export function getProductionDismissedIds(): readonly string[] {
+  return state.productionDismissedIds;
+}
+
+export function getProductionPresets(): readonly ProductionPreset[] {
+  return state.productionPresets;
+}
+
+function newPresetId(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `preset-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+}
+
+function sanitizePresets(presets: ProductionPreset[]): ProductionPreset[] {
+  return presets
+    .filter((p) => p.id && typeof p.name === "string")
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      production: Object.fromEntries(
+        Object.entries(p.production ?? {}).filter(([id]) => resources[id]),
+      ),
+      productionExtraIds: (p.productionExtraIds ?? []).filter((id) => resources[id]),
+    }));
+}
+
+export function saveProductionPreset(name: string): void {
+  const trimmed = name.trim();
+  if (!trimmed) return;
+  const preset: ProductionPreset = {
+    id: newPresetId(),
+    name: trimmed,
+    production: { ...state.production },
+    productionExtraIds: [...state.productionExtraIds],
+  };
+  state.productionPresets = [...state.productionPresets, preset];
+  persist();
+}
+
+export function applyProductionPreset(presetId: string): void {
+  const p = state.productionPresets.find((x) => x.id === presetId);
+  if (!p) return;
+  state.production = Object.fromEntries(
+    Object.entries(p.production).filter(([id]) => resources[id]),
+  );
+  state.productionExtraIds = [...p.productionExtraIds].filter((id) =>
+    resources[id],
+  );
+  state.productionDismissedIds = [];
+  persist();
+}
+
+export function deleteProductionPreset(presetId: string): void {
+  state.productionPresets = state.productionPresets.filter((x) => x.id !== presetId);
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -89,11 +182,25 @@ export function getSnapshot(): AppState {
     resourceId: state.resourceId,
     targetRate: state.targetRate,
     production: { ...state.production },
+    productionExtraIds: [...state.productionExtraIds],
+    productionDismissedIds: [...state.productionDismissedIds],
+    productionPresets: state.productionPresets.map((p) => ({
+      id: p.id,
+      name: p.name,
+      production: { ...p.production },
+      productionExtraIds: [...p.productionExtraIds],
+    })),
   };
 }
 
 export function resetState(): void {
-  state = { ...DEFAULT_STATE, production: {} };
+  state = {
+    ...DEFAULT_STATE,
+    production: {},
+    productionExtraIds: [],
+    productionDismissedIds: [],
+    productionPresets: [],
+  };
   persist();
 }
 

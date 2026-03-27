@@ -1,4 +1,4 @@
-import { resources } from '../data/resources';
+import { getResourcePickerGroups } from '../data/resources';
 import { calculate } from '../calculator/service';
 import { calculateNet } from '../calculator/net';
 import { formatTotals, formatNetTotals } from '../formatters/flatFormatter';
@@ -7,24 +7,41 @@ import {
   getResourceId,
   getTargetRate,
   getProduction,
+  getProductionExtraIds,
+  getProductionDismissedIds,
+  getProductionPresets,
 } from '../app/state';
+import {
+  getRelevantProductionResourceIds,
+  refreshProductionFields,
+  updateProductionAddSelect,
+} from './productionView';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
   treeList: HTMLElement;
   netBody: HTMLElement;
+  productionFields?: HTMLElement;
+  productionAddSelect?: HTMLSelectElement;
+  productionPresetSelect?: HTMLSelectElement;
 }
 
 /**
- * Populate the resource <select> dropdown with all known resources.
+ * Populate the resource <select> dropdown with all known resources
+ * (grouped by level, sorted A–Z within each group).
  */
 export function renderResourceOptions(selectEl: HTMLSelectElement): void {
   selectEl.innerHTML = "";
-  for (const [id, res] of Object.entries(resources)) {
-    const opt = document.createElement("option");
-    opt.value = id;
-    opt.textContent = res.label;
-    selectEl.appendChild(opt);
+  for (const group of getResourcePickerGroups()) {
+    const og = document.createElement("optgroup");
+    og.label = group.label;
+    for (const { id, label } of group.entries) {
+      const opt = document.createElement("option");
+      opt.value = id;
+      opt.textContent = label;
+      og.appendChild(opt);
+    }
+    selectEl.appendChild(og);
   }
   selectEl.value = getResourceId();
 }
@@ -33,7 +50,8 @@ export function renderResourceOptions(selectEl: HTMLSelectElement): void {
  * Run the full calculation pipeline using current state and render
  * results into the provided DOM containers.
  */
-export function updateResults({ totalsBody, treeList, netBody }: ResultElements): void {
+export function updateResults(els: ResultElements): void {
+  const { totalsBody, treeList, netBody } = els;
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
   const production = getProduction();
@@ -45,12 +63,58 @@ export function updateResults({ totalsBody, treeList, netBody }: ResultElements)
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";
     netBody.innerHTML = "";
+    syncProductionPanel(els, {});
     return;
   }
 
   renderTotals(totalsBody, result.totals);
   renderTree(treeList, result.tree);
   renderNet(netBody, result.totals, production);
+  syncProductionPanel(els, result.totals);
+}
+
+/**
+ * Refresh preset dropdown; keeps the selected preset id when options are unchanged.
+ */
+export function renderProductionPresetSelect(selectEl: HTMLSelectElement): void {
+  const current = selectEl.value;
+  selectEl.replaceChildren();
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = "— Select preset —";
+  selectEl.appendChild(first);
+  for (const p of getProductionPresets()) {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.name;
+    selectEl.appendChild(opt);
+  }
+  if (current && [...selectEl.options].some((o) => o.value === current)) {
+    selectEl.value = current;
+  }
+}
+
+function syncProductionPanel(
+  els: ResultElements,
+  totals: Record<string, number>,
+): void {
+  if (els.productionFields) {
+    const rebuilt = refreshProductionFields(els.productionFields, totals);
+    if (rebuilt && els.productionAddSelect) {
+      const ids = new Set(
+        getRelevantProductionResourceIds(
+          totals,
+          getProduction(),
+          getProductionExtraIds(),
+          getProductionDismissedIds(),
+        ),
+      );
+      updateProductionAddSelect(els.productionAddSelect, ids);
+    }
+  }
+  if (els.productionPresetSelect) {
+    renderProductionPresetSelect(els.productionPresetSelect);
+  }
 }
 
 function renderTotals(tbody: HTMLElement, totals: Record<string, number>): void {

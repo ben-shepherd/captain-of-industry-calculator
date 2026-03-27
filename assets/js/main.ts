@@ -9,6 +9,24 @@ document.addEventListener("DOMContentLoaded", () => {
     resourceSelect: document.getElementById("resource-select") as HTMLSelectElement,
     targetRateInput: document.getElementById("target-rate") as HTMLInputElement,
     productionFields: document.getElementById("production-fields")!,
+    productionAddSelect: document.getElementById(
+      "production-add-select",
+    ) as HTMLSelectElement,
+    productionPresetSelect: document.getElementById(
+      "production-preset-select",
+    ) as HTMLSelectElement,
+    productionPresetLoad: document.getElementById(
+      "production-preset-load",
+    ) as HTMLButtonElement,
+    productionPresetDelete: document.getElementById(
+      "production-preset-delete",
+    ) as HTMLButtonElement,
+    productionPresetName: document.getElementById(
+      "production-preset-name",
+    ) as HTMLInputElement,
+    productionPresetSave: document.getElementById(
+      "production-preset-save",
+    ) as HTMLButtonElement,
     totalsBody: document.getElementById("totals-body")!,
     treeList: document.getElementById("tree-list")!,
     netBody: document.getElementById("net-body")!,
@@ -22,5 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
     totalsBody: els.totalsBody,
     treeList: els.treeList,
     netBody: els.netBody,
+    productionFields: els.productionFields,
+    productionAddSelect: els.productionAddSelect,
+    productionPresetSelect: els.productionPresetSelect,
   });
 });

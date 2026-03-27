@@ -28,7 +28,25 @@
       </div>
 
       <h3>Your Production</h3>
+      <p class="production-hint">Shows your dependency chain, saved rates, and added resources. × clears the row; chain resources stay hidden until you change target or add them again.</p>
       <div id="production-fields"></div>
+      <div class="field production-add-field">
+        <label for="production-add-select">Add resource</label>
+        <select id="production-add-select" aria-label="Add production for another resource"></select>
+      </div>
+      <div class="production-presets">
+        <div class="production-presets-row">
+          <label for="production-preset-select">Presets</label>
+          <select id="production-preset-select" aria-label="Choose a saved production preset"></select>
+          <button type="button" id="production-preset-load" class="btn btn-secondary">Load</button>
+          <button type="button" id="production-preset-delete" class="btn btn-secondary">Delete</button>
+        </div>
+        <div class="production-presets-row production-presets-save">
+          <label for="production-preset-name">Save as</label>
+          <input id="production-preset-name" type="text" placeholder="e.g. Main bus" autocomplete="off" />
+          <button type="button" id="production-preset-save" class="btn">Save preset</button>
+        </div>
+      </div>
     </section>
 
     <!-- Results -->

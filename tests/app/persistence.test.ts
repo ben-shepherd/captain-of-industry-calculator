@@ -21,16 +21,39 @@ beforeEach(() => {
   vi.stubGlobal("localStorage", stub);
 });
 
+const emptyV3 = {
+  productionDismissedIds: [] as string[],
+  productionPresets: [] as AppState["productionPresets"],
+};
+
 describe("saveState + loadState round-trip", () => {
   it("returns the saved data", () => {
-    const state: AppState = { resourceId: "steel", targetRate: 12, production: {} };
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV3,
+    };
     saveState(state);
     expect(loadState()).toEqual(state);
   });
 
   it("overwrites previous data on re-save", () => {
-    const first: AppState = { resourceId: "a", targetRate: 1, production: {} };
-    const second: AppState = { resourceId: "b", targetRate: 2, production: {} };
+    const first: AppState = {
+      resourceId: "a",
+      targetRate: 1,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV3,
+    };
+    const second: AppState = {
+      resourceId: "b",
+      targetRate: 2,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV3,
+    };
     saveState(first);
     saveState(second);
     expect(loadState()).toEqual(second);
@@ -58,9 +81,64 @@ describe("loadState edge cases", () => {
 
 describe("clearState", () => {
   it("removes stored data so loadState returns null", () => {
-    const state: AppState = { resourceId: "x", targetRate: 1, production: {} };
+    const state: AppState = {
+      resourceId: "x",
+      targetRate: 1,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV3,
+    };
     saveState(state);
     clearState();
     expect(loadState()).toBeNull();
+  });
+});
+
+describe("migration", () => {
+  it("migrates v1 envelope to v3 with new fields", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 1,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: { iron: 5 },
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: { iron: 5 },
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+    });
+  });
+
+  it("migrates v2 envelope to v3", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 2,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: {},
+          productionExtraIds: ["iron"],
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: ["iron"],
+      productionDismissedIds: [],
+      productionPresets: [],
+    });
   });
 });

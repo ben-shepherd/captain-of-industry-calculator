@@ -8,7 +8,7 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 1;
+const STATE_VERSION = 3;
 
 /**
  * Write the current application state to localStorage.
@@ -66,10 +66,40 @@ export function clearState(): void {
  * Add migration cases as STATE_VERSION increments.
  */
 function migrate(envelope: PersistedEnvelope): AppState | null {
-  const { version, data } = envelope;
+  let { version, data } = envelope;
+  if (!data) return null;
 
-  // Example: when STATE_VERSION becomes 2, add a case here:
-  // if (version === 1) { data = migrateV1toV2(data); version = 2; }
+  if (version === 1) {
+    const d = data as Omit<AppState, "productionExtraIds"> & {
+      productionExtraIds?: string[];
+    };
+    data = {
+      resourceId: d.resourceId,
+      targetRate: d.targetRate,
+      production: d.production ?? {},
+      productionExtraIds: Array.isArray(d.productionExtraIds)
+        ? d.productionExtraIds
+        : [],
+    };
+    version = 2;
+  }
+
+  if (version === 2) {
+    const d = data as Omit<AppState, "productionDismissedIds" | "productionPresets"> & {
+      productionDismissedIds?: string[];
+      productionPresets?: AppState["productionPresets"];
+    };
+    data = {
+      ...d,
+      productionDismissedIds: Array.isArray(d.productionDismissedIds)
+        ? d.productionDismissedIds
+        : [],
+      productionPresets: Array.isArray(d.productionPresets)
+        ? d.productionPresets
+        : [],
+    };
+    version = STATE_VERSION;
+  }
 
   if (version !== STATE_VERSION) {
     console.warn(
