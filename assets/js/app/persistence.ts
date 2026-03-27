@@ -82,7 +82,7 @@ function migrate(envelope: PersistedEnvelope): AppState | null {
         : [],
       productionDismissedIds: [],
       productionPresets: [],
-      resultsSections: { base: true, net: true, tree: true },
+      resultsSections: { base: true, net: true, tree: false },
     };
     version = 2;
   }
@@ -112,7 +112,7 @@ function migrate(envelope: PersistedEnvelope): AppState | null {
       resultsSections: {
         base: rs?.base ?? true,
         net: rs?.net ?? true,
-        tree: rs?.tree ?? true,
+        tree: rs?.tree ?? false,
       },
     };
     version = 4;

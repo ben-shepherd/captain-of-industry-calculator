@@ -24,7 +24,7 @@ beforeEach(() => {
 const defaultResultsSections: AppState["resultsSections"] = {
   base: true,
   net: true,
-  tree: true,
+  tree: false,
 };
 
 const emptyV4 = {

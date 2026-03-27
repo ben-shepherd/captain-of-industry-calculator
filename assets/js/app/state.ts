@@ -13,7 +13,7 @@ import type { AppState, ProductionPreset, ResultsSectionsState } from '../contra
 const DEFAULT_RESULTS_SECTIONS: ResultsSectionsState = {
   base: true,
   net: true,
-  tree: true,
+  tree: false,
 };
 
 const DEFAULT_STATE: AppState = {
@@ -69,7 +69,7 @@ function normalizeResultsSections(
   return {
     base: rs?.base ?? true,
     net: rs?.net ?? true,
-    tree: rs?.tree ?? true,
+    tree: rs?.tree ?? false,
   };
 }
 
