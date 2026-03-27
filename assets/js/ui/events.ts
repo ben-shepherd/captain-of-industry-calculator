@@ -6,7 +6,8 @@ import {
   removeProductionExtraId,
   getProductionExtraIds,
   dismissProductionRow,
-  applyProductionPreset,
+  applyProductionPresetMerge,
+  applyProductionPresetReplace,
   saveProductionPreset,
   deleteProductionPreset,
   getResultsSections,
@@ -46,7 +47,8 @@ export interface AppElements extends ResultElements {
   productionFields: HTMLElement;
   productionAddSelect: HTMLSelectElement;
   productionPresetSelect: HTMLSelectElement;
-  productionPresetLoad: HTMLButtonElement;
+  productionPresetLoadMerge: HTMLButtonElement;
+  productionPresetLoadReplace: HTMLButtonElement;
   productionPresetDelete: HTMLButtonElement;
   productionPresetName: HTMLInputElement;
   productionPresetSave: HTMLButtonElement;
@@ -95,7 +97,8 @@ export function bindEvents(els: AppElements): void {
     productionFields,
     productionAddSelect,
     productionPresetSelect,
-    productionPresetLoad,
+    productionPresetLoadMerge,
+    productionPresetLoadReplace,
     productionPresetDelete,
     productionPresetName,
     productionPresetSave,
@@ -263,10 +266,17 @@ export function bindEvents(els: AppElements): void {
     updateResults(resultEls);
   });
 
-  productionPresetLoad.addEventListener("click", () => {
+  productionPresetLoadMerge.addEventListener("click", () => {
     const id = productionPresetSelect.value;
     if (!id) return;
-    applyProductionPreset(id);
+    applyProductionPresetMerge(id);
+    updateResults(resultEls);
+  });
+
+  productionPresetLoadReplace.addEventListener("click", () => {
+    const id = productionPresetSelect.value;
+    if (!id) return;
+    applyProductionPresetReplace(id);
     updateResults(resultEls);
   });
 

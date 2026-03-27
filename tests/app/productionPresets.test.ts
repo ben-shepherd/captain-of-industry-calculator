@@ -1,12 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   findProductionPresetById,
-  applyProductionPreset,
+  applyProductionPresetMerge,
+  applyProductionPresetReplace,
   deleteProductionPreset,
   getProductionPresets,
   resetState,
   saveProductionPreset,
   getProduction,
+  setProduction,
+  addProductionExtraId,
+  getProductionExtraIds,
 } from "../../assets/js/app/state";
 
 function createStorageStub() {
@@ -31,11 +35,36 @@ describe("built-in production presets", () => {
     expect(p?.production.ironOre).toBe(120);
   });
 
-  it("applies a built-in preset to production state", () => {
-    applyProductionPreset("builtin-smelting-basic");
+  it("replaces production with a built-in preset only", () => {
+    setProduction("cement", 100);
+    applyProductionPresetReplace("builtin-smelting-basic");
     const prod = getProduction();
     expect(prod.iron).toBe(48);
     expect(prod.steel).toBe(12);
+    expect(prod.cement).toBeUndefined();
+  });
+
+  it("merges a built-in preset into existing production", () => {
+    setProduction("cement", 100);
+    setProduction("copper", 999);
+    applyProductionPresetMerge("builtin-smelting-basic");
+    const prod = getProduction();
+    expect(prod.cement).toBe(100);
+    expect(prod.copper).toBe(24);
+    expect(prod.iron).toBe(48);
+    expect(prod.steel).toBe(12);
+  });
+
+  it("merges preset production extras with existing extras", () => {
+    addProductionExtraId("cement");
+    saveProductionPreset("Extra row");
+    addProductionExtraId("copperOre");
+    const saved = getProductionPresets().find((p) => p.name === "Extra row");
+    expect(saved).toBeDefined();
+    applyProductionPresetMerge(saved!.id);
+    const extras = getProductionExtraIds();
+    expect(extras).toContain("cement");
+    expect(extras).toContain("copperOre");
   });
 
   it("ignores delete for built-in preset ids", () => {

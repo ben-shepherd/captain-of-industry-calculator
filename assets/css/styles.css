@@ -455,6 +455,35 @@ input.input-invalid {
   margin-bottom: 0;
 }
 
+.production-presets-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.production-presets-grid > label {
+  flex: 0 0 auto;
+  min-width: 4.5rem;
+  font-size: 0.85rem;
+  margin-bottom: 0;
+  color: var(--color-balanced);
+}
+
+.production-presets-grid select {
+  width: 100%;
+  min-width: 10rem;
+}
+
+.production-presets-actions-buttons {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .production-presets-row > label {
   flex: 0 0 auto;
   min-width: 4.5rem;

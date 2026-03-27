@@ -213,15 +213,45 @@ export function saveProductionPreset(name: string): void {
   persist();
 }
 
-export function applyProductionPreset(presetId: string): void {
-  const p = findProductionPresetById(presetId);
-  if (!p) return;
-  state.production = Object.fromEntries(
+function sanitizePresetProductionFields(p: ProductionPreset): {
+  production: Record<string, number>;
+  productionExtraIds: string[];
+} {
+  const production = Object.fromEntries(
     Object.entries(p.production).filter(([id]) => resources[id]),
   );
-  state.productionExtraIds = [...p.productionExtraIds].filter((id) =>
+  const productionExtraIds = [...p.productionExtraIds].filter((id) =>
     resources[id],
   );
+  return { production, productionExtraIds };
+}
+
+/** Replace production and extras with the preset only. */
+export function applyProductionPresetReplace(presetId: string): void {
+  const p = findProductionPresetById(presetId);
+  if (!p) return;
+  const { production, productionExtraIds } = sanitizePresetProductionFields(p);
+  state.production = production;
+  state.productionExtraIds = productionExtraIds;
+  state.productionDismissedIds = [];
+  persist();
+}
+
+/** Merge preset rates and extras into current production (preset wins on overlap). */
+export function applyProductionPresetMerge(presetId: string): void {
+  const p = findProductionPresetById(presetId);
+  if (!p) return;
+  const { production: presetProd, productionExtraIds: presetExtras } =
+    sanitizePresetProductionFields(p);
+  state.production = { ...state.production, ...presetProd };
+  const idSet = new Set<string>();
+  for (const id of state.productionExtraIds) {
+    if (resources[id]) idSet.add(id);
+  }
+  for (const id of presetExtras) {
+    if (resources[id]) idSet.add(id);
+  }
+  state.productionExtraIds = [...idSet];
   state.productionDismissedIds = [];
   persist();
 }

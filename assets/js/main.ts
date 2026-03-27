@@ -21,8 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
     productionPresetSelect: document.getElementById(
       "production-preset-select",
     ) as HTMLSelectElement,
-    productionPresetLoad: document.getElementById(
-      "production-preset-load",
+    productionPresetLoadMerge: document.getElementById(
+      "production-preset-load-merge",
+    ) as HTMLButtonElement,
+    productionPresetLoadReplace: document.getElementById(
+      "production-preset-load-replace",
     ) as HTMLButtonElement,
     productionPresetDelete: document.getElementById(
       "production-preset-delete",
