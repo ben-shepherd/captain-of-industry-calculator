@@ -1,74 +1,107 @@
-Project Structure & Standards
-General Requirements
-Follow latest web standards (ES modules, modern syntax, accessibility, semantic HTML where applicable).
-Write clean, maintainable, and well-structured code.
-Keep concerns separated and modular at all times.
-Styling
-All styles must be written in:
-assets/css/styles.css
-CSS must:
-Be well-organized and clearly separated by sections
+# Project Standards
 
-Use clear section comments, for example:
+## Web Standards
 
+- Use modern ES module syntax (`import`/`export`) — no CommonJS (`require`/`module.exports`).
+- Write semantic HTML (`<main>`, `<section>`, `<header>`, `<nav>`, etc.) over generic `<div>` soup.
+- Follow accessibility best practices: meaningful `alt` text, proper heading hierarchy, ARIA attributes where needed, keyboard-navigable interactive elements.
+- Use responsive design principles — layouts should work across viewport sizes.
+- Prefer native browser APIs over third-party libraries when the native option is well-supported.
+
+## TypeScript
+
+- All source code lives in `assets/js/` and must be TypeScript (`.ts`).
+- Enable and respect `strict` mode — no `any` unless absolutely unavoidable and explicitly justified.
+- Prefer `unknown` over `any` when the type is truly not known; narrow before use.
+- Add type annotations to all function signatures (parameters and return types).
+- Shared types and interfaces belong in `assets/js/contracts/`.
+- Prefer `interface` for object shapes; use `type` for unions, intersections, and utility types.
+- Prefer modular ES imports/exports.
+
+## Code Quality
+
+- One responsibility per file — keep files small and focused.
+- Use descriptive names for functions, variables, and types. Avoid abbreviations unless universally understood (`id`, `url`, `html`).
+- Keep business logic out of the UI layer — UI files handle DOM interaction only.
+- Avoid deep nesting; prefer early returns and guard clauses.
+- Comments should explain *why*, not *what*. Do not narrate obvious code.
+- No hardcoded magic numbers or strings — extract to named constants.
+- Prefer pure functions where possible; isolate side effects.
+- Consistent naming and structure across the codebase.
+
+## CSS
+
+- All styles live in `assets/css/styles.css`.
+- Organise with clear section comments:
+
+```css
 /* =========================
-   Layout
+   Section Name
 ========================= */
+```
 
-/* =========================
-   Components - Calculator
-========================= */
-Follow modern best practices (CSS variables, responsive design, minimal duplication)
-TypeScript Structure
-All TypeScript source must live inside:
+- Use CSS custom properties (`--var`) for colours, spacing, and typography.
+- Minimise duplication — extract shared values into variables.
+- Mobile-first responsive approach using relative units and media queries.
+
+## Project Structure
+
+```
 assets/js/
-Code organization rules:
-Use a folder-per-concept structure
-Each file should:
-Have a single responsibility
-Be small and focused
-Prefer modular ES imports/exports
-Shared type definitions (interfaces, type aliases) live in:
-assets/js/contracts/
-Example Structure
-assets/js/
-  contracts/
-    index.ts
-  calculator/
-    service.ts
-    resolver.ts
-    net.ts
-  formatters/
-    flatFormatter.ts
-    treeFormatter.ts
-  app/
-    state.ts
-    persistence.ts
-  ui/
-    controller.ts
-    events.ts
-    utils.ts
-You may expand this structure as needed, but keep the same philosophy:
-service.ts → core logic
-utils.ts → reusable helpers
-formatters/ → output/data formatting
-contracts/ → shared types and interfaces
-Code Quality
-All code must be:
-Clearly commented, especially for non-obvious logic
-Easy to read and reason about
-Consistent in naming and structure
-Use:
-Descriptive function and variable names
-TypeScript type annotations on all function signatures
-Shared interfaces from contracts/ for data shapes
-strict mode enabled in tsconfig.json
-Goal
+  contracts/      # Shared types and interfaces
+  calculator/     # Core calculation logic (pure functions)
+  data/           # Static resource definitions
+  formatters/     # Output/data transformation
+  app/            # State management and persistence
+  ui/             # DOM interaction (no business logic)
+```
+
+Expand as needed, but maintain the same philosophy: group by concern, not by file type.
+
+- `service.ts` — core logic
+- `utils.ts` — reusable helpers
+- `formatters/` — output/data formatting
+- `contracts/` — shared types and interfaces
+
+## Goal
 
 Build a scalable, maintainable resource calculator that:
 
-Can be easily extended with new resource chains
-Keeps logic decoupled from UI
-Is structured in a way that supports future growth
+- Can be easily extended with new resource chains
+- Keeps logic decoupled from UI
+- Is structured in a way that supports future growth
 
 Act like a senior frontend engineer and prioritize clarity, maintainability, and scalability in every decision.
+
+## Commit Standards
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+### Format
+
+```
+<type>(<optional scope>): <short summary>
+
+<optional body>
+```
+
+### Types
+
+| Type       | Use when...                                      |
+|------------|--------------------------------------------------|
+| `feat`     | Adding a new feature or capability               |
+| `fix`      | Fixing a bug                                     |
+| `refactor` | Restructuring code without changing behaviour    |
+| `style`    | Formatting, whitespace, or cosmetic-only changes |
+| `docs`     | Documentation-only changes                       |
+| `test`     | Adding or updating tests                         |
+| `chore`    | Build config, tooling, dependency updates        |
+| `perf`     | Performance improvements                         |
+
+### Rules
+
+- Summary must be lowercase, imperative mood, and under 72 characters (e.g. `feat(resolver): add cycle detection`).
+- Do **not** end the summary with a period.
+- Use the body to explain *why* the change was made when the summary alone is not enough.
+- Reference related issues when applicable (e.g. `Closes #12`).
+- Each commit should represent a single logical change — avoid bundling unrelated work.
