@@ -36,4 +36,4 @@ pnpm run build:resources   # assets/js/data/resources/*.ts
 
 ## Deployment (GitHub Pages)
 
-The [Deploy to GitHub Pages](.github/workflows/deploy-pages.yml) workflow builds with **`VITE_BASE`** set so **project** sites work under `https://<user>.github.io/<repo>/` and **user** sites (`<user>.github.io`) use `/`. [`vite.config.ts`](vite.config.ts) reads `VITE_BASE` to set Vite’s `base`. After enabling Pages (source: GitHub Actions), pushes to **`main`** publish **`dist/`**.
+The [Deploy to GitHub Pages](.github/workflows/deploy-pages.yml) workflow builds with **`VITE_BASE`** set so **project** sites work under `https://<user>.github.io/<repo>/` and **user** sites (`<user>.github.io`) use `/`. [`vite.config.ts`](vite.config.ts) reads `VITE_BASE` to set Vite’s `base`. After enabling Pages (source: GitHub Actions), pushes to **`master`** publish **`dist/`**.

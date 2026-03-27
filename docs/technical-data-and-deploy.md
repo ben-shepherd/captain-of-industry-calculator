@@ -33,7 +33,7 @@ Run these when updating the game; then review diffs and run **`pnpm test`**.
 
 ## GitHub Actions
 
-[`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) runs on **`main`** (and manual dispatch): **`pnpm install`**, **`pnpm run build`** with:
+[`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) runs on **`master`** (and manual dispatch): **`pnpm install`**, **`pnpm run build`** with:
 
 ```text
 VITE_BASE = '/'  if the repo is '<owner>/<owner>.github.io'
