@@ -13,6 +13,10 @@
 5. **`renderNet`** — [`calculateNet(result.totals, production)`](../assets/js/calculator/net.ts) then **`formatNetTotals`** for **Net flow** (required vs your production vs net vs status).
 6. **`syncProductionPanel`** — refreshes **Your production** rows and the preset `<select>`.
 
+## Configuration panel `<details>`
+
+**`inputsSections`** in `AppState` records whether the **target**, **production**, and **presets** `<details>` blocks are open. On load, **`applyInputsSectionOpenStateFromStore`** in [`events.ts`](../assets/js/ui/events.ts) applies that to the DOM; **`bindInputsSectionPersistence`** listens for toggles and persists them—mirroring the results panels (`applyResultsSectionOpenStateFromStore` / `bindResultsSectionPersistence`).
+
 ## Net flow math
 
 [`calculateNet`](../assets/js/calculator/net.ts) builds the union of keys from **required** (chain totals) and **user production**. For each id:

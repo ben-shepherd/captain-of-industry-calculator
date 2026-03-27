@@ -13,17 +13,20 @@
 [`resolve` in `resolver.ts`](../assets/js/calculator/resolver.ts) walks the recipe graph:
 
 1. Loads [`resources[id]`](../assets/js/data/resources/index.ts) and picks **`resource.recipes[recipeIdx]`** (top-level call uses `recipeIdx = 0`).
-2. If there is **no recipe**, or **output quantity for `id` is missing or non-positive**, the node is a **leaf**: add `amount` to `totals[id]` and return a node with no children.
-3. Otherwise, for each recipe **input** `(inputId, inputAmount)` it recurses with  
+2. If there is **no recipe** at that index, the node is a **leaf**: add `amount` to `totals[id]` and return a node with no children.
+3. If a recipe exists but **output quantity for `id` is missing or ≤ 0**, **`buildTree` throws** (the recipe does not list a positive output for the resource being resolved).
+4. Otherwise, for each recipe **input** `(inputId, inputAmount)` it recurses with  
    `childAmount = inputAmount * amount / produced`, **`recipeIdx` fixed to `0`** for nested calls (nested inputs always use each resource’s **first** recipe).
 
 ```mermaid
 flowchart TD
   subgraph resolverFlow ["resolve(resourceId, amount)"]
     R[Read resource recipes idx]
-    R --> HasRecipe{recipe exists and outputs id?}
+    R --> HasRecipe{recipe at idx?}
     HasRecipe -->|no| Leaf[Add to totals leaf node]
-    HasRecipe -->|yes| Cycle{stack has id?}
+    HasRecipe -->|yes| OutputOk{positive output for id?}
+    OutputOk -->|no| Err[Throw error]
+    OutputOk -->|yes| Cycle{stack has id?}
     Cycle -->|yes| LeafCycle[Add to totals leaf breaks cycle]
     Cycle -->|no| Push[stack add id]
     Push --> Children[For each input recurse with recipeIdx 0]

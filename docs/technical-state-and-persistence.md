@@ -6,21 +6,21 @@
 
 Canonical definitions live in [`assets/js/contracts/index.ts`](../assets/js/contracts/index.ts):
 
-- **`AppState`** — `resourceId`, `targetRate`, `production`, `productionExtraIds`, `productionDismissedIds`, `productionPresets`, `resultsSections` (which `<details>` panels are open).
+- **`AppState`** — `resourceId`, `targetRate`, `production`, `productionExtraIds`, `productionDismissedIds`, `productionPresets`, `resultsSections` (which results `<details>` panels are open: base / net / tree), `inputsSections` (which configuration `<details>` panels are open: target / production / presets).
 - **`PersistedEnvelope`** — `{ version, savedAt, data: AppState }`.
 
 ## In-memory state
 
 [`assets/js/app/state.ts`](../assets/js/app/state.ts) holds the current `AppState`. Mutators validate (for example unknown resource ids are rejected) and call **`persist()`**, which serializes via [`saveState`](../assets/js/app/persistence.ts) to **`localStorage`**.
 
-**`applyLoadedState`** (used after import or migration) merges with defaults, **sanitizes** against the current `resources` map (drops unknown ids), normalizes presets and `resultsSections`, then persists.
+**`applyLoadedState`** (used after import or migration) merges with defaults, **sanitizes** against the current `resources` map (drops unknown ids), normalizes presets, `resultsSections`, and `inputsSections`, then persists.
 
 ## Storage key and versioning
 
 - **Key:** `coi-calculator-state` (see [`persistence.ts`](../assets/js/app/persistence.ts)).
-- **`STATE_VERSION`:** current envelope version is **4**; every write stamps `version` and `savedAt`.
+- **`STATE_VERSION`:** current envelope version is **5**; every write stamps `version` and `savedAt`.
 
-Older stored JSON is **migrated** in `migrateEnvelopeToAppState` through versions **1 → 2 → 3 → 4** (adds fields like `productionExtraIds`, `productionDismissedIds`, `productionPresets`, `resultsSections`). If migration cannot reach the current version, load may clear storage and return null.
+Older stored JSON is **migrated** in `migrateEnvelopeToAppState` through versions **1 → 2 → 3 → 4 → 5**: **1→2** adds `productionExtraIds`, `resultsSections`, `inputsSections`, and related defaults; **2→3** adds `productionDismissedIds` and `productionPresets`; **3→4** normalizes `resultsSections`; **4→5** ensures `inputsSections` with defaults when absent. If migration cannot reach the current version, load may clear storage and return null.
 
 ## Export and import
 

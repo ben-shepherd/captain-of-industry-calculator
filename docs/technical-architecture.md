@@ -34,7 +34,7 @@ sequenceDiagram
 
 ## Persistence events
 
-`state.ts` dispatches a custom event on `window` after successful saves so the toolbar (for example **Reset** disabled state) can stay in sync—see `syncResetSavedDataButtonDisabled` in [`events.ts`](../assets/js/ui/events.ts).
+`state.ts` dispatches a custom event on `window` after successful saves so the toolbar (for example **Reset** disabled state) can stay in sync—see `syncResetSavedDataButtonDisabled` in [`events.ts`](../assets/js/ui/events.ts). Separately, **`inputsSections`** keeps configuration **`<details>`** open state aligned with persisted state—see `applyInputsSectionOpenStateFromStore` and `bindInputsSectionPersistence` in [`events.ts`](../assets/js/ui/events.ts).
 
 ## Related
 

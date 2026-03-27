@@ -29,6 +29,8 @@ Other useful commands:
 - `pnpm build` — typecheck and production build to `dist/`
 - `pnpm preview` — serve the production build locally
 - `pnpm test` — run the Vitest suite
+- `pnpm test:watch` — Vitest in watch mode
+- `pnpm typecheck` — `tsc --noEmit`
 
 ## Further reading
 
