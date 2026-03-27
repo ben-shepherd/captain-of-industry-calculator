@@ -17,6 +17,7 @@ import {
   wipeAllPersistedDataAndResetToDefaults,
   type ResultsSectionKey,
 } from "../app/state";
+import { hasPersistedStorage } from "../app/persistence";
 import { calculate } from "../calculator/service";
 import {
   matchResourcesForSearch,
@@ -62,6 +63,14 @@ export function applyResultsSectionOpenStateFromStore(): void {
     if (!el) continue;
     el.open = rs[key];
   }
+}
+
+/**
+ * Keep the Reset control in sync with whether localStorage holds app state.
+ * (Must match `window.dispatchEvent` in `persist()` — listen on `window`, not `document`.)
+ */
+export function syncResetSavedDataButtonDisabled(button: HTMLButtonElement): void {
+  button.disabled = !hasPersistedStorage();
 }
 
 /**
@@ -248,8 +257,8 @@ export function bindEvents(els: AppElements): void {
     updateResults(resultEls);
   });
 
-  document.addEventListener("coi-state-persisted", () => {
-    resetSavedDataButton.hidden = false;
+  window.addEventListener("coi-state-persisted", () => {
+    syncResetSavedDataButtonDisabled(resetSavedDataButton);
   });
 
   resetSavedDataButton.addEventListener("click", () => {
@@ -272,7 +281,7 @@ export function bindEvents(els: AppElements): void {
     productionPresetSelect.value = "";
     applyResultsSectionOpenStateFromStore();
     updateResults(resultEls);
-    resetSavedDataButton.hidden = true;
+    syncResetSavedDataButtonDisabled(resetSavedDataButton);
   });
 
   const productionClearAll = document.getElementById("production-clear-all");

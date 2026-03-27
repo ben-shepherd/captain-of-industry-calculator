@@ -1,7 +1,6 @@
-import { hasPersistedStorage } from './app/persistence';
 import { initState, getTargetRate } from './app/state';
 import { renderResourceOptions, updateResults } from './ui/controller';
-import { bindEvents } from './ui/events';
+import { bindEvents, syncResetSavedDataButtonDisabled } from './ui/events';
 
 document.addEventListener("DOMContentLoaded", () => {
   initState();
@@ -51,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   bindEvents(els);
 
-  els.resetSavedDataButton.hidden = !hasPersistedStorage();
+  syncResetSavedDataButtonDisabled(els.resetSavedDataButton);
 
   updateResults({
     totalsBody: els.totalsBody,
