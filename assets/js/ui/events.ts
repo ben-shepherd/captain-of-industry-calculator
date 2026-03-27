@@ -19,7 +19,6 @@ import {
   updateResults,
 } from "./controller";
 import type { ResultElements } from "./controller";
-import { debounce } from "./utils";
 import { isIdRequiredByCurrentTarget } from "./productionView";
 
 function setSearchListExpanded(input: HTMLInputElement, expanded: boolean): void {
@@ -66,8 +65,6 @@ export function bindEvents(els: AppElements): void {
     productionAddSelect: els.productionAddSelect,
     productionPresetSelect: els.productionPresetSelect,
   };
-
-  const debouncedUpdate = debounce(() => updateResults(resultEls), 120);
 
   const resourceSearchWrap = resourceSearchInput.closest(
     ".resource-search-wrap",
@@ -142,7 +139,7 @@ export function bindEvents(els: AppElements): void {
 
     if (valid) {
       setTargetRate(val);
-      debouncedUpdate();
+      updateResults(resultEls);
     }
   });
 
@@ -169,7 +166,7 @@ export function bindEvents(els: AppElements): void {
         updateResults(resultEls);
         return;
       }
-      debouncedUpdate();
+      updateResults(resultEls);
     }
   });
 
