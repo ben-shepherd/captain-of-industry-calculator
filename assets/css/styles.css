@@ -16,8 +16,8 @@
   --radius: 8px;
   --gap: 1.5rem;
   --layout-max-width: 960px;
-  --hero-banner-max: 520px;
-  --hero-logo-max: 420px;
+  --header-inner-max: min(100%, var(--layout-max-width));
+  --header-logo-max-h: 48px;
 }
 
 /* =========================
@@ -49,48 +49,85 @@ body {
    Layout
 ========================= */
 .app-header {
-  text-align: center;
   margin-bottom: var(--gap);
 }
 
-.hero-banner {
+.app-header-inner {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  max-width: min(90vw, var(--hero-banner-max));
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  max-width: var(--header-inner-max);
   margin-left: auto;
   margin-right: auto;
-  padding: 1.25rem var(--gap) var(--gap);
+  padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: var(--color-surface);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.app-brand-text {
+  text-align: left;
+  min-width: 0;
 }
 
 .app-logo {
   display: block;
-  max-width: min(90vw, var(--hero-logo-max));
-  width: 100%;
+  flex-shrink: 0;
+  max-height: var(--header-logo-max-h);
+  width: auto;
   height: auto;
-  margin-bottom: 0.85rem;
+  object-fit: contain;
 }
 
 .app-header h1 {
   color: var(--color-heading);
-  font-size: 1.75rem;
+  font-size: 1.15rem;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .subtitle {
   color: var(--color-balanced);
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  margin-top: 0.15rem;
+  line-height: 1.35;
 }
 
-.app-header-reset {
-  margin-top: 0.75rem;
+.app-toolbar {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .app-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-brand {
+    justify-content: flex-start;
+  }
+
+  .app-toolbar {
+    justify-content: flex-start;
+    padding-top: 0.25rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
+  }
 }
 
 .app-main {
@@ -104,8 +141,7 @@ body {
 @media (min-width: 1200px) {
   :root {
     --layout-max-width: 1280px;
-    --hero-banner-max: 640px;
-    --hero-logo-max: 520px;
+    --header-logo-max-h: 52px;
   }
 }
 

@@ -8,26 +8,30 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="hero-banner">
-      <img
-        src="./assets/img/logo.png"
-        alt="Captain of Industry"
-        class="app-logo"
-        width="420"
-      />
-      <h1>Resource Calculator</h1>
-      <p class="subtitle">Production chains, base resources, and net flow</p>
-    </div>
-    <div class="app-header-reset">
-      <button
-        type="button"
-        id="reset-saved-data"
-        class="btn btn-secondary"
-        disabled
-        aria-label="Reset all saved data for this app"
-      >
-        Reset
-      </button>
+    <div class="app-header-inner">
+      <div class="app-brand">
+        <img
+          src="./assets/img/logo.png"
+          alt="Captain of Industry"
+          class="app-logo"
+          width="200"
+        />
+        <div class="app-brand-text">
+          <h1>Resource Calculator</h1>
+          <p class="subtitle">Production chains, base resources, and net flow</p>
+        </div>
+      </div>
+      <nav class="app-toolbar" aria-label="App actions">
+        <button
+          type="button"
+          id="reset-saved-data"
+          class="btn btn-secondary"
+          disabled
+          aria-label="Reset all saved data for this app"
+        >
+          Reset
+        </button>
+      </nav>
     </div>
   </header>
 
