@@ -33,33 +33,41 @@ function isValidTargetRate(rate: unknown): rate is number {
 }
 
 /**
+ * Replace in-memory state from a persisted snapshot, validate against current
+ * resource definitions, and persist to localStorage.
+ */
+export function applyLoadedState(saved: AppState): void {
+  state = { ...DEFAULT_STATE, ...saved };
+  if (!resources[state.resourceId]) {
+    state.resourceId = DEFAULT_STATE.resourceId;
+  }
+  if (!isValidTargetRate(state.targetRate)) {
+    state.targetRate = DEFAULT_STATE.targetRate;
+  }
+  const prod: Record<string, number> = {};
+  for (const [id, amt] of Object.entries(state.production)) {
+    if (resources[id]) prod[id] = amt;
+  }
+  state.production = prod;
+  state.productionExtraIds = (state.productionExtraIds ?? []).filter(
+    (id) => resources[id],
+  );
+  state.productionDismissedIds = (state.productionDismissedIds ?? []).filter(
+    (id) => resources[id],
+  );
+  state.productionPresets = sanitizePresets(state.productionPresets ?? []);
+  state.resultsSections = normalizeResultsSections(state.resultsSections);
+  persist();
+}
+
+/**
  * Initialise state from localStorage (if available) or use defaults.
  * Call once at app startup.
  */
 export function initState(): void {
   const saved = loadState();
   if (saved) {
-    state = { ...DEFAULT_STATE, ...saved };
-    if (!resources[state.resourceId]) {
-      state.resourceId = DEFAULT_STATE.resourceId;
-    }
-    if (!isValidTargetRate(state.targetRate)) {
-      state.targetRate = DEFAULT_STATE.targetRate;
-    }
-    const prod: Record<string, number> = {};
-    for (const [id, amt] of Object.entries(state.production)) {
-      if (resources[id]) prod[id] = amt;
-    }
-    state.production = prod;
-    state.productionExtraIds = (state.productionExtraIds ?? []).filter(
-      (id) => resources[id],
-    );
-    state.productionDismissedIds = (state.productionDismissedIds ?? []).filter(
-      (id) => resources[id],
-    );
-    state.productionPresets = sanitizePresets(state.productionPresets ?? []);
-    state.resultsSections = normalizeResultsSections(state.resultsSections);
-    persist();
+    applyLoadedState(saved);
   }
 }
 

@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
+  buildExportJson,
+  parsePersistedEnvelope,
   saveState,
   loadState,
   clearState,
@@ -212,5 +214,54 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
     });
+  });
+});
+
+describe("buildExportJson + parsePersistedEnvelope", () => {
+  it("round-trips AppState data", () => {
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      production: { iron: 3 },
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+    const json = buildExportJson(state);
+    expect(parsePersistedEnvelope(json)).toEqual(state);
+  });
+
+  it("migrates v1 JSON string to v4 AppState", () => {
+    const raw = JSON.stringify({
+      version: 1,
+      savedAt: Date.now(),
+      data: {
+        resourceId: "steel",
+        targetRate: 12,
+        production: { iron: 5 },
+      },
+    });
+    expect(parsePersistedEnvelope(raw)).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: { iron: 5 },
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+    });
+  });
+
+  it("returns null for invalid JSON without clearing localStorage", () => {
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+    saveState(state);
+    expect(parsePersistedEnvelope("not-json{{{")).toBeNull();
+    expect(loadState()).toEqual(state);
+    expect(hasPersistedStorage()).toBe(true);
   });
 });

@@ -14,10 +14,16 @@ import {
   clearAllProductionRates,
   getResourceId,
   getTargetRate,
+  getSnapshot,
+  applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
   type ResultsSectionKey,
 } from "../app/state";
-import { hasPersistedStorage } from "../app/persistence";
+import {
+  buildExportJson,
+  hasPersistedStorage,
+  parsePersistedEnvelope,
+} from "../app/persistence";
 import { calculate } from "../calculator/service";
 import {
   matchResourcesForSearch,
@@ -44,6 +50,9 @@ export interface AppElements extends ResultElements {
   productionPresetDelete: HTMLButtonElement;
   productionPresetName: HTMLInputElement;
   productionPresetSave: HTMLButtonElement;
+  exportSavedDataButton: HTMLButtonElement;
+  importSavedDataButton: HTMLButtonElement;
+  importSavedDataInput: HTMLInputElement;
   resetSavedDataButton: HTMLButtonElement;
 }
 
@@ -90,6 +99,9 @@ export function bindEvents(els: AppElements): void {
     productionPresetDelete,
     productionPresetName,
     productionPresetSave,
+    exportSavedDataButton,
+    importSavedDataButton,
+    importSavedDataInput,
     resetSavedDataButton,
   } = els;
   const resultEls: ResultElements = {
@@ -104,6 +116,21 @@ export function bindEvents(els: AppElements): void {
   const resourceSearchWrap = resourceSearchInput.closest(
     ".resource-search-wrap",
   ) as HTMLElement;
+
+  function refreshAfterStateRestore(): void {
+    renderResourceOptions(
+      resourceSelect,
+      resourceSearchInput,
+      resourceSearchResults,
+    );
+    targetRateInput.value = String(getTargetRate());
+    targetRateInput.classList.remove("input-invalid");
+    productionPresetName.value = "";
+    productionPresetSelect.value = "";
+    applyResultsSectionOpenStateFromStore();
+    updateResults(resultEls);
+    syncResetSavedDataButtonDisabled(resetSavedDataButton);
+  }
 
   function applyTargetResource(id: string): void {
     resourceSelect.value = id;
@@ -261,6 +288,57 @@ export function bindEvents(els: AppElements): void {
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
   });
 
+  exportSavedDataButton.addEventListener("click", () => {
+    const json = buildExportJson(getSnapshot());
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const d = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const filename = `coi-calculator-export-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.json`;
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  importSavedDataButton.addEventListener("click", () => {
+    importSavedDataInput.click();
+  });
+
+  importSavedDataInput.addEventListener("change", () => {
+    const file = importSavedDataInput.files?.[0];
+    importSavedDataInput.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = typeof reader.result === "string" ? reader.result : "";
+      const parsed = parsePersistedEnvelope(text);
+      if (!parsed) {
+        window.alert(
+          "Could not read that file. Make sure it is valid JSON exported from this app.",
+        );
+        return;
+      }
+      if (
+        !window.confirm(
+          "Replace all current saved data with the contents of this file? Your current configuration, production rates, presets, and panel settings will be overwritten.",
+        )
+      ) {
+        return;
+      }
+      applyLoadedState(parsed);
+      refreshAfterStateRestore();
+    };
+    reader.onerror = () => {
+      window.alert("Could not read the selected file.");
+    };
+    reader.readAsText(file);
+  });
+
   resetSavedDataButton.addEventListener("click", () => {
     if (
       !window.confirm(
@@ -270,18 +348,7 @@ export function bindEvents(els: AppElements): void {
       return;
     }
     wipeAllPersistedDataAndResetToDefaults();
-    renderResourceOptions(
-      resourceSelect,
-      resourceSearchInput,
-      resourceSearchResults,
-    );
-    targetRateInput.value = String(getTargetRate());
-    targetRateInput.classList.remove("input-invalid");
-    productionPresetName.value = "";
-    productionPresetSelect.value = "";
-    applyResultsSectionOpenStateFromStore();
-    updateResults(resultEls);
-    syncResetSavedDataButtonDisabled(resetSavedDataButton);
+    refreshAfterStateRestore();
   });
 
   const productionClearAll = document.getElementById("production-clear-all");

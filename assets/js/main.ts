@@ -33,6 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
     productionPresetSave: document.getElementById(
       "production-preset-save",
     ) as HTMLButtonElement,
+    exportSavedDataButton: document.getElementById(
+      "export-saved-data",
+    ) as HTMLButtonElement,
+    importSavedDataButton: document.getElementById(
+      "import-saved-data",
+    ) as HTMLButtonElement,
+    importSavedDataInput: document.getElementById(
+      "import-saved-data-input",
+    ) as HTMLInputElement,
     resetSavedDataButton: document.getElementById(
       "reset-saved-data",
     ) as HTMLButtonElement,

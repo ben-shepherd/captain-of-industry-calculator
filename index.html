@@ -24,6 +24,29 @@
       <nav class="app-toolbar" aria-label="App actions">
         <button
           type="button"
+          id="export-saved-data"
+          class="btn btn-secondary"
+          aria-label="Export saved data as a JSON file"
+        >
+          Export
+        </button>
+        <button
+          type="button"
+          id="import-saved-data"
+          class="btn btn-secondary"
+          aria-label="Import saved data from a JSON file"
+        >
+          Import
+        </button>
+        <input
+          type="file"
+          id="import-saved-data-input"
+          accept="application/json,.json"
+          hidden
+          aria-hidden="true"
+        />
+        <button
+          type="button"
           id="reset-saved-data"
           class="btn btn-secondary"
           disabled

@@ -28,6 +28,37 @@ export function saveState(state: AppState): void {
 }
 
 /**
+ * JSON for an external backup file (same envelope shape as localStorage).
+ */
+export function buildExportJson(data: AppState): string {
+  const envelope: PersistedEnvelope = {
+    version: STATE_VERSION,
+    savedAt: Date.now(),
+    data,
+  };
+  return JSON.stringify(envelope, null, 2);
+}
+
+/**
+ * Parse a JSON string (from a file or elsewhere) into {@link AppState}.
+ * Does not read or write localStorage. On failure, returns null without side effects.
+ */
+export function parsePersistedEnvelope(raw: string): AppState | null {
+  try {
+    const envelope = JSON.parse(raw) as Partial<PersistedEnvelope> | null;
+    if (!envelope || typeof envelope.version !== "number") return null;
+
+    if (envelope.version < STATE_VERSION) {
+      return migrateEnvelopeToAppState(envelope as PersistedEnvelope);
+    }
+
+    return envelope.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Read and return the persisted state, or null if nothing usable exists.
  */
 export function loadState(): AppState | null {
@@ -40,7 +71,13 @@ export function loadState(): AppState | null {
     if (!envelope || typeof envelope.version !== "number") return null;
 
     if (envelope.version < STATE_VERSION) {
-      return migrate(envelope as PersistedEnvelope);
+      const data = migrateEnvelopeToAppState(envelope as PersistedEnvelope);
+      if (!data) {
+        clearState();
+        return null;
+      }
+      saveState(data);
+      return data;
     }
 
     return envelope.data ?? null;
@@ -73,10 +110,13 @@ export function hasPersistedStorage(): boolean {
 }
 
 /**
- * Migrate an older envelope to the current version.
- * Add migration cases as STATE_VERSION increments.
+ * Migrate an older envelope to the current {@link AppState} in memory only.
+ * Does not read or write localStorage.
  */
-function migrate(envelope: PersistedEnvelope): AppState | null {
+export function migrateEnvelopeToAppState(
+  envelope: PersistedEnvelope,
+): AppState | null {
+  const originalVersion = envelope.version;
   let { version, data } = envelope;
   if (!data) return null;
 
@@ -131,12 +171,10 @@ function migrate(envelope: PersistedEnvelope): AppState | null {
 
   if (version !== STATE_VERSION) {
     console.warn(
-      `Unable to migrate state from v${envelope.version} to v${STATE_VERSION}. Discarding.`,
+      `Unable to migrate state from v${originalVersion} to v${STATE_VERSION}. Discarding.`,
     );
-    clearState();
     return null;
   }
 
-  saveState(data);
   return data;
 }
