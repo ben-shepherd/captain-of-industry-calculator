@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   els.targetRateInput.value = String(getTargetRate());
 
   bindEvents(els);
+
   updateResults({
     totalsBody: els.totalsBody,
     treeList: els.treeList,

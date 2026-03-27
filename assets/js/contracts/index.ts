@@ -82,6 +82,13 @@ export interface ProductionPreset {
   isBuiltin?: boolean;
 }
 
+/** Which results panel sections are expanded (`<details open>`). */
+export interface ResultsSectionsState {
+  base: boolean;
+  net: boolean;
+  tree: boolean;
+}
+
 export interface AppState {
   resourceId: string;
   targetRate: number;
@@ -92,6 +99,8 @@ export interface AppState {
   productionDismissedIds: string[];
   /** Saved production + extra-id sets. */
   productionPresets: ProductionPreset[];
+  /** Collapsible results sections (Base / Net Flow / Dependency Tree). */
+  resultsSections: ResultsSectionsState;
 }
 
 export interface PersistedEnvelope {

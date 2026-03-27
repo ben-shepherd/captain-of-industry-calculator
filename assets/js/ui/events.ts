@@ -9,6 +9,9 @@ import {
   applyProductionPreset,
   saveProductionPreset,
   deleteProductionPreset,
+  getResultsSections,
+  setResultsSectionExpanded,
+  type ResultsSectionKey,
 } from "../app/state";
 import {
   matchResourcesForSearch,
@@ -70,7 +73,7 @@ export function bindEvents(els: AppElements): void {
     ".resource-search-wrap",
   ) as HTMLElement;
 
-  function selectTargetResourceFromSearch(id: string): void {
+  function applyTargetResource(id: string): void {
     resourceSelect.value = id;
     resourceSearchInput.value = "";
     refreshResourceSearchResults(resourceSearchResults, "");
@@ -105,7 +108,7 @@ export function bindEvents(els: AppElements): void {
     const first = matchResourcesForSearch(q)[0];
     if (!first) return;
     e.preventDefault();
-    selectTargetResourceFromSearch(first.id);
+    applyTargetResource(first.id);
   });
 
   resourceSearchResults.addEventListener("mousedown", (e: MouseEvent) => {
@@ -114,7 +117,7 @@ export function bindEvents(els: AppElements): void {
     ) as HTMLLIElement | null;
     if (!li?.dataset.resourceId) return;
     e.preventDefault();
-    selectTargetResourceFromSearch(li.dataset.resourceId);
+    applyTargetResource(li.dataset.resourceId);
   });
 
   document.addEventListener("click", (e: MouseEvent) => {
@@ -125,11 +128,7 @@ export function bindEvents(els: AppElements): void {
   });
 
   resourceSelect.addEventListener("change", () => {
-    resourceSearchInput.value = "";
-    refreshResourceSearchResults(resourceSearchResults, "");
-    setSearchListExpanded(resourceSearchInput, false);
-    setResourceId(resourceSelect.value);
-    updateResults(resultEls);
+    applyTargetResource(resourceSelect.value);
   });
 
   targetRateInput.addEventListener("input", () => {
@@ -175,6 +174,13 @@ export function bindEvents(els: AppElements): void {
   });
 
   productionFields.addEventListener("click", (e: Event) => {
+    const targetBtn = (e.target as HTMLElement).closest(
+      "button[data-production-target]",
+    ) as HTMLButtonElement | null;
+    if (targetBtn?.dataset.productionTarget) {
+      applyTargetResource(targetBtn.dataset.productionTarget);
+      return;
+    }
     const t = (e.target as HTMLElement).closest(
       "button[data-remove-resource]",
     ) as HTMLButtonElement | null;
@@ -217,5 +223,38 @@ export function bindEvents(els: AppElements): void {
     saveProductionPreset(productionPresetName.value);
     productionPresetName.value = "";
     updateResults(resultEls);
+  });
+
+  const panelResults = document.querySelector(
+    ".panel-results",
+  ) as HTMLElement | null;
+  if (panelResults) {
+    bindResultsSectionPersistence(panelResults);
+  }
+}
+
+const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
+  "results-section-base": "base",
+  "results-section-net": "net",
+  "results-section-tree": "tree",
+};
+
+/**
+ * Apply saved expansion to `<details>` and persist toggles.
+ */
+function bindResultsSectionPersistence(panelResults: HTMLElement): void {
+  const rs = getResultsSections();
+  for (const [id, key] of Object.entries(RESULTS_SECTION_IDS)) {
+    const el = document.getElementById(id) as HTMLDetailsElement | null;
+    if (!el) continue;
+    el.open = rs[key];
+  }
+
+  panelResults.addEventListener("toggle", (e: Event) => {
+    const t = e.target;
+    if (!(t instanceof HTMLDetailsElement)) return;
+    const key = RESULTS_SECTION_IDS[t.id];
+    if (!key) return;
+    setResultsSectionExpanded(key, t.open);
   });
 }

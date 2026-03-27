@@ -21,9 +21,16 @@ beforeEach(() => {
   vi.stubGlobal("localStorage", stub);
 });
 
-const emptyV3 = {
+const defaultResultsSections: AppState["resultsSections"] = {
+  base: true,
+  net: true,
+  tree: true,
+};
+
+const emptyV4 = {
   productionDismissedIds: [] as string[],
   productionPresets: [] as AppState["productionPresets"],
+  resultsSections: { ...defaultResultsSections },
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -33,7 +40,7 @@ describe("saveState + loadState round-trip", () => {
       targetRate: 12,
       production: {},
       productionExtraIds: [],
-      ...emptyV3,
+      ...emptyV4,
     };
     saveState(state);
     expect(loadState()).toEqual(state);
@@ -45,14 +52,14 @@ describe("saveState + loadState round-trip", () => {
       targetRate: 1,
       production: {},
       productionExtraIds: [],
-      ...emptyV3,
+      ...emptyV4,
     };
     const second: AppState = {
       resourceId: "b",
       targetRate: 2,
       production: {},
       productionExtraIds: [],
-      ...emptyV3,
+      ...emptyV4,
     };
     saveState(first);
     saveState(second);
@@ -86,7 +93,7 @@ describe("clearState", () => {
       targetRate: 1,
       production: {},
       productionExtraIds: [],
-      ...emptyV3,
+      ...emptyV4,
     };
     saveState(state);
     clearState();
@@ -95,7 +102,7 @@ describe("clearState", () => {
 });
 
 describe("migration", () => {
-  it("migrates v1 envelope to v3 with new fields", () => {
+  it("migrates v1 envelope to v4 with new fields", () => {
     localStorage.setItem(
       "coi-calculator-state",
       JSON.stringify({
@@ -115,10 +122,11 @@ describe("migration", () => {
       productionExtraIds: [],
       productionDismissedIds: [],
       productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
     });
   });
 
-  it("migrates v2 envelope to v3", () => {
+  it("migrates v2 envelope to v4", () => {
     localStorage.setItem(
       "coi-calculator-state",
       JSON.stringify({
@@ -139,6 +147,34 @@ describe("migration", () => {
       productionExtraIds: ["iron"],
       productionDismissedIds: [],
       productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+    });
+  });
+
+  it("migrates v3 envelope without resultsSections to v4", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 3,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: {},
+          productionExtraIds: [],
+          productionDismissedIds: [],
+          productionPresets: [],
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
     });
   });
 });

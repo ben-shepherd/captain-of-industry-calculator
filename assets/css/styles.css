@@ -90,6 +90,53 @@ body {
 }
 
 /* =========================
+   Results panel (collapsible sections)
+========================= */
+.panel-results .results-section {
+  margin-bottom: 0.5rem;
+}
+
+.panel-results .results-section:last-child {
+  margin-bottom: 0;
+}
+
+.panel-results .results-section-summary {
+  color: var(--color-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  padding: 0.15rem 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.panel-results .results-section-summary::-webkit-details-marker {
+  display: none;
+}
+
+.panel-results .results-section-summary::before {
+  content: "";
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin-right: 0.5rem;
+  border-right: 2px solid var(--color-balanced);
+  border-bottom: 2px solid var(--color-balanced);
+  transform: rotate(-45deg);
+  vertical-align: middle;
+  transition: transform 0.15s ease;
+}
+
+.panel-results .results-section[open] .results-section-summary::before {
+  transform: rotate(45deg);
+  margin-bottom: 0.1em;
+}
+
+.panel-results .results-section-body {
+  padding-left: 0.15rem;
+}
+
+/* =========================
    Form Fields
 ========================= */
 .field {
@@ -196,10 +243,35 @@ input.input-invalid {
   margin-bottom: 0.4rem;
 }
 
-.production-row label {
+.production-row-target {
   flex: 1;
+  margin: 0;
+  padding: 0.15rem 0.35rem;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  font: inherit;
   font-size: 0.85rem;
   color: var(--color-balanced);
+  text-align: left;
+  cursor: pointer;
+}
+
+.production-row-target:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+.production-row-target:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.production-row-target[aria-pressed="true"] {
+  color: var(--color-text);
+  font-weight: 600;
+  border-left: 3px solid var(--color-accent);
+  padding-left: calc(0.35rem - 3px);
 }
 
 .production-row input {

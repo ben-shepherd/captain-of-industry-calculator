@@ -3,6 +3,7 @@ import {
   getProduction,
   getProductionExtraIds,
   getProductionDismissedIds,
+  getResourceId,
 } from "../app/state";
 
 let lastMembershipKey = "";
@@ -67,7 +68,7 @@ export function refreshProductionFields(
     container.innerHTML = buildRowsHtml(ids);
     return true;
   }
-  syncProductionInputValues(container);
+  syncProductionRowUi(container);
   return false;
 }
 
@@ -83,19 +84,39 @@ function syncProductionInputValues(container: HTMLElement): void {
   }
 }
 
+function syncProductionTargetButtons(container: HTMLElement): void {
+  const current = getResourceId();
+  for (const btn of container.querySelectorAll<HTMLButtonElement>(
+    "button[data-production-target]",
+  )) {
+    const id = btn.dataset.productionTarget;
+    if (id) btn.setAttribute("aria-pressed", id === current ? "true" : "false");
+  }
+}
+
+function syncProductionRowUi(container: HTMLElement): void {
+  syncProductionInputValues(container);
+  syncProductionTargetButtons(container);
+}
+
 function buildRowsHtml(ids: string[]): string {
   const production = getProduction();
+  const currentTarget = getResourceId();
   return ids
     .map((id) => {
       const label = resources[id]?.label ?? id;
       const val = production[id] ?? "";
       const strVal = val === "" ? "" : String(val);
+      const pressed = id === currentTarget ? "true" : "false";
       return (
         `<div class="production-row">`
-        + `<label for="prod-${id}">${label}</label>`
+        + `<button type="button" class="production-row-target" `
+        + `data-production-target="${id}" aria-pressed="${pressed}" `
+        + `aria-label="Set ${label} as target resource">${label}</button>`
         + `<input id="prod-${id}" type="number" min="0" step="any" `
         + `data-resource-id="${id}" value="${strVal}" `
-        + `placeholder="0" />`
+        + `placeholder="0" `
+        + `aria-label="Production rate (per min) for ${label}" />`
         + `<button type="button" class="production-row-remove" `
         + `data-remove-resource="${id}" aria-label="Remove ${label}">×</button>`
         + `</div>`

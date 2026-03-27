@@ -1,7 +1,7 @@
 import { resources } from '../data/resources';
 import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
 import { loadState, saveState } from './persistence';
-import type { AppState, ProductionPreset } from '../contracts';
+import type { AppState, ProductionPreset, ResultsSectionsState } from '../contracts';
 
 /**
  * Central application state.
@@ -10,6 +10,12 @@ import type { AppState, ProductionPreset } from '../contracts';
  * auto-persist to localStorage on every mutation.
  */
 
+const DEFAULT_RESULTS_SECTIONS: ResultsSectionsState = {
+  base: true,
+  net: true,
+  tree: true,
+};
+
 const DEFAULT_STATE: AppState = {
   resourceId: Object.keys(resources)[0]!,
   targetRate: 12,
@@ -17,6 +23,7 @@ const DEFAULT_STATE: AppState = {
   productionExtraIds: [],
   productionDismissedIds: [],
   productionPresets: [],
+  resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -51,8 +58,19 @@ export function initState(): void {
       (id) => resources[id],
     );
     state.productionPresets = sanitizePresets(state.productionPresets ?? []);
+    state.resultsSections = normalizeResultsSections(state.resultsSections);
     persist();
   }
+}
+
+function normalizeResultsSections(
+  rs: AppState["resultsSections"] | undefined,
+): ResultsSectionsState {
+  return {
+    base: rs?.base ?? true,
+    net: rs?.net ?? true,
+    tree: rs?.tree ?? true,
+  };
 }
 
 export function getResourceId(): string {
@@ -188,6 +206,24 @@ export function deleteProductionPreset(presetId: string): void {
   persist();
 }
 
+export type ResultsSectionKey = keyof ResultsSectionsState;
+
+export function getResultsSections(): ResultsSectionsState {
+  return { ...state.resultsSections };
+}
+
+export function setResultsSectionExpanded(
+  key: ResultsSectionKey,
+  expanded: boolean,
+): void {
+  if (state.resultsSections[key] === expanded) return;
+  state.resultsSections = {
+    ...state.resultsSections,
+    [key]: expanded,
+  };
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -204,6 +240,7 @@ export function getSnapshot(): AppState {
       production: { ...p.production },
       productionExtraIds: [...p.productionExtraIds],
     })),
+    resultsSections: { ...state.resultsSections },
   };
 }
 
@@ -214,6 +251,7 @@ export function resetState(): void {
     productionExtraIds: [],
     productionDismissedIds: [],
     productionPresets: [],
+    resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
   };
   persist();
 }

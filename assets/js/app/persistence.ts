@@ -8,7 +8,7 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 3;
+const STATE_VERSION = 4;
 
 /**
  * Write the current application state to localStorage.
@@ -82,6 +82,7 @@ function migrate(envelope: PersistedEnvelope): AppState | null {
         : [],
       productionDismissedIds: [],
       productionPresets: [],
+      resultsSections: { base: true, net: true, tree: true },
     };
     version = 2;
   }
@@ -100,7 +101,21 @@ function migrate(envelope: PersistedEnvelope): AppState | null {
         ? d.productionPresets
         : [],
     };
-    version = STATE_VERSION;
+    version = 3;
+  }
+
+  if (version === 3) {
+    const d = data as AppState & { resultsSections?: AppState["resultsSections"] };
+    const rs = d.resultsSections;
+    data = {
+      ...d,
+      resultsSections: {
+        base: rs?.base ?? true,
+        net: rs?.net ?? true,
+        tree: rs?.tree ?? true,
+      },
+    };
+    version = 4;
   }
 
   if (version !== STATE_VERSION) {

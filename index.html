@@ -70,34 +70,46 @@
 
     <!-- Results -->
     <section class="panel panel-results">
-      <h2>Base Resources Required</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Amount</th>
-            <th>Unit</th>
-          </tr>
-        </thead>
-        <tbody id="totals-body"></tbody>
-      </table>
+      <details class="results-section" id="results-section-base" open>
+        <summary class="results-section-summary">Base Resources Required</summary>
+        <div class="results-section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Resource</th>
+                <th>Amount</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody id="totals-body"></tbody>
+          </table>
+        </div>
+      </details>
 
-      <h2>Dependency Tree</h2>
-      <div id="tree-list" class="tree-container"></div>
+      <details class="results-section" id="results-section-net" open>
+        <summary class="results-section-summary">Net Flow</summary>
+        <div class="results-section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Resource</th>
+                <th>Required</th>
+                <th>Production</th>
+                <th>Net</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="net-body"></tbody>
+          </table>
+        </div>
+      </details>
 
-      <h2>Net Flow</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Required</th>
-            <th>Production</th>
-            <th>Net</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="net-body"></tbody>
-      </table>
+      <details class="results-section" id="results-section-tree" open>
+        <summary class="results-section-summary">Dependency Tree</summary>
+        <div class="results-section-body">
+          <div id="tree-list" class="tree-container"></div>
+        </div>
+      </details>
     </section>
   </main>
 
