@@ -18,6 +18,11 @@ describe("resources dataset", () => {
     expect(resource.unit.length).toBeGreaterThan(0);
   });
 
+  it.each(entries)("%s has a wikiUrl", (_id, resource) => {
+    expect(typeof resource.wikiUrl).toBe("string");
+    expect(resource.wikiUrl).toMatch(/^https:\/\/wiki\.coigame\.com\//);
+  });
+
   it.each(entries)("%s has a recipes array", (_id, resource) => {
     expect(Array.isArray(resource.recipes)).toBe(true);
   });
@@ -33,12 +38,22 @@ describe("resources dataset", () => {
             expect(recipe.name.length).toBeGreaterThan(0);
           });
 
-          it("has a positive numeric output", () => {
-            expect(typeof recipe.output).toBe("number");
-            expect(recipe.output).toBeGreaterThan(0);
+          it("has building and durationSec", () => {
+            expect(typeof recipe.building).toBe("string");
+            expect(recipe.building.length).toBeGreaterThan(0);
+            expect(typeof recipe.durationSec).toBe("number");
+            expect(recipe.durationSec).toBeGreaterThan(0);
           });
 
-          it("has an inputs object with positive values", () => {
+          it("lists this resource in outputs with a positive amount", () => {
+            expect(typeof recipe.outputs).toBe("object");
+            expect(recipe.outputs).not.toBeNull();
+            const out = recipe.outputs[id];
+            expect(typeof out).toBe("number");
+            expect(out).toBeGreaterThan(0);
+          });
+
+          it("has an inputs object with positive values (or empty for source-less recipes)", () => {
             expect(typeof recipe.inputs).toBe("object");
             expect(recipe.inputs).not.toBeNull();
 

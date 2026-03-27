@@ -17,6 +17,10 @@ const DEFAULT_STATE: AppState = {
 
 let state: AppState = { ...DEFAULT_STATE };
 
+function isValidTargetRate(rate: unknown): rate is number {
+  return typeof rate === "number" && rate > 0 && isFinite(rate);
+}
+
 /**
  * Initialise state from localStorage (if available) or use defaults.
  * Call once at app startup.
@@ -25,6 +29,18 @@ export function initState(): void {
   const saved = loadState();
   if (saved) {
     state = { ...DEFAULT_STATE, ...saved };
+    if (!resources[state.resourceId]) {
+      state.resourceId = DEFAULT_STATE.resourceId;
+    }
+    if (!isValidTargetRate(state.targetRate)) {
+      state.targetRate = DEFAULT_STATE.targetRate;
+    }
+    const prod: Record<string, number> = {};
+    for (const [id, amt] of Object.entries(state.production)) {
+      if (resources[id]) prod[id] = amt;
+    }
+    state.production = prod;
+    persist();
   }
 }
 
@@ -43,7 +59,7 @@ export function getTargetRate(): number {
 }
 
 export function setTargetRate(rate: number): void {
-  if (typeof rate !== "number" || rate <= 0 || !isFinite(rate)) return;
+  if (!isValidTargetRate(rate)) return;
   state.targetRate = rate;
   persist();
 }

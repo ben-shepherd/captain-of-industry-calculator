@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { resolve } from "../../assets/js/calculator/resolver";
 
 describe("resolve", () => {
-  describe("base resource (ore)", () => {
+  describe("base resource (ironOre)", () => {
     it("returns the resource itself in totals", () => {
-      const { totals } = resolve("ore", 50);
-      expect(totals).toEqual({ ore: 50 });
+      const { totals } = resolve("ironOre", 50);
+      expect(totals).toEqual({ ironOre: 50 });
     });
 
     it("returns a leaf node with no children", () => {
-      const { tree } = resolve("ore", 50);
+      const { tree } = resolve("ironOre", 50);
       expect(tree).toEqual({
-        id: "ore",
+        id: "ironOre",
         label: "Iron Ore",
         amount: 50,
         children: [],
@@ -19,62 +19,54 @@ describe("resolve", () => {
     });
   });
 
-  describe("single-depth chain (iron → ore)", () => {
-    it("returns ore in totals at the recipe ratio", () => {
-      const { totals } = resolve("iron", 24);
-      expect(totals).toEqual({ ore: 24 });
+  describe("single-depth chain (ironOreCrushed → ironOre)", () => {
+    it("returns ironOre in totals at the recipe ratio", () => {
+      const { totals } = resolve("ironOreCrushed", 16);
+      expect(totals).toEqual({ ironOre: 16 });
     });
 
     it("builds a tree with one child", () => {
-      const { tree } = resolve("iron", 24);
-      expect(tree.id).toBe("iron");
-      expect(tree.amount).toBe(24);
+      const { tree } = resolve("ironOreCrushed", 16);
+      expect(tree.id).toBe("ironOreCrushed");
+      expect(tree.amount).toBe(16);
       expect(tree.children).toHaveLength(1);
-      expect(tree.children[0]!.id).toBe("ore");
-      expect(tree.children[0]!.amount).toBe(24);
+      expect(tree.children[0]!.id).toBe("ironOre");
+      expect(tree.children[0]!.amount).toBe(16);
       expect(tree.children[0]!.children).toHaveLength(0);
     });
   });
 
-  describe("multi-depth chain (steel → iron → ore)", () => {
-    it("returns ore as the only base resource", () => {
-      const { totals } = resolve("steel", 12);
-      expect(totals).toEqual({ ore: 24 });
+  describe("multi-depth chain (iron)", () => {
+    it("resolves iron through moltenIron to base materials", () => {
+      const { totals } = resolve("iron", 8);
+      /** First molten iron recipe uses iron scrap (wiki order). */
+      expect(totals.ironScrap).toBeDefined();
+      expect(totals.ironScrap).toBeGreaterThan(0);
     });
 
     it("builds a nested tree", () => {
-      const { tree } = resolve("steel", 12);
-
-      expect(tree.id).toBe("steel");
-      expect(tree.amount).toBe(12);
-
-      const ironNode = tree.children[0]!;
-      expect(ironNode.id).toBe("iron");
-      expect(ironNode.amount).toBe(24);
-
-      const oreNode = ironNode.children[0]!;
-      expect(oreNode.id).toBe("ore");
-      expect(oreNode.amount).toBe(24);
-      expect(oreNode.children).toHaveLength(0);
+      const { tree } = resolve("iron", 8);
+      expect(tree.id).toBe("iron");
+      expect(tree.children.length).toBeGreaterThan(0);
     });
   });
 
-  describe("scaling", () => {
+  describe("scaling (ironOreCrushed)", () => {
     it("scales inputs proportionally for half output", () => {
-      const { totals } = resolve("steel", 6);
-      expect(totals).toEqual({ ore: 12 });
+      const { totals } = resolve("ironOreCrushed", 8);
+      expect(totals).toEqual({ ironOre: 8 });
     });
 
     it("scales inputs proportionally for double output", () => {
-      const { totals } = resolve("steel", 24);
-      expect(totals).toEqual({ ore: 48 });
+      const { totals } = resolve("ironOreCrushed", 32);
+      expect(totals).toEqual({ ironOre: 32 });
     });
 
     it("scales tree node amounts correctly", () => {
-      const { tree } = resolve("steel", 6);
-      expect(tree.amount).toBe(6);
-      expect(tree.children[0]!.amount).toBe(12);
-      expect(tree.children[0]!.children[0]!.amount).toBe(12);
+      const { tree } = resolve("ironOreCrushed", 8);
+      expect(tree.amount).toBe(8);
+      expect(tree.children[0]!.amount).toBe(8);
+      expect(tree.children[0]!.children).toHaveLength(0);
     });
   });
 

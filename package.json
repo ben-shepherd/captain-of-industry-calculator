@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "scrape:wiki": "node scripts/scrape-recipes.mjs",
+    "build:resources": "node scripts/build-resources-from-wiki.mjs"
   },
   "devDependencies": {
     "typescript": "^6.0.2",

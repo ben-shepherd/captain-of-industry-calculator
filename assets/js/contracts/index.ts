@@ -1,12 +1,18 @@
 export interface Recipe {
   name: string;
-  output: number;
+  building: string;
+  durationSec: number;
+  /** Quantities consumed per recipe cycle */
   inputs: Record<string, number>;
+  /** Quantities produced per recipe cycle (includes byproducts) */
+  outputs: Record<string, number>;
 }
 
 export interface ResourceDef {
   label: string;
   unit: string;
+  /** Link to the corresponding wiki article */
+  wikiUrl: string;
   recipes: Recipe[];
 }
 

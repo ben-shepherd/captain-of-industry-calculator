@@ -3,16 +3,16 @@ import { formatTotals, formatNetTotals } from "../../assets/js/formatters/flatFo
 
 describe("formatTotals", () => {
   it("converts a totals map into a sorted array of entries", () => {
-    const result = formatTotals({ ore: 24, iron: 12 });
+    const result = formatTotals({ ironOre: 24, iron: 12 });
 
     expect(result).toEqual([
       { id: "iron", label: "Iron", amount: 12, unit: "t/m" },
-      { id: "ore", label: "Iron Ore", amount: 24, unit: "t/m" },
+      { id: "ironOre", label: "Iron Ore", amount: 24, unit: "t/m" },
     ]);
   });
 
   it("sorts alphabetically by label", () => {
-    const result = formatTotals({ steel: 6, ore: 24, iron: 12 });
+    const result = formatTotals({ steel: 6, ironOre: 24, iron: 12 });
     const labels = result.map((r) => r.label);
     expect(labels).toEqual(["Iron", "Iron Ore", "Steel"]);
   });
@@ -31,7 +31,7 @@ describe("formatTotals", () => {
 describe("formatNetTotals", () => {
   it("converts net entries into a sorted array with all fields", () => {
     const net = {
-      ore: { required: 30, production: 10, net: -20, status: "deficit" as const },
+      ironOre: { required: 30, production: 10, net: -20, status: "deficit" as const },
       iron: { required: 0, production: 10, net: 10, status: "surplus" as const },
     };
 
@@ -39,7 +39,7 @@ describe("formatNetTotals", () => {
 
     expect(result).toEqual([
       { id: "iron", label: "Iron", unit: "t/m", required: 0, production: 10, net: 10, status: "surplus", amount: 0 },
-      { id: "ore", label: "Iron Ore", unit: "t/m", required: 30, production: 10, net: -20, status: "deficit", amount: 30 },
+      { id: "ironOre", label: "Iron Ore", unit: "t/m", required: 30, production: 10, net: -20, status: "deficit", amount: 30 },
     ]);
   });
 
@@ -50,7 +50,7 @@ describe("formatNetTotals", () => {
   it("sorts alphabetically by label", () => {
     const net = {
       steel: { required: 5, production: 5, net: 0, status: "balanced" as const },
-      ore: { required: 10, production: 10, net: 0, status: "balanced" as const },
+      ironOre: { required: 10, production: 10, net: 0, status: "balanced" as const },
     };
 
     const labels = formatNetTotals(net).map((r) => r.label);

@@ -9,13 +9,13 @@ describe("calculate", () => {
   });
 
   it("returns totals from the resolver", () => {
-    const { totals } = calculate("steel", 12);
-    expect(totals).toEqual({ ore: 24 });
+    const { totals } = calculate("ironOreCrushed", 16);
+    expect(totals).toEqual({ ironOre: 16 });
   });
 
   it("returns a dependency tree from the resolver", () => {
-    const { tree } = calculate("steel", 12);
-    expect(tree.id).toBe("steel");
+    const { tree } = calculate("ironOreCrushed", 16);
+    expect(tree.id).toBe("ironOreCrushed");
     expect(tree.children.length).toBeGreaterThan(0);
   });
 
