@@ -1,3 +1,4 @@
+import { hasPersistedStorage } from './app/persistence';
 import { initState, getTargetRate } from './app/state';
 import { renderResourceOptions, updateResults } from './ui/controller';
 import { bindEvents } from './ui/events';
@@ -33,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
     productionPresetSave: document.getElementById(
       "production-preset-save",
     ) as HTMLButtonElement,
+    resetSavedDataButton: document.getElementById(
+      "reset-saved-data",
+    ) as HTMLButtonElement,
     totalsBody: document.getElementById("totals-body")!,
     treeList: document.getElementById("tree-list")!,
     netBody: document.getElementById("net-body")!,
@@ -46,6 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
   els.targetRateInput.value = String(getTargetRate());
 
   bindEvents(els);
+
+  els.resetSavedDataButton.hidden = !hasPersistedStorage();
 
   updateResults({
     totalsBody: els.totalsBody,

@@ -62,6 +62,17 @@ export function clearState(): void {
 }
 
 /**
+ * True when our storage key is present (user has saved state at least once).
+ */
+export function hasPersistedStorage(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Migrate an older envelope to the current version.
  * Add migration cases as STATE_VERSION increments.
  */

@@ -1,6 +1,6 @@
 import { resources } from '../data/resources';
 import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
-import { loadState, saveState } from './persistence';
+import { clearState, loadState, saveState } from './persistence';
 import type { AppState, ProductionPreset, ResultsSectionsState } from '../contracts';
 
 /**
@@ -274,6 +274,27 @@ export function resetState(): void {
   persist();
 }
 
+/**
+ * Remove localStorage and reset in-memory state to defaults without saving.
+ * Use for a full "reset app" action so nothing is written until the user changes state again.
+ */
+export function wipeAllPersistedDataAndResetToDefaults(): void {
+  clearState();
+  state = {
+    ...DEFAULT_STATE,
+    production: {},
+    productionExtraIds: [],
+    productionDismissedIds: [],
+    productionPresets: [],
+    resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
+  };
+}
+
 function persist(): void {
   saveState(getSnapshot());
+  queueMicrotask(() => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("coi-state-persisted"));
+    }
+  });
 }

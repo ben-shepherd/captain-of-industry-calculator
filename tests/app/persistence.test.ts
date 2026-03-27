@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { saveState, loadState, clearState } from "../../assets/js/app/persistence";
+import {
+  saveState,
+  loadState,
+  clearState,
+  hasPersistedStorage,
+} from "../../assets/js/app/persistence";
 import type { AppState } from "../../assets/js/contracts";
 
 /**
@@ -83,6 +88,37 @@ describe("loadState edge cases", () => {
       JSON.stringify({ data: { x: 1 } }),
     );
     expect(loadState()).toBeNull();
+  });
+});
+
+describe("hasPersistedStorage", () => {
+  it("is false when nothing is stored", () => {
+    expect(hasPersistedStorage()).toBe(false);
+  });
+
+  it("is true after saveState", () => {
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+    saveState(state);
+    expect(hasPersistedStorage()).toBe(true);
+  });
+
+  it("is false after clearState", () => {
+    const state: AppState = {
+      resourceId: "x",
+      targetRate: 1,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+    saveState(state);
+    clearState();
+    expect(hasPersistedStorage()).toBe(false);
   });
 });
 

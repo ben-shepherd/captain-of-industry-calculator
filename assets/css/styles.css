@@ -87,6 +87,12 @@ body {
   margin-top: 0.25rem;
 }
 
+.app-header-reset {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+
 .app-main {
   max-width: min(100%, var(--layout-max-width));
   margin: 0 auto;

@@ -14,12 +14,14 @@ import {
   clearAllProductionRates,
   getResourceId,
   getTargetRate,
+  wipeAllPersistedDataAndResetToDefaults,
   type ResultsSectionKey,
 } from "../app/state";
 import { calculate } from "../calculator/service";
 import {
   matchResourcesForSearch,
   refreshResourceSearchResults,
+  renderResourceOptions,
   updateResults,
 } from "./controller";
 import type { ResultElements } from "./controller";
@@ -41,6 +43,25 @@ export interface AppElements extends ResultElements {
   productionPresetDelete: HTMLButtonElement;
   productionPresetName: HTMLInputElement;
   productionPresetSave: HTMLButtonElement;
+  resetSavedDataButton: HTMLButtonElement;
+}
+
+const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
+  "results-section-base": "base",
+  "results-section-net": "net",
+  "results-section-tree": "tree",
+};
+
+/**
+ * Sync `<details open>` for results panels from persisted state.
+ */
+export function applyResultsSectionOpenStateFromStore(): void {
+  const rs = getResultsSections();
+  for (const [id, key] of Object.entries(RESULTS_SECTION_IDS)) {
+    const el = document.getElementById(id) as HTMLDetailsElement | null;
+    if (!el) continue;
+    el.open = rs[key];
+  }
 }
 
 /**
@@ -60,6 +81,7 @@ export function bindEvents(els: AppElements): void {
     productionPresetDelete,
     productionPresetName,
     productionPresetSave,
+    resetSavedDataButton,
   } = els;
   const resultEls: ResultElements = {
     totalsBody: els.totalsBody,
@@ -226,6 +248,33 @@ export function bindEvents(els: AppElements): void {
     updateResults(resultEls);
   });
 
+  document.addEventListener("coi-state-persisted", () => {
+    resetSavedDataButton.hidden = false;
+  });
+
+  resetSavedDataButton.addEventListener("click", () => {
+    if (
+      !window.confirm(
+        "This will remove all saved data from this browser, including your configuration, production rates, presets, and panel settings. This cannot be undone. Continue?",
+      )
+    ) {
+      return;
+    }
+    wipeAllPersistedDataAndResetToDefaults();
+    renderResourceOptions(
+      resourceSelect,
+      resourceSearchInput,
+      resourceSearchResults,
+    );
+    targetRateInput.value = String(getTargetRate());
+    targetRateInput.classList.remove("input-invalid");
+    productionPresetName.value = "";
+    productionPresetSelect.value = "";
+    applyResultsSectionOpenStateFromStore();
+    updateResults(resultEls);
+    resetSavedDataButton.hidden = true;
+  });
+
   const productionClearAll = document.getElementById("production-clear-all");
   if (productionClearAll) {
     productionClearAll.addEventListener("click", (e: Event) => {
@@ -261,22 +310,11 @@ export function bindEvents(els: AppElements): void {
   }
 }
 
-const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
-  "results-section-base": "base",
-  "results-section-net": "net",
-  "results-section-tree": "tree",
-};
-
 /**
  * Apply saved expansion to `<details>` and persist toggles.
  */
 function bindResultsSectionPersistence(panelResults: HTMLElement): void {
-  const rs = getResultsSections();
-  for (const [id, key] of Object.entries(RESULTS_SECTION_IDS)) {
-    const el = document.getElementById(id) as HTMLDetailsElement | null;
-    if (!el) continue;
-    el.open = rs[key];
-  }
+  applyResultsSectionOpenStateFromStore();
 
   panelResults.addEventListener("toggle", (e: Event) => {
     const t = e.target;
