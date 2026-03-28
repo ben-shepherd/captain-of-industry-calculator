@@ -242,6 +242,15 @@ const PRESET_CATEGORY_ORDER = [
   "Construction",
   "Petrochemical",
   "Electronics",
+  "Mid — Chemicals",
+  "Mid — Metals & alloys",
+  "Mid — Construction & maintenance",
+  "Mid — Electronics",
+  "Mid — Petrochemical",
+  "Late — Nuclear & power",
+  "Late — Microchips & computing",
+  "Late — High-tier construction",
+  "Late — Vehicles & space",
   "Saved",
 ];
 

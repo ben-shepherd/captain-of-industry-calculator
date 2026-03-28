@@ -178,6 +178,8 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
     });
   });
 
@@ -206,6 +208,8 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
     });
   });
 
@@ -236,6 +240,8 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
     });
   });
 
@@ -267,6 +273,8 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
     });
   });
 
@@ -395,6 +403,8 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
     });
   });
 
