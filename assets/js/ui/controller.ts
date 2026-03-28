@@ -6,8 +6,7 @@ import {
 import { calculate } from '../calculator/service';
 import { calculateNet } from '../calculator/net';
 import { formatTotals, formatNetTotals } from '../formatters/flatFormatter';
-import { flattenTree } from '../formatters/treeFormatter';
-import type { ProductionPreset } from '../contracts';
+import type { DependencyNode, ProductionPreset } from '../contracts';
 import {
   getResourceId,
   getTargetRate,
@@ -310,21 +309,54 @@ function renderTotals(tbody: HTMLElement, totals: Record<string, number>): void 
     .join("");
 }
 
-function renderTree(
-  container: HTMLElement,
-  tree: import('../contracts').DependencyNode,
-): void {
-  const nodes = flattenTree(tree);
-  container.innerHTML = nodes
-    .map(
-      (n) =>
-        `<div class="tree-node tree-depth-${n.depth}" style="margin-left:${n.depth * 1.25}rem">`
-        + (n.depth > 0 ? `<span class="tree-arrow">&#x2514;</span>` : "")
-        + `${resourceTargetButton(n.id, n.label, "tree-label")} `
-        + `<span class="tree-amount">${n.amount.toFixed(2)} ${n.unit}</span>`
-        + `</div>`,
+function renderTreeBranch(node: DependencyNode, depth: number): string {
+  const hasChildren = node.children.length > 0;
+  const unit = resources[node.id]?.unit ?? "";
+  const toggleOrSpacer = hasChildren
+    ? (
+      `<button type="button" class="tree-toggle" aria-expanded="true" `
+      + `aria-label="Toggle child dependencies">`
+      + `<span class="tree-toggle-chevron" aria-hidden="true"></span></button>`
     )
-    .join("");
+    : `<span class="tree-toggle-spacer" aria-hidden="true"></span>`;
+  const arrow =
+    depth > 0 ? `<span class="tree-arrow">&#x2514;</span>` : "";
+  const row =
+    `<div class="tree-node tree-depth-${depth}" style="margin-left:${depth * 1.25}rem">`
+    + toggleOrSpacer
+    + arrow
+    + `${resourceTargetButton(node.id, node.label, "tree-label")} `
+    + `<span class="tree-amount">${node.amount.toFixed(2)} ${unit}</span>`
+    + `</div>`;
+  const childrenHtml = hasChildren
+    ? `<div class="tree-children">${node.children
+      .map((c) => renderTreeBranch(c, depth + 1))
+      .join("")}</div>`
+    : "";
+  return `<div class="tree-branch">${row}${childrenHtml}</div>`;
+}
+
+function renderTree(container: HTMLElement, tree: DependencyNode): void {
+  container.innerHTML = renderTreeBranch(tree, 0);
+}
+
+/** Set every collapsible branch in the dependency tree to expanded or collapsed. */
+export function setDependencyTreeBranchesExpanded(
+  treeList: HTMLElement,
+  expanded: boolean,
+): void {
+  for (const toggle of treeList.querySelectorAll<HTMLButtonElement>(
+    "button.tree-toggle",
+  )) {
+    const branch = toggle.closest(".tree-branch");
+    const children = branch?.querySelector(
+      ":scope > .tree-children",
+    ) as HTMLElement | null;
+    if (!branch || !children) continue;
+    toggle.setAttribute("aria-expanded", String(expanded));
+    children.hidden = !expanded;
+    branch.classList.toggle("tree-collapsed", !expanded);
+  }
 }
 
 function renderNet(

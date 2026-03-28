@@ -55,6 +55,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ) as HTMLButtonElement,
     totalsBody: document.getElementById("totals-body")!,
     treeList: document.getElementById("tree-list")!,
+    treeExpandAll: document.getElementById("tree-expand-all") as HTMLButtonElement,
+    treeCollapseAll: document.getElementById(
+      "tree-collapse-all",
+    ) as HTMLButtonElement,
     netBody: document.getElementById("net-body")!,
     targetRecipeSection: document.getElementById(
       "target-recipe-section",

@@ -33,6 +33,7 @@ import {
   matchResourcesForSearch,
   refreshResourceSearchResults,
   renderResourceOptions,
+  setDependencyTreeBranchesExpanded,
   updateResults,
 } from "./controller";
 import { setResourceIconSlot, setResourceWikiLink } from "./resourceIcon";
@@ -62,6 +63,8 @@ export interface AppElements extends ResultElements {
   importSavedDataButton: HTMLButtonElement;
   importSavedDataInput: HTMLInputElement;
   resetSavedDataButton: HTMLButtonElement;
+  treeExpandAll: HTMLButtonElement;
+  treeCollapseAll: HTMLButtonElement;
 }
 
 const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
@@ -134,6 +137,8 @@ export function bindEvents(els: AppElements): void {
     resetSavedDataButton,
     totalsBody,
     treeList,
+    treeExpandAll,
+    treeCollapseAll,
     netBody,
   } = els;
   const resultEls: ResultElements = {
@@ -229,7 +234,30 @@ export function bindEvents(els: AppElements): void {
   }
 
   totalsBody.addEventListener("click", handleResultPanelTargetClick);
-  treeList.addEventListener("click", handleResultPanelTargetClick);
+  treeList.addEventListener("click", (e: MouseEvent) => {
+    const toggle = (e.target as HTMLElement).closest("button.tree-toggle");
+    if (toggle) {
+      e.stopPropagation();
+      const branch = toggle.closest(".tree-branch");
+      const children = branch?.querySelector(
+        ":scope > .tree-children",
+      ) as HTMLElement | null;
+      if (!branch || !children) return;
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      const nextExpanded = !isExpanded;
+      toggle.setAttribute("aria-expanded", String(nextExpanded));
+      children.hidden = !nextExpanded;
+      branch.classList.toggle("tree-collapsed", !nextExpanded);
+      return;
+    }
+    handleResultPanelTargetClick(e);
+  });
+  treeExpandAll.addEventListener("click", () => {
+    setDependencyTreeBranchesExpanded(treeList, true);
+  });
+  treeCollapseAll.addEventListener("click", () => {
+    setDependencyTreeBranchesExpanded(treeList, false);
+  });
   netBody.addEventListener("click", handleResultPanelTargetClick);
 
   resourceSearchInput.addEventListener("input", () => {
