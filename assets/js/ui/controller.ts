@@ -10,6 +10,7 @@ import type { DependencyNode, ProductionPreset } from '../contracts';
 import {
   getResourceId,
   getTargetRate,
+  getTargetRecipeIdx,
   getProduction,
   getProductionExtraIds,
   getProductionDismissedIds,
@@ -189,6 +190,7 @@ export function updateResults(els: ResultElements): void {
   const { totalsBody, treeList, netBody, netFlowChart } = els;
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
+  const recipeIdx = getTargetRecipeIdx();
   const production = getProduction();
 
   if (!resourceId) {
@@ -214,7 +216,7 @@ export function updateResults(els: ResultElements): void {
 
   let result;
   try {
-    result = calculate(resourceId, targetRate);
+    result = calculate(resourceId, targetRate, recipeIdx);
   } catch {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";

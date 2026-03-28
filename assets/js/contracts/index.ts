@@ -108,6 +108,11 @@ export const NET_FLOW_CHART_STYLE_DEFAULT: NetFlowChartStyle = "line";
 export interface AppState {
   resourceId: string;
   targetRate: number;
+  /**
+   * Index into {@link ResourceDef.recipes} for the current target resource.
+   * Must be a recipe that lists the target in `outputs`.
+   */
+  targetRecipeIdx: number;
   production: Record<string, number>;
   /** Resources the user explicitly added for production (not in current chain). */
   productionExtraIds: string[];

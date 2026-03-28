@@ -31,6 +31,7 @@ const DEFAULT_INPUTS_SECTIONS: InputsSectionsState = {
 const DEFAULT_STATE: AppState = {
   resourceId: "",
   targetRate: 12,
+  targetRecipeIdx: 0,
   production: {},
   productionExtraIds: [],
   productionDismissedIds: [],
@@ -51,6 +52,27 @@ function isValidTargetRate(rate: unknown): rate is number {
  * Replace in-memory state from a persisted snapshot, validate against current
  * resource definitions, and persist to localStorage.
  */
+function firstValidProductionRecipeIndex(resourceId: string): number {
+  const def = resources[resourceId];
+  if (!def) return 0;
+  for (let i = 0; i < def.recipes.length; i++) {
+    if ((def.recipes[i].outputs[resourceId] ?? 0) > 0) return i;
+  }
+  return 0;
+}
+
+function clampTargetRecipeIdx(resourceId: string, idx: number): number {
+  const def = resources[resourceId];
+  if (!def) return 0;
+  const valid: number[] = [];
+  for (let i = 0; i < def.recipes.length; i++) {
+    if ((def.recipes[i].outputs[resourceId] ?? 0) > 0) valid.push(i);
+  }
+  if (valid.length === 0) return 0;
+  if (valid.includes(idx)) return idx;
+  return valid[0];
+}
+
 export function applyLoadedState(saved: AppState): void {
   state = { ...DEFAULT_STATE, ...saved };
   if (!resources[state.resourceId]) {
@@ -59,6 +81,13 @@ export function applyLoadedState(saved: AppState): void {
   if (!isValidTargetRate(state.targetRate)) {
     state.targetRate = DEFAULT_STATE.targetRate;
   }
+  const rawIdx = state.targetRecipeIdx;
+  state.targetRecipeIdx = clampTargetRecipeIdx(
+    state.resourceId,
+    typeof rawIdx === "number" && Number.isInteger(rawIdx) && rawIdx >= 0
+      ? rawIdx
+      : 0,
+  );
   const prod: Record<string, number> = {};
   for (const [id, amt] of Object.entries(state.production)) {
     if (resources[id]) prod[id] = amt;
@@ -132,6 +161,7 @@ export function setResourceId(id: string): void {
   if (id !== "" && !resources[id]) return;
   state.resourceId = id;
   state.productionDismissedIds = [];
+  state.targetRecipeIdx = id ? firstValidProductionRecipeIndex(id) : 0;
   persist();
 }
 
@@ -142,6 +172,21 @@ export function getTargetRate(): number {
 export function setTargetRate(rate: number): void {
   if (!isValidTargetRate(rate)) return;
   state.targetRate = rate;
+  persist();
+}
+
+export function getTargetRecipeIdx(): number {
+  return state.targetRecipeIdx;
+}
+
+export function setTargetRecipeIdx(idx: number): void {
+  const rid = state.resourceId;
+  if (!rid || !resources[rid]) return;
+  if (typeof idx !== "number" || !Number.isInteger(idx) || idx < 0) return;
+  const recipe = resources[rid].recipes[idx];
+  if (!recipe || (recipe.outputs[rid] ?? 0) <= 0) return;
+  if (state.targetRecipeIdx === idx) return;
+  state.targetRecipeIdx = idx;
   persist();
 }
 
@@ -369,6 +414,7 @@ export function getSnapshot(): AppState {
   return {
     resourceId: state.resourceId,
     targetRate: state.targetRate,
+    targetRecipeIdx: state.targetRecipeIdx,
     production: { ...state.production },
     productionExtraIds: [...state.productionExtraIds],
     productionDismissedIds: [...state.productionDismissedIds],
@@ -388,6 +434,7 @@ export function getSnapshot(): AppState {
 export function resetState(): void {
   state = {
     ...DEFAULT_STATE,
+    targetRecipeIdx: 0,
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],
@@ -406,6 +453,7 @@ export function wipeAllPersistedDataAndResetToDefaults(): void {
   clearState();
   state = {
     ...DEFAULT_STATE,
+    targetRecipeIdx: 0,
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],

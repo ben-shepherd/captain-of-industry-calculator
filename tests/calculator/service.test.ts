@@ -60,5 +60,16 @@ describe("calculate", () => {
       // @ts-expect-error testing invalid input
       expect(() => calculate("steel", "12")).toThrow("targetRate must be a positive finite number");
     });
+
+    it("throws when recipeIdx is not a non-negative integer", () => {
+      expect(() => calculate("steel", 12, -1)).toThrow("recipeIdx must be a non-negative integer");
+      expect(() => calculate("steel", 12, 1.5)).toThrow("recipeIdx must be a non-negative integer");
+    });
+
+    it("throws when recipeIdx does not produce the target resource", () => {
+      expect(() => calculate("steel", 12, 999)).toThrow(
+        'Invalid recipe index 999 for resource "steel"',
+      );
+    });
   });
 });

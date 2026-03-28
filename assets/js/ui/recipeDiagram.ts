@@ -1,3 +1,4 @@
+import { getTargetRecipeIdx } from "../app/state";
 import type { Recipe } from "../contracts";
 import { resources } from "../data/resources";
 import { escapeHtml, resourceIconImgHtml } from "./resourceIcon";
@@ -37,7 +38,12 @@ function itemStackHtml(
   );
 }
 
-function recipeCardHtml(resourceId: string, recipe: Recipe): string {
+function recipeCardHtml(
+  resourceId: string,
+  recipe: Recipe,
+  recipeIndexInDef: number,
+  isSelected: boolean,
+): string {
   const { durationSec, inputs, outputs, building } = recipe;
   const outQty = outputs[resourceId] ?? 0;
   const outRate = perMinute(outQty, durationSec);
@@ -78,8 +84,14 @@ function recipeCardHtml(resourceId: string, recipe: Recipe): string {
     + `<path d="M8 4.5V8l2.5 1.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`
     + `</svg>`;
 
+  const ariaLabel = `Use recipe: ${recipe.name} (${building})`;
+
   return (
-    `<li class="recipe-card">`
+    `<li class="recipe-card-li">`
+    + `<button type="button" class="recipe-card" `
+    + `data-recipe-index="${recipeIndexInDef}" `
+    + `aria-pressed="${isSelected ? "true" : "false"}" `
+    + `aria-label="${escapeHtml(ariaLabel)}">`
     + `<div class="recipe-machine">`
     + `<span class="recipe-machine-icon" aria-hidden="true">`
     + `<svg class="recipe-machine-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">`
@@ -96,6 +108,7 @@ function recipeCardHtml(resourceId: string, recipe: Recipe): string {
     + `<div class="recipe-time-secondary"><span class="recipe-out-rate">${escapeHtml(formatRate(outRate))}</span>${clockSvg}<span class="recipe-out-rate-suffix">/min</span></div>`
     + `</div>`
     + `<div class="recipe-io recipe-outputs">${outputsJoined}</div>`
+    + `</button>`
     + `</li>`
   );
 }
@@ -130,11 +143,15 @@ export function renderTargetRecipeDiagram(
     return;
   }
 
-  const recipes = def.recipes.filter(
-    (r) => (r.outputs[resourceId] ?? 0) > 0,
-  );
+  const selectedIdx = getTargetRecipeIdx();
+  const cards: string[] = [];
+  for (let i = 0; i < def.recipes.length; i++) {
+    const r = def.recipes[i];
+    if ((r.outputs[resourceId] ?? 0) <= 0) continue;
+    cards.push(recipeCardHtml(resourceId, r, i, selectedIdx === i));
+  }
 
-  if (recipes.length === 0) {
+  if (cards.length === 0) {
     body.innerHTML =
       `<p class="recipe-diagram-empty">No production recipes for this resource.</p>`;
     sectionEl.hidden = false;
@@ -142,11 +159,9 @@ export function renderTargetRecipeDiagram(
     return;
   }
 
-  const cards = recipes.map((r) => recipeCardHtml(resourceId, r)).join("");
-
   body.innerHTML =
-    `<p class="recipe-diagram-hint">Cycle amounts (top), per minute for one machine (bottom). Calculator uses the <span class="recipe-diagram-accent">first</span> recipe.</p>`
-    + `<ul class="recipe-card-list" role="list">${cards}</ul>`;
+    `<p class="recipe-diagram-hint">Cycle amounts (top), per minute for one machine (bottom). <span class="recipe-diagram-accent">Click a recipe</span> to use it for base requirements and net flow.</p>`
+    + `<ul class="recipe-card-list" role="list">${cards.join("")}</ul>`;
   sectionEl.hidden = false;
   openRecipeSection(sectionEl);
 }

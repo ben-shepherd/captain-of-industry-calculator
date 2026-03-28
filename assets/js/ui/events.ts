@@ -18,6 +18,8 @@ import {
   clearAllProductionRates,
   getResourceId,
   getTargetRate,
+  getTargetRecipeIdx,
+  setTargetRecipeIdx,
   getNetFlowChartStyle,
   setNetFlowChartStyle,
   getUserGuideExpanded,
@@ -317,6 +319,16 @@ export function bindEvents(els: AppElements): void {
     setDependencyTreeBranchesExpanded(treeList, false);
   });
   netBody.addEventListener("click", handleResultPanelTargetClick);
+  els.targetRecipeSection?.addEventListener("click", (e: MouseEvent) => {
+    const row = (e.target as HTMLElement).closest(
+      "button.recipe-card[data-recipe-index]",
+    ) as HTMLButtonElement | null;
+    if (!row?.dataset.recipeIndex) return;
+    const idx = parseInt(row.dataset.recipeIndex, 10);
+    if (!Number.isInteger(idx) || idx < 0) return;
+    setTargetRecipeIdx(idx);
+    updateResults(resultEls);
+  });
 
   netFlowChartStyleSelect.addEventListener("change", () => {
     setNetFlowChartStyle(netFlowChartStyleSelect.value as NetFlowChartStyle);
@@ -673,7 +685,7 @@ export function bindEvents(els: AppElements): void {
         totals = {};
       } else {
         try {
-          totals = calculate(rid, getTargetRate()).totals;
+          totals = calculate(rid, getTargetRate(), getTargetRecipeIdx()).totals;
         } catch {
           return;
         }
