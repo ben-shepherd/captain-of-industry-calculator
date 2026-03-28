@@ -353,35 +353,105 @@ body {
   min-width: 0;
 }
 
-.resource-select-with-icon {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.resource-picker-wrap {
+  position: relative;
 }
 
-.resource-select-with-icon select {
-  flex: 1;
+select.resource-select-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.resource-picker-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  cursor: pointer;
+}
+
+.resource-picker-trigger:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.resource-picker-trigger .resource-label-with-icon {
   min-width: 0;
 }
 
-.resource-inline-icon-slot {
-  flex-shrink: 0;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
+.resource-picker-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  margin-top: 2px;
+  max-height: 18rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  padding: 0.35rem 0;
+}
+
+.resource-picker-group + .resource-picker-group {
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.resource-picker-group-label {
+  padding: 0.25rem 0.65rem 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-balanced);
+}
+
+.resource-picker-group-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.resource-picker-option {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.resource-picker-option:hover,
+.resource-picker-option:focus {
+  background: var(--color-accent-muted);
+  outline: none;
+}
+
+.resource-picker-option .resource-label-with-icon {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-}
-
-.resource-inline-icon-slot:empty {
-  display: none;
-}
-
-.resource-inline-icon-slot .resource-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  object-fit: contain;
-  image-rendering: auto;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .resource-wiki-link-wrap {

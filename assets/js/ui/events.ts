@@ -34,9 +34,10 @@ import {
   refreshResourceSearchResults,
   renderResourceOptions,
   setDependencyTreeBranchesExpanded,
+  TARGET_RESOURCE_PLACEHOLDER,
   updateResults,
 } from "./controller";
-import { setResourceIconSlot, setResourceWikiLink } from "./resourceIcon";
+import { setResourcePickerTrigger, setResourceWikiLink } from "./resourceIcon";
 import type { ResultElements } from "./controller";
 import { isIdRequiredByCurrentTarget } from "./productionView";
 
@@ -48,7 +49,8 @@ export interface AppElements extends ResultElements {
   resourceSelect: HTMLSelectElement;
   resourceSearchInput: HTMLInputElement;
   resourceSearchResults: HTMLUListElement;
-  resourceSelectIconSlot: HTMLElement | null;
+  resourcePickerTrigger: HTMLButtonElement;
+  resourcePickerPanel: HTMLElement;
   resourceWikiLinkWrap: HTMLElement | null;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
@@ -120,7 +122,8 @@ export function bindEvents(els: AppElements): void {
     resourceSelect,
     resourceSearchInput,
     resourceSearchResults,
-    resourceSelectIconSlot,
+    resourcePickerTrigger,
+    resourcePickerPanel,
     resourceWikiLinkWrap,
     targetRateInput,
     productionFields,
@@ -154,6 +157,20 @@ export function bindEvents(els: AppElements): void {
   const resourceSearchWrap = resourceSearchInput.closest(
     ".resource-search-wrap",
   ) as HTMLElement;
+
+  const resourcePickerWrap = resourcePickerTrigger.closest(
+    ".resource-picker-wrap",
+  ) as HTMLElement;
+
+  function closeResourcePicker(): void {
+    resourcePickerPanel.hidden = true;
+    resourcePickerTrigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openResourcePicker(): void {
+    resourcePickerPanel.hidden = false;
+    resourcePickerTrigger.setAttribute("aria-expanded", "true");
+  }
 
   const RESOURCE_SEARCH_HIT_ACTIVE = "resource-search-hit-active";
 
@@ -198,8 +215,9 @@ export function bindEvents(els: AppElements): void {
       resourceSelect,
       resourceSearchInput,
       resourceSearchResults,
-      resourceSelectIconSlot,
       resourceWikiLinkWrap,
+      resourcePickerTrigger,
+      resourcePickerPanel,
     );
     targetRateInput.value = String(getTargetRate());
     targetRateInput.classList.remove("input-invalid");
@@ -219,8 +237,13 @@ export function bindEvents(els: AppElements): void {
     refreshResourceSearchResults(resourceSearchResults, "");
     syncResourceSearchHighlight();
     setSearchListExpanded(resourceSearchInput, false);
+    closeResourcePicker();
     setResourceId(id);
-    setResourceIconSlot(resourceSelectIconSlot, id);
+    setResourcePickerTrigger(
+      resourcePickerTrigger,
+      id,
+      TARGET_RESOURCE_PLACEHOLDER,
+    );
     setResourceWikiLink(resourceWikiLinkWrap, id);
     updateResults(resultEls);
   }
@@ -265,6 +288,7 @@ export function bindEvents(els: AppElements): void {
     const q = resourceSearchInput.value.trim();
     setSearchListExpanded(resourceSearchInput, q !== "");
     resetResourceSearchHighlight();
+    if (q !== "") closeResourcePicker();
   });
 
   resourceSearchInput.addEventListener("focus", () => {
@@ -350,8 +374,41 @@ export function bindEvents(els: AppElements): void {
     resetResourceSearchHighlight();
   });
 
-  resourceSelect.addEventListener("change", () => {
-    applyTargetResource(resourceSelect.value);
+  document.addEventListener("click", (e: MouseEvent) => {
+    if (resourcePickerWrap.contains(e.target as Node)) return;
+    if (resourcePickerPanel.hidden) return;
+    closeResourcePicker();
+  });
+
+  resourcePickerTrigger.addEventListener("click", (e: MouseEvent) => {
+    e.stopPropagation();
+    if (!resourcePickerPanel.hidden) {
+      closeResourcePicker();
+      return;
+    }
+    if (!resourceSearchResults.hidden) {
+      resourceSearchResults.hidden = true;
+      setSearchListExpanded(resourceSearchInput, false);
+      resetResourceSearchHighlight();
+    }
+    openResourcePicker();
+  });
+
+  resourcePickerPanel.addEventListener("mousedown", (e: MouseEvent) => {
+    const li = (e.target as HTMLElement).closest(
+      "li.resource-picker-option",
+    ) as HTMLLIElement | null;
+    if (!li?.dataset.resourceId) return;
+    e.preventDefault();
+    applyTargetResource(li.dataset.resourceId);
+  });
+
+  document.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key !== "Escape") return;
+    if (resourcePickerPanel.hidden) return;
+    e.preventDefault();
+    closeResourcePicker();
+    resourcePickerTrigger.focus();
   });
 
   targetRateInput.addEventListener("input", () => {

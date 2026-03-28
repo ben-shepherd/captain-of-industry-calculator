@@ -22,7 +22,7 @@ import {
 } from './productionView';
 import {
   resourceLabelWithIconHtml,
-  setResourceIconSlot,
+  setResourcePickerTrigger,
   setResourceWikiLink,
 } from './resourceIcon';
 import { renderTargetRecipeDiagram } from './recipeDiagram';
@@ -103,14 +103,45 @@ export function refreshResourceSearchResults(
  * Populate the resource <select> dropdown with all known resources
  * (grouped by level, sorted A–Z within each group).
  */
-const TARGET_RESOURCE_PLACEHOLDER = "Choose a resource";
+export const TARGET_RESOURCE_PLACEHOLDER = "Choose a resource";
+
+/**
+ * Fills the custom grouped picker panel (icons + labels).
+ */
+export function renderTargetResourcePickerPanel(panelEl: HTMLElement | null): void {
+  if (!panelEl) return;
+  panelEl.replaceChildren();
+  for (const group of getResourcePickerGroups()) {
+    const section = document.createElement("div");
+    section.className = "resource-picker-group";
+    const heading = document.createElement("div");
+    heading.className = "resource-picker-group-label";
+    heading.textContent = group.label;
+    section.appendChild(heading);
+    const ul = document.createElement("ul");
+    ul.className = "resource-picker-group-list";
+    ul.setAttribute("role", "presentation");
+    for (const { id, label } of group.entries) {
+      const li = document.createElement("li");
+      li.className = "resource-picker-option";
+      li.role = "option";
+      li.dataset.resourceId = id;
+      li.id = `resource-picker-option-${id}`;
+      li.innerHTML = resourceLabelWithIconHtml(id, label);
+      ul.appendChild(li);
+    }
+    section.appendChild(ul);
+    panelEl.appendChild(section);
+  }
+}
 
 export function renderResourceOptions(
   selectEl: HTMLSelectElement,
   searchInput?: HTMLInputElement,
   searchResultsList?: HTMLUListElement,
-  targetIconSlot?: HTMLElement | null,
   targetWikiWrap?: HTMLElement | null,
+  pickerTrigger?: HTMLButtonElement | null,
+  pickerPanel?: HTMLElement | null,
 ): void {
   selectEl.innerHTML = "";
   const placeholder = document.createElement("option");
@@ -129,7 +160,12 @@ export function renderResourceOptions(
     selectEl.appendChild(og);
   }
   selectEl.value = getResourceId();
-  setResourceIconSlot(targetIconSlot ?? null, getResourceId());
+  renderTargetResourcePickerPanel(pickerPanel ?? null);
+  setResourcePickerTrigger(
+    pickerTrigger ?? null,
+    getResourceId(),
+    TARGET_RESOURCE_PLACEHOLDER,
+  );
   setResourceWikiLink(targetWikiWrap ?? null, getResourceId());
   if (searchInput) {
     searchInput.value = "";

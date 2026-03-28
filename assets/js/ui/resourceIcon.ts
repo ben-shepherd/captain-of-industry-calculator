@@ -28,6 +28,21 @@ export function resourceLabelWithIconHtml(id: string, label: string): string {
   return `<span class="resource-label-with-icon">${icon}<span class="resource-label-text">${text}</span></span>`;
 }
 
+/** Updates the target-resource picker trigger (icon + label or placeholder). */
+export function setResourcePickerTrigger(
+  button: HTMLButtonElement | null,
+  resourceId: string,
+  placeholderText: string,
+): void {
+  if (!button) return;
+  if (!resourceId) {
+    button.textContent = placeholderText;
+    return;
+  }
+  const label = resources[resourceId]?.label ?? resourceId;
+  button.innerHTML = resourceLabelWithIconHtml(resourceId, label);
+}
+
 /** Updates a container used as an icon slot next to a &lt;select&gt; (decorative). */
 export function setResourceIconSlot(slot: HTMLElement | null, resourceId: string): void {
   if (!slot) return;

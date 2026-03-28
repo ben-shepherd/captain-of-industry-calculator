@@ -16,7 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resourceSearchResults: document.getElementById(
       "resource-search-results",
     ) as HTMLUListElement,
-    resourceSelectIconSlot: document.getElementById("resource-select-icon"),
+    resourcePickerTrigger: document.getElementById(
+      "resource-picker-trigger",
+    ) as HTMLButtonElement,
+    resourcePickerPanel: document.getElementById(
+      "resource-picker-panel",
+    ) as HTMLElement,
     resourceWikiLinkWrap: document.getElementById("resource-wiki-link-wrap"),
     targetRateInput: document.getElementById("target-rate") as HTMLInputElement,
     productionFields: document.getElementById("production-fields")!,
@@ -69,8 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
     els.resourceSelect,
     els.resourceSearchInput,
     els.resourceSearchResults,
-    els.resourceSelectIconSlot,
     els.resourceWikiLinkWrap,
+    els.resourcePickerTrigger,
+    els.resourcePickerPanel,
   );
   els.targetRateInput.value = String(getTargetRate());
 

@@ -83,7 +83,7 @@
           </details>
 
           <div class="field field-resource-target">
-            <label for="resource-select">Target Resource</label>
+            <label for="resource-picker-trigger">Target Resource</label>
             <div class="resource-search-wrap">
               <input
                 type="search"
@@ -105,13 +105,30 @@
                 hidden
               ></ul>
             </div>
-            <div class="resource-select-with-icon">
-              <select id="resource-select"></select>
-              <span
-                id="resource-select-icon"
-                class="resource-inline-icon-slot"
+            <div class="resource-picker-wrap">
+              <button
+                type="button"
+                id="resource-picker-trigger"
+                class="resource-picker-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="resource-picker-panel"
+              >
+                Choose a resource
+              </button>
+              <div
+                id="resource-picker-panel"
+                class="resource-picker-panel"
+                role="listbox"
+                aria-label="Browse resources by category"
+                hidden
+              ></div>
+              <select
+                id="resource-select"
+                class="resource-select-sr"
                 aria-hidden="true"
-              ></span>
+                tabindex="-1"
+              ></select>
             </div>
             <p
               class="resource-wiki-link-wrap"
