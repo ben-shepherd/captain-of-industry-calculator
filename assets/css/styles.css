@@ -159,6 +159,53 @@ body {
   }
 }
 
+.app-footer {
+  margin-top: var(--gap);
+}
+
+.app-footer-inner {
+  max-width: var(--header-inner-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.app-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.app-footer-sep {
+  color: var(--color-balanced);
+  user-select: none;
+}
+
+.app-footer-contrib {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--color-balanced);
+}
+
+.app-footer-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.app-footer-link:hover {
+  color: color-mix(in srgb, var(--color-accent) 75%, #fff);
+}
+
 /* =========================
    Panels
 ========================= */
