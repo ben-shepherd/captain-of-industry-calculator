@@ -25,9 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resourceWikiLinkWrap: document.getElementById("resource-wiki-link-wrap"),
     targetRateInput: document.getElementById("target-rate") as HTMLInputElement,
     productionFields: document.getElementById("production-fields")!,
-    productionAddSelect: document.getElementById(
-      "production-add-select",
-    ) as HTMLSelectElement,
+    productionAddTrigger: document.getElementById(
+      "production-add-trigger",
+    ) as HTMLButtonElement,
+    productionAddPanel: document.getElementById(
+      "production-add-panel",
+    ) as HTMLElement,
     productionPresetSelect: document.getElementById(
       "production-preset-select",
     ) as HTMLSelectElement,
@@ -89,7 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
     treeList: els.treeList,
     netBody: els.netBody,
     productionFields: els.productionFields,
-    productionAddSelect: els.productionAddSelect,
+    productionAddTrigger: els.productionAddTrigger,
+    productionAddPanel: els.productionAddPanel,
     productionPresetSelect: els.productionPresetSelect,
     targetRecipeSection: els.targetRecipeSection,
   });
