@@ -1,6 +1,6 @@
 import { initGoogleAnalytics } from './analytics';
 import { initState, getTargetRate, getNetFlowChartStyle } from './app/state';
-import { renderResourceOptions, updateResults } from './ui/controller';
+import { renderResourceOptions, renderRecentTargets, updateResults } from './ui/controller';
 import { bindEvents, syncResetSavedDataButtonDisabled } from './ui/events';
 
 initGoogleAnalytics();
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     targetRecipeSection: document.getElementById(
       "target-recipe-section",
     ) as HTMLDetailsElement | null,
+    recentTargetResourcesWrap: document.getElementById("recent-resources"),
   };
 
   renderResourceOptions(
@@ -104,4 +105,5 @@ document.addEventListener("DOMContentLoaded", () => {
     productionPresetSelect: els.productionPresetSelect,
     targetRecipeSection: els.targetRecipeSection,
   });
+  renderRecentTargets(els.recentTargetResourcesWrap);
 });

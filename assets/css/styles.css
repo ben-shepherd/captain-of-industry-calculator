@@ -374,6 +374,77 @@ body {
   padding-left: 0.15rem;
 }
 
+/* Recent resources: standalone strip below the user guide (no panel box). */
+.recent-resources-section {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--gap);
+  padding: 0 0.35rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.recent-resources-heading {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.recent-resources {
+  margin: 0;
+  min-height: 1.5rem;
+}
+
+.recent-resources-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-balanced);
+}
+
+.recent-resources-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recent-resources-item {
+  margin: 0;
+}
+
+button.recent-resource-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.2rem 0.45rem 0.2rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-heading));
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+button.recent-resource-chip .resource-label-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 11rem;
+}
+
+button.recent-resource-chip .resource-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .panel-inputs .results-section-body {
   padding-bottom: 0.5rem;
 }
