@@ -1,6 +1,9 @@
+import { initGoogleAnalytics } from './analytics';
 import { initState, getTargetRate } from './app/state';
 import { renderResourceOptions, updateResults } from './ui/controller';
 import { bindEvents, syncResetSavedDataButtonDisabled } from './ui/events';
+
+initGoogleAnalytics();
 
 document.addEventListener("DOMContentLoaded", () => {
   initState();
