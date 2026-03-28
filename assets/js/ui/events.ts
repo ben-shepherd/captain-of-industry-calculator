@@ -35,6 +35,7 @@ import {
   renderResourceOptions,
   updateResults,
 } from "./controller";
+import { setResourceIconSlot } from "./resourceIcon";
 import type { ResultElements } from "./controller";
 import { isIdRequiredByCurrentTarget } from "./productionView";
 
@@ -46,6 +47,7 @@ export interface AppElements extends ResultElements {
   resourceSelect: HTMLSelectElement;
   resourceSearchInput: HTMLInputElement;
   resourceSearchResults: HTMLUListElement;
+  resourceSelectIconSlot: HTMLElement | null;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
   productionAddSelect: HTMLSelectElement;
@@ -114,6 +116,7 @@ export function bindEvents(els: AppElements): void {
     resourceSelect,
     resourceSearchInput,
     resourceSearchResults,
+    resourceSelectIconSlot,
     targetRateInput,
     productionFields,
     productionAddSelect,
@@ -149,6 +152,7 @@ export function bindEvents(els: AppElements): void {
       resourceSelect,
       resourceSearchInput,
       resourceSearchResults,
+      resourceSelectIconSlot,
     );
     targetRateInput.value = String(getTargetRate());
     targetRateInput.classList.remove("input-invalid");
@@ -166,6 +170,7 @@ export function bindEvents(els: AppElements): void {
     refreshResourceSearchResults(resourceSearchResults, "");
     setSearchListExpanded(resourceSearchInput, false);
     setResourceId(id);
+    setResourceIconSlot(resourceSelectIconSlot, id);
     updateResults(resultEls);
   }
 

@@ -185,7 +185,7 @@ export const naturalResources: ResourcesMap = {
     label: "Titanium Ore",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Titanium_Ore",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/5/50/TitaniumOre.png/48px-TitaniumOre.png",
     recipes: [
     ],
   },

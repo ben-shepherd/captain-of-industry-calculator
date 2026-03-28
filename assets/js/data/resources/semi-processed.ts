@@ -49,7 +49,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Aluminum Scrap",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Aluminum_Scrap",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/a/aa/AluminumScrap.png/48px-AluminumScrap.png",
     recipes: [
       {
         name: "Shredder: ShreddingAluminumScrap",

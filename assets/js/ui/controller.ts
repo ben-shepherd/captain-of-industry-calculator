@@ -1,6 +1,7 @@
 import {
   getResourcePickerGroups,
   getResourceEntriesInPickerOrder,
+  resources,
 } from '../data/resources';
 import { calculate } from '../calculator/service';
 import { calculateNet } from '../calculator/net';
@@ -20,6 +21,7 @@ import {
   refreshProductionFields,
   updateProductionAddSelect,
 } from './productionView';
+import { resourceLabelWithIconHtml, setResourceIconSlot } from './resourceIcon';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
@@ -70,8 +72,23 @@ export function refreshResourceSearchResults(
     const li = document.createElement("li");
     li.role = "option";
     li.dataset.resourceId = id;
-    li.textContent = label;
-    listEl.appendChild(li);
+    li.className = "resource-search-hit";
+    const url = resources[id]?.imageUrl;
+    if (url) {
+      const img = document.createElement("img");
+      img.className = "resource-icon";
+      img.src = url;
+      img.alt = "";
+      img.width = 20;
+      img.height = 20;
+      img.loading = "lazy";
+      img.decoding = "async";
+      li.appendChild(img);
+    }
+    const span = document.createElement("span");
+    span.className = "resource-search-hit-label";
+    span.textContent = label;
+    li.appendChild(span);
   }
 }
 
@@ -85,6 +102,7 @@ export function renderResourceOptions(
   selectEl: HTMLSelectElement,
   searchInput?: HTMLInputElement,
   searchResultsList?: HTMLUListElement,
+  targetIconSlot?: HTMLElement | null,
 ): void {
   selectEl.innerHTML = "";
   const placeholder = document.createElement("option");
@@ -103,6 +121,7 @@ export function renderResourceOptions(
     selectEl.appendChild(og);
   }
   selectEl.value = getResourceId();
+  setResourceIconSlot(targetIconSlot ?? null, getResourceId());
   if (searchInput) {
     searchInput.value = "";
     searchInput.setAttribute("aria-expanded", "false");
@@ -253,10 +272,11 @@ function resourceTargetButton(
   const cls = extraClass
     ? `production-row-target ${extraClass}`
     : "production-row-target";
+  const inner = resourceLabelWithIconHtml(id, label);
   return (
     `<button type="button" class="${cls}" `
     + `data-production-target="${id}" aria-pressed="${pressed}" `
-    + `aria-label="Set ${label} as target resource">${label}</button>`
+    + `aria-label="Set ${label} as target resource">${inner}</button>`
   );
 }
 
