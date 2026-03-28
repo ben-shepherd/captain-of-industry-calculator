@@ -96,7 +96,6 @@ export interface ResultsSectionsState {
 
 /** Which configuration panel sections are expanded (`<details open>`). */
 export interface InputsSectionsState {
-  target: boolean;
   production: boolean;
   presets: boolean;
 }
@@ -117,7 +116,7 @@ export interface AppState {
   productionPresets: ProductionPreset[];
   /** Collapsible results sections (Base / Net Flow / Dependency Tree). */
   resultsSections: ResultsSectionsState;
-  /** Collapsible configuration sections (target / production / presets). */
+  /** Collapsible configuration sections (production / presets). */
   inputsSections: InputsSectionsState;
 }
 

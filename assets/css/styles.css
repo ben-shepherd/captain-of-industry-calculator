@@ -159,6 +159,20 @@ body {
   }
 }
 
+.app-target-panel {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--gap);
+  border-width: 2px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.app-target-panel-body {
+  padding-left: 0.15rem;
+  padding-bottom: 0.25rem;
+}
+
 .app-footer {
   margin-top: var(--gap);
 }
@@ -223,6 +237,12 @@ body {
   overflow-y: visible;
 }
 
+/* Must not mix overflow-x: auto with visible on the other axis (spec forces y to auto and clips
+   absolutely positioned pickers). Target panel only needs visible overflow for dropdowns. */
+.panel.app-target-panel {
+  overflow: visible;
+}
+
 .panel.panel-inputs {
   padding-bottom: calc(var(--gap) + 0.5rem);
 }
@@ -257,12 +277,14 @@ body {
    Collapsible panel sections (results + configuration)
 ========================= */
 .panel-results .results-section,
-.panel-inputs .results-section {
+.panel-inputs .results-section,
+.app-target-panel .results-section {
   margin-bottom: 0.5rem;
 }
 
 .panel-results .results-section:last-child,
-.panel-inputs .results-section:last-child {
+.panel-inputs .results-section:last-child,
+.app-target-panel .results-section:last-child {
   margin-bottom: 0;
 }
 
@@ -271,7 +293,8 @@ body {
 }
 
 .panel-results .results-section-summary,
-.panel-inputs .results-section-summary {
+.panel-inputs .results-section-summary,
+.app-target-panel .results-section-summary {
   color: var(--color-heading);
   font-size: 1.05rem;
   font-weight: 700;
@@ -285,12 +308,14 @@ body {
 }
 
 .panel-results .results-section-summary::-webkit-details-marker,
-.panel-inputs .results-section-summary::-webkit-details-marker {
+.panel-inputs .results-section-summary::-webkit-details-marker,
+.app-target-panel .results-section-summary::-webkit-details-marker {
   display: none;
 }
 
 .panel-results .results-section-summary::before,
-.panel-inputs .results-section-summary::before {
+.panel-inputs .results-section-summary::before,
+.app-target-panel .results-section-summary::before {
   content: "";
   display: inline-block;
   width: 0.45em;
@@ -304,13 +329,15 @@ body {
 }
 
 .panel-results .results-section[open] .results-section-summary::before,
-.panel-inputs .results-section[open] .results-section-summary::before {
+.panel-inputs .results-section[open] .results-section-summary::before,
+.app-target-panel .results-section[open] .results-section-summary::before {
   transform: rotate(45deg);
   margin-bottom: 0.1em;
 }
 
 .panel-results .results-section-body,
-.panel-inputs .results-section-body {
+.panel-inputs .results-section-body,
+.app-target-panel .results-section-body {
   padding-left: 0.15rem;
 }
 
@@ -1003,18 +1030,21 @@ input.input-invalid {
 /* =========================
    Target resource recipe diagram (compact, collapsible)
 ========================= */
-.panel-inputs .recipe-diagram-section.results-section {
+.panel-inputs .recipe-diagram-section.results-section,
+.app-target-panel .recipe-diagram-section.results-section {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
 
-.panel-inputs .recipe-diagram-section .results-section-summary {
+.panel-inputs .recipe-diagram-section .results-section-summary,
+.app-target-panel .recipe-diagram-section .results-section-summary {
   font-size: 0.88rem;
   padding: 0.28rem 0.4rem 0.28rem 0.5rem;
   margin-bottom: 0.25rem;
 }
 
-.panel-inputs .recipe-diagram-section .results-section-body {
+.panel-inputs .recipe-diagram-section .results-section-body,
+.app-target-panel .recipe-diagram-section .results-section-body {
   padding-bottom: 0.25rem;
 }
 

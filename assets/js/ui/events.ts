@@ -82,7 +82,6 @@ const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
 };
 
 const INPUTS_SECTION_IDS: Record<string, InputsSectionKey> = {
-  "config-section-target": "target",
   "config-section-production": "production",
   "config-section-presets": "presets",
 };
