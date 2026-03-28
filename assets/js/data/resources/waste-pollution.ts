@@ -291,6 +291,13 @@ export const wastePollutionResources: ResourcesMap = {
     imageUrl: "https://wiki.coigame.com/images/4/4a/Exhaust.png",
     recipes: [
       {
+        name: "Basic Distiller: WaterDesalinationBasic",
+        building: "Basic Distiller",
+        durationSec: 10,
+        inputs: {"seawater":10,"coal":1},
+        outputs: {"water":6,"brine":4,"exhaust":2},
+      },
+      {
         name: "Arc Furnace: AluminumSmeltingScrapArcT1",
         building: "Arc Furnace",
         durationSec: 20,
@@ -422,13 +429,6 @@ export const wastePollutionResources: ResourcesMap = {
         durationSec: 20,
         inputs: {"crudeOil":20,"coal":2},
         outputs: {"diesel":9,"wasteWater":5,"exhaust":12},
-      },
-      {
-        name: "Basic Distiller: WaterDesalinationBasic",
-        building: "Basic Distiller",
-        durationSec: 10,
-        inputs: {"seawater":10,"coal":1},
-        outputs: {"water":6,"brine":4,"exhaust":2},
       },
       {
         name: "Blast Furnace: CopperSmeltingT1",

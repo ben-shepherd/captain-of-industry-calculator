@@ -70,6 +70,13 @@ describe("resolve", () => {
     });
   });
 
+  describe("recipe with no inputs (extractors)", () => {
+    it("counts crude oil as a base total when the only recipe has empty inputs", () => {
+      const { totals } = resolve("crudeOil", 10);
+      expect(totals).toEqual({ crudeOil: 10 });
+    });
+  });
+
   describe("error handling", () => {
     it("throws for an unknown resource", () => {
       expect(() => resolve("unobtainium", 10)).toThrow(

@@ -60,16 +60,22 @@ function buildTree(
 
   stack.add(id);
   try {
+    const inputEntries = Object.entries(recipe.inputs);
+    /** Oil pump, groundwater, etc.: no upstream inputs — count as base requirement. */
+    if (inputEntries.length === 0) {
+      totals[id] = (totals[id] ?? 0) + amount;
+      return { id, label: resource.label, amount, children: [] };
+    }
+
     /** Per-cycle ratios: inputRate = inputQty * targetRate / producedQty */
-    const children = Object.entries(recipe.inputs).map(
-      ([inputId, inputAmount]) =>
-        buildTree(
-          inputId,
-          (inputAmount * amount) / produced,
-          0,
-          totals,
-          stack,
-        ),
+    const children = inputEntries.map(([inputId, inputAmount]) =>
+      buildTree(
+        inputId,
+        (inputAmount * amount) / produced,
+        0,
+        totals,
+        stack,
+      ),
     );
     return { id, label: resource.label, amount, children };
   } finally {
