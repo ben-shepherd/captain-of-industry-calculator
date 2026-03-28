@@ -50,6 +50,7 @@ const emptyV4 = {
   baseRequirementsMode: "direct" as AppState["baseRequirementsMode"],
   netFlowChartStyle: "line" as AppState["netFlowChartStyle"],
   userGuideExpanded: true,
+  userGuideVisible: true,
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -184,6 +185,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -215,6 +217,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -248,6 +251,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -282,6 +286,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -317,6 +322,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -353,6 +359,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -380,6 +387,7 @@ describe("migration", () => {
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });
@@ -414,6 +422,46 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
+      targetRecipeIdx: 0,
+      recentTargetResourceIds: [],
+    });
+  });
+
+  it("migrates v11 envelope without userGuideVisible to v12", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 11,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: {},
+          productionExtraIds: [],
+          productionDismissedIds: [],
+          productionPresets: [],
+          resultsSections: { ...defaultResultsSections },
+          inputsSections: { ...defaultInputsSections },
+          netFlowChartStyle: "line",
+          userGuideExpanded: true,
+          targetRecipeIdx: 0,
+          recentTargetResourceIds: [],
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
+      netFlowChartStyle: "line",
+      userGuideExpanded: true,
+      userGuideVisible: true,
       targetRecipeIdx: 0,
       recentTargetResourceIds: [],
     });
@@ -457,6 +505,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      userGuideVisible: true,
       recentTargetResourceIds: [],
     });
   });

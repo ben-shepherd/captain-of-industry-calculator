@@ -46,6 +46,7 @@ const DEFAULT_STATE: AppState = {
   inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
   netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
   userGuideExpanded: true,
+  userGuideVisible: true,
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -134,6 +135,7 @@ export function applyLoadedState(saved: AppState): void {
   );
   state.netFlowChartStyle = normalizeNetFlowChartStyle(state.netFlowChartStyle);
   state.userGuideExpanded = normalizeUserGuideExpanded(state.userGuideExpanded);
+  state.userGuideVisible = normalizeUserGuideVisible(state.userGuideVisible);
   state.recentTargetResourceIds = normalizeRecentTargetResourceIds(
     state.recentTargetResourceIds,
   );
@@ -200,6 +202,10 @@ function normalizeNetFlowChartStyle(v: unknown): NetFlowChartStyle {
 }
 
 function normalizeUserGuideExpanded(v: unknown): boolean {
+  return typeof v === "boolean" ? v : true;
+}
+
+function normalizeUserGuideVisible(v: unknown): boolean {
   return typeof v === "boolean" ? v : true;
 }
 
@@ -484,6 +490,16 @@ export function setUserGuideExpanded(expanded: boolean): void {
   persist();
 }
 
+export function getUserGuideVisible(): boolean {
+  return state.userGuideVisible;
+}
+
+export function setUserGuideVisible(visible: boolean): void {
+  if (state.userGuideVisible === visible) return;
+  state.userGuideVisible = visible;
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -506,6 +522,7 @@ export function getSnapshot(): AppState {
     inputsSections: { ...state.inputsSections },
     netFlowChartStyle: state.netFlowChartStyle,
     userGuideExpanded: state.userGuideExpanded,
+    userGuideVisible: state.userGuideVisible,
     recentTargetResourceIds: [...state.recentTargetResourceIds],
   };
 }

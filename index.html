@@ -17,7 +17,18 @@
           width="200"
         />
         <div class="app-brand-text">
-          <h1>Resource Calculator</h1>
+          <div class="app-heading-row">
+            <h1>Resource Calculator</h1>
+            <button
+              type="button"
+              id="show-user-guide"
+              class="btn btn-secondary app-show-user-guide"
+              hidden
+              aria-label="Show how to use this calculator"
+            >
+              Show guide
+            </button>
+          </div>
           <p class="subtitle">Production chains, base resources, and net flow</p>
         </div>
       </div>
@@ -59,11 +70,22 @@
   </header>
 
   <section
+    id="user-guide-panel"
     class="panel panel-user-guide"
     aria-label="How to use this calculator"
   >
     <details class="results-section" id="user-guide" open>
-      <summary class="results-section-summary">How to use this calculator</summary>
+      <summary class="results-section-summary user-guide-summary">
+        <span class="user-guide-summary-heading">How to use this calculator</span>
+        <button
+          type="button"
+          id="user-guide-dismiss"
+          class="btn btn-secondary user-guide-dismiss"
+          aria-label="Dismiss user guide"
+        >
+          Dismiss
+        </button>
+      </summary>
       <div class="results-section-body user-guide-body">
         <ul class="user-guide-list">
           <li><strong>Target</strong> — Search or browse by category, then set your desired <strong>output rate per minute</strong>.</li>

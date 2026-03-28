@@ -131,8 +131,10 @@ export interface AppState {
   inputsSections: InputsSectionsState;
   /** Chart.js presentation for the net flow chart. */
   netFlowChartStyle: NetFlowChartStyle;
-  /** Top-of-page user guide `<details>` expanded. */
+  /** Top-of-page user guide `<details>` expanded (when visible). */
   userGuideExpanded: boolean;
+  /** Whether the user guide panel is shown; when false, use header "Show guide" to restore. */
+  userGuideVisible: boolean;
   /**
    * Most-recent target resources (max 12) for quick recall under the user guide.
    */

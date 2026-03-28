@@ -12,7 +12,7 @@ import {
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 11;
+const STATE_VERSION = 12;
 
 /**
  * Write the current application state to localStorage.
@@ -132,7 +132,6 @@ export function migrateEnvelopeToAppState(
       resourceId: d.resourceId,
       targetRate: d.targetRate,
       targetRecipeIdx: 0,
-      baseRequirementsMode: "direct",
       production: d.production ?? {},
       productionExtraIds: Array.isArray(d.productionExtraIds)
         ? d.productionExtraIds
@@ -143,6 +142,8 @@ export function migrateEnvelopeToAppState(
       inputsSections: { production: true, presets: true },
       netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
       userGuideExpanded: true,
+      userGuideVisible: true,
+      recentTargetResourceIds: [],
     };
     version = 2;
   }
@@ -259,6 +260,15 @@ export function migrateEnvelopeToAppState(
         : [],
     };
     version = 11;
+  }
+
+  if (version === 11) {
+    const d = data as AppState & { userGuideVisible?: boolean };
+    data = {
+      ...d,
+      userGuideVisible: d.userGuideVisible ?? true,
+    };
+    version = 12;
   }
 
   if (version !== STATE_VERSION) {

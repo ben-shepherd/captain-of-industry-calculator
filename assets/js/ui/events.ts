@@ -26,6 +26,8 @@ import {
   setNetFlowChartStyle,
   getUserGuideExpanded,
   setUserGuideExpanded,
+  getUserGuideVisible,
+  setUserGuideVisible,
   getSnapshot,
   applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
@@ -120,12 +122,23 @@ export function applyInputsSectionOpenStateFromStore(): void {
 }
 
 /**
- * Sync top user guide `<details open>` from persisted state.
+ * Sync user guide panel visibility, header "Show guide" control, and `<details open>` from state.
  */
-export function applyUserGuideOpenStateFromStore(): void {
-  const el = document.getElementById("user-guide") as HTMLDetailsElement | null;
-  if (!el) return;
-  el.open = getUserGuideExpanded();
+export function applyUserGuideFromStore(): void {
+  const panel = document.getElementById("user-guide-panel");
+  const details = document.getElementById("user-guide") as HTMLDetailsElement | null;
+  const showBtn = document.getElementById(
+    "show-user-guide",
+  ) as HTMLButtonElement | null;
+  if (!panel || !details) return;
+  const visible = getUserGuideVisible();
+  panel.hidden = !visible;
+  if (showBtn) {
+    showBtn.hidden = visible;
+  }
+  if (visible) {
+    details.open = getUserGuideExpanded();
+  }
 }
 
 /**
@@ -295,7 +308,7 @@ export function bindEvents(els: AppElements): void {
     netFlowChartStyleSelect.value = getNetFlowChartStyle();
     applyResultsSectionOpenStateFromStore();
     applyInputsSectionOpenStateFromStore();
-    applyUserGuideOpenStateFromStore();
+    applyUserGuideFromStore();
     syncBaseRequirementsModeButtons();
     updateResults(resultEls);
     renderRecentTargets(els.recentTargetResourcesWrap);
@@ -647,6 +660,7 @@ export function bindEvents(els: AppElements): void {
 
   window.addEventListener("coi-state-persisted", () => {
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
+    applyUserGuideFromStore();
   });
 
   exportSavedDataButton.addEventListener("click", () => {
@@ -762,10 +776,32 @@ export function bindEvents(els: AppElements): void {
   const userGuide = document.getElementById(
     "user-guide",
   ) as HTMLDetailsElement | null;
+  const userGuideDismiss = document.getElementById(
+    "user-guide-dismiss",
+  ) as HTMLButtonElement | null;
+  const showUserGuideBtn = document.getElementById(
+    "show-user-guide",
+  ) as HTMLButtonElement | null;
+
   if (userGuide) {
-    applyUserGuideOpenStateFromStore();
+    applyUserGuideFromStore();
     userGuide.addEventListener("toggle", () => {
+      if (!getUserGuideVisible()) return;
       setUserGuideExpanded(userGuide.open);
+    });
+  }
+
+  if (userGuideDismiss) {
+    userGuideDismiss.addEventListener("click", (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setUserGuideVisible(false);
+    });
+  }
+
+  if (showUserGuideBtn) {
+    showUserGuideBtn.addEventListener("click", () => {
+      setUserGuideVisible(true);
     });
   }
 }

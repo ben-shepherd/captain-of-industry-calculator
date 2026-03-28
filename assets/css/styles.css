@@ -99,6 +99,24 @@ body {
   line-height: 1.25;
 }
 
+.app-heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.app-heading-row h1 {
+  margin: 0;
+  flex: 1;
+  min-width: min(100%, 12rem);
+}
+
+.app-show-user-guide {
+  flex-shrink: 0;
+}
+
 .subtitle {
   color: var(--color-balanced);
   font-size: 0.8rem;
@@ -372,6 +390,24 @@ body {
 
 .user-guide-list li {
   padding-left: 0.15rem;
+}
+
+.panel-user-guide .user-guide-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.panel-user-guide .user-guide-summary .user-guide-summary-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-user-guide .user-guide-dismiss {
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 /* Recent resources: standalone strip below the user guide (no panel box). */

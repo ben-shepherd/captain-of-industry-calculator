@@ -20,6 +20,7 @@ const minimalState: AppState = {
   inputsSections: { production: true, presets: true },
   netFlowChartStyle: "line",
   userGuideExpanded: true,
+  userGuideVisible: true,
 };
 
 function createStorageStub() {
