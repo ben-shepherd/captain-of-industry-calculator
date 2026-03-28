@@ -99,6 +99,24 @@ body {
   line-height: 1.25;
 }
 
+.app-heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.app-heading-row h1 {
+  margin: 0;
+  flex: 1;
+  min-width: min(100%, 12rem);
+}
+
+.app-show-user-guide {
+  flex-shrink: 0;
+}
+
 .subtitle {
   color: var(--color-balanced);
   font-size: 0.8rem;
@@ -159,6 +177,27 @@ body {
   }
 }
 
+.panel-user-guide {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--gap);
+}
+
+.app-target-panel {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--gap);
+  border-width: 2px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.app-target-panel-body {
+  padding-left: 0.15rem;
+  padding-bottom: 0.25rem;
+}
+
 .app-footer {
   margin-top: var(--gap);
 }
@@ -217,14 +256,26 @@ body {
   padding: var(--gap);
 }
 
-.panel.panel-inputs,
 .panel.panel-results {
   overflow-x: auto;
   overflow-y: visible;
+  position: relative;
+  z-index: 0;
 }
 
+/* Must not mix overflow-x: auto with visible on the other axis (spec forces y to auto and clips
+   absolutely positioned pickers). Target panel only needs visible overflow for dropdowns. */
+.panel.app-target-panel {
+  overflow: visible;
+}
+
+/* Same as target panel: inputs column has resource pickers that must extend below the panel.
+   Stack above `.panel-results` so open dropdowns paint over the adjacent column. */
 .panel.panel-inputs {
+  overflow: visible;
   padding-bottom: calc(var(--gap) + 0.5rem);
+  position: relative;
+  z-index: 1;
 }
 
 .panel h2:first-of-type {
@@ -257,12 +308,16 @@ body {
    Collapsible panel sections (results + configuration)
 ========================= */
 .panel-results .results-section,
-.panel-inputs .results-section {
+.panel-inputs .results-section,
+.app-target-panel .results-section,
+.panel-user-guide .results-section {
   margin-bottom: 0.5rem;
 }
 
 .panel-results .results-section:last-child,
-.panel-inputs .results-section:last-child {
+.panel-inputs .results-section:last-child,
+.app-target-panel .results-section:last-child,
+.panel-user-guide .results-section:last-child {
   margin-bottom: 0;
 }
 
@@ -271,7 +326,9 @@ body {
 }
 
 .panel-results .results-section-summary,
-.panel-inputs .results-section-summary {
+.panel-inputs .results-section-summary,
+.app-target-panel .results-section-summary,
+.panel-user-guide .results-section-summary {
   color: var(--color-heading);
   font-size: 1.05rem;
   font-weight: 700;
@@ -285,12 +342,16 @@ body {
 }
 
 .panel-results .results-section-summary::-webkit-details-marker,
-.panel-inputs .results-section-summary::-webkit-details-marker {
+.panel-inputs .results-section-summary::-webkit-details-marker,
+.app-target-panel .results-section-summary::-webkit-details-marker,
+.panel-user-guide .results-section-summary::-webkit-details-marker {
   display: none;
 }
 
 .panel-results .results-section-summary::before,
-.panel-inputs .results-section-summary::before {
+.panel-inputs .results-section-summary::before,
+.app-target-panel .results-section-summary::before,
+.panel-user-guide .results-section-summary::before {
   content: "";
   display: inline-block;
   width: 0.45em;
@@ -304,14 +365,120 @@ body {
 }
 
 .panel-results .results-section[open] .results-section-summary::before,
-.panel-inputs .results-section[open] .results-section-summary::before {
+.panel-inputs .results-section[open] .results-section-summary::before,
+.app-target-panel .results-section[open] .results-section-summary::before,
+.panel-user-guide .results-section[open] .results-section-summary::before {
   transform: rotate(45deg);
   margin-bottom: 0.1em;
 }
 
 .panel-results .results-section-body,
-.panel-inputs .results-section-body {
+.panel-inputs .results-section-body,
+.app-target-panel .results-section-body,
+.panel-user-guide .results-section-body {
   padding-left: 0.15rem;
+}
+
+.user-guide-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.user-guide-list li {
+  padding-left: 0.15rem;
+}
+
+.panel-user-guide .user-guide-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.panel-user-guide .user-guide-summary .user-guide-summary-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-user-guide .user-guide-dismiss {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* Recent resources: standalone strip below the user guide (no panel box). */
+.recent-resources-section {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--gap);
+  padding: 0 0.35rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.recent-resources-heading {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.recent-resources {
+  margin: 0;
+  min-height: 1.5rem;
+}
+
+.recent-resources-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-balanced);
+}
+
+.recent-resources-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recent-resources-item {
+  margin: 0;
+}
+
+button.recent-resource-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.2rem 0.45rem 0.2rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-heading));
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+button.recent-resource-chip .resource-label-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 11rem;
+}
+
+button.recent-resource-chip .resource-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .panel-inputs .results-section-body {
@@ -611,6 +778,17 @@ input.input-invalid {
   margin-top: 0.75rem;
 }
 
+.resource-picker-empty {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--color-balanced);
+}
+
+.production-add-picker-wrap .resource-picker-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .production-row {
   display: flex;
   align-items: center;
@@ -874,6 +1052,64 @@ input.input-invalid {
 }
 
 /* =========================
+   Net flow chart (Chart.js, bottom of page)
+========================= */
+.net-flow-chart-panel {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: var(--gap);
+}
+
+.net-flow-chart-root {
+  min-height: 0.5rem;
+}
+
+.net-flow-chart-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.net-flow-chart-toolbar label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--color-accent) 55%, var(--color-balanced));
+}
+
+.net-flow-chart-toolbar select {
+  min-width: 12rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-recipe-border);
+  border-radius: 6px;
+}
+
+.net-flow-chart-legend {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--color-text) 88%, transparent);
+  margin-bottom: 0.75rem;
+  line-height: 1.45;
+}
+
+.net-flow-chart-empty {
+  font-size: 0.9rem;
+  color: var(--color-balanced);
+  margin: 0;
+}
+
+.net-flow-chart-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* =========================
    Dependency Tree
 ========================= */
 .tree-toolbar {
@@ -1003,18 +1239,21 @@ input.input-invalid {
 /* =========================
    Target resource recipe diagram (compact, collapsible)
 ========================= */
-.panel-inputs .recipe-diagram-section.results-section {
+.panel-inputs .recipe-diagram-section.results-section,
+.app-target-panel .recipe-diagram-section.results-section {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
 
-.panel-inputs .recipe-diagram-section .results-section-summary {
+.panel-inputs .recipe-diagram-section .results-section-summary,
+.app-target-panel .recipe-diagram-section .results-section-summary {
   font-size: 0.88rem;
   padding: 0.28rem 0.4rem 0.28rem 0.5rem;
   margin-bottom: 0.25rem;
 }
 
-.panel-inputs .recipe-diagram-section .results-section-body {
+.panel-inputs .recipe-diagram-section .results-section-body,
+.app-target-panel .recipe-diagram-section .results-section-body {
   padding-bottom: 0.25rem;
 }
 
@@ -1058,13 +1297,18 @@ input.input-invalid {
   padding: 0;
 }
 
-.recipe-card {
+.recipe-card-li {
+  list-style: none;
+}
+
+button.recipe-card {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.3rem 0.45rem;
   width: 100%;
   margin: 0;
+  box-sizing: border-box;
   padding: 0.3rem 0.4rem;
   border: 1px solid var(--color-recipe-border);
   border-radius: 4px;
@@ -1073,19 +1317,18 @@ input.input-invalid {
   color: inherit;
   text-align: left;
   cursor: pointer;
-  box-sizing: border-box;
 }
 
-.recipe-card:hover {
+button.recipe-card:hover {
   border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-recipe-border));
 }
 
-.recipe-card:focus-visible {
+button.recipe-card:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-.recipe-card[aria-pressed="true"] {
+button.recipe-card[aria-pressed="true"] {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent);
 }
@@ -1235,7 +1478,7 @@ input.input-invalid {
 }
 
 @media (max-width: 640px) {
-  .recipe-card-item .recipe-card {
+  .recipe-card-item button.recipe-card {
     flex-direction: column;
     align-items: stretch;
   }

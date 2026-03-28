@@ -83,7 +83,7 @@ function recipeCardHtml(
     + `<path d="M8 4.5V8l2.5 1.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`
     + `</svg>`;
 
-  const ariaLabel = `Use ${building} recipe for calculator`;
+  const ariaLabel = `Use recipe: ${recipe.name} (${building})`;
   const pressed = selected ? "true" : "false";
 
   return (

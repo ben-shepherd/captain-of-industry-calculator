@@ -1,4 +1,8 @@
-import type { AppState, PersistedEnvelope } from '../contracts';
+import {
+  NET_FLOW_CHART_STYLE_DEFAULT,
+  type AppState,
+  type PersistedEnvelope,
+} from '../contracts';
 
 /**
  * Persist and restore user state via localStorage.
@@ -8,7 +12,7 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 7;
+const STATE_VERSION = 12;
 
 /**
  * Write the current application state to localStorage.
@@ -136,7 +140,11 @@ export function migrateEnvelopeToAppState(
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { base: true, net: true, tree: false },
-      inputsSections: { target: true, production: true, presets: true },
+      inputsSections: { production: true, presets: true },
+      netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
+      userGuideExpanded: true,
+      userGuideVisible: true,
+      recentTargetResourceIds: [],
     };
     version = 2;
   }
@@ -178,7 +186,6 @@ export function migrateEnvelopeToAppState(
     data = {
       ...d,
       inputsSections: {
-        target: ins?.target ?? true,
         production: ins?.production ?? true,
         presets: ins?.presets ?? true,
       },
@@ -194,7 +201,7 @@ export function migrateEnvelopeToAppState(
         typeof d.targetRecipeIdx === "number" && Number.isInteger(d.targetRecipeIdx)
           ? d.targetRecipeIdx
           : 0,
-    };
+    } as AppState;
     version = 6;
   }
 
@@ -204,8 +211,65 @@ export function migrateEnvelopeToAppState(
       ...d,
       baseRequirementsMode:
         d.baseRequirementsMode === "full" ? "full" : "direct",
-    };
+    } as AppState;
     version = 7;
+  }
+
+  if (version === 7) {
+    const d = data as AppState & {
+      inputsSections?: AppState["inputsSections"] & { target?: boolean };
+    };
+    const ins = d.inputsSections;
+    data = {
+      ...d,
+      inputsSections: {
+        production: ins?.production ?? true,
+        presets: ins?.presets ?? true,
+      },
+    };
+    version = 8;
+  }
+
+  if (version === 8) {
+    const d = data as AppState & { netFlowChartStyle?: AppState["netFlowChartStyle"] };
+    data = {
+      ...d,
+      netFlowChartStyle: d.netFlowChartStyle ?? NET_FLOW_CHART_STYLE_DEFAULT,
+    };
+    version = 9;
+  }
+
+  if (version === 9) {
+    const d = data as AppState & { userGuideExpanded?: boolean };
+    data = {
+      ...d,
+      userGuideExpanded: d.userGuideExpanded ?? true,
+      targetRecipeIdx:
+        typeof d.targetRecipeIdx === "number" && Number.isInteger(d.targetRecipeIdx)
+          ? d.targetRecipeIdx
+          : 0,
+    };
+    version = 10;
+  }
+
+  if (version === 10) {
+    const d = data as AppState & { recentTargetResourceIds?: string[] };
+    data = {
+      ...d,
+      recentTargetResourceIds: Array.isArray(d.recentTargetResourceIds)
+        ? d.recentTargetResourceIds
+        : [],
+    };
+    version = 11;
+  }
+
+  if (version === 11) {
+    const d = data as AppState & { userGuideVisible?: boolean };
+    data = {
+      ...d,
+      userGuideVisible: d.userGuideVisible ?? true,
+    };
+    version = 12;
   }
 
   if (version !== STATE_VERSION) {

@@ -22,11 +22,18 @@ import {
   setTargetRecipeIdx,
   getBaseRequirementsMode,
   setBaseRequirementsMode,
+  getNetFlowChartStyle,
+  setNetFlowChartStyle,
+  getUserGuideExpanded,
+  setUserGuideExpanded,
+  getUserGuideVisible,
+  setUserGuideVisible,
   getSnapshot,
   applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
   type ResultsSectionKey,
 } from "../app/state";
+import type { NetFlowChartStyle } from "../contracts";
 import {
   buildExportJson,
   hasPersistedStorage,
@@ -40,6 +47,7 @@ import {
   setDependencyTreeBranchesExpanded,
   TARGET_RESOURCE_PLACEHOLDER,
   updateResults,
+  renderRecentTargets,
 } from "./controller";
 import { setResourcePickerTrigger, setResourceWikiLink } from "./resourceIcon";
 import type { ResultElements } from "./controller";
@@ -58,7 +66,8 @@ export interface AppElements extends ResultElements {
   resourceWikiLinkWrap: HTMLElement | null;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
-  productionAddSelect: HTMLSelectElement;
+  productionAddTrigger: HTMLButtonElement;
+  productionAddPanel: HTMLElement;
   productionPresetSelect: HTMLSelectElement;
   productionPresetLoadMerge: HTMLButtonElement;
   productionPresetLoadReplace: HTMLButtonElement;
@@ -73,6 +82,8 @@ export interface AppElements extends ResultElements {
   baseRequirementsFull: HTMLButtonElement;
   treeExpandAll: HTMLButtonElement;
   treeCollapseAll: HTMLButtonElement;
+  netFlowChartStyleSelect: HTMLSelectElement;
+  recentTargetResourcesWrap: HTMLElement | null;
 }
 
 const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
@@ -82,7 +93,6 @@ const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
 };
 
 const INPUTS_SECTION_IDS: Record<string, InputsSectionKey> = {
-  "config-section-target": "target",
   "config-section-production": "production",
   "config-section-presets": "presets",
 };
@@ -112,6 +122,26 @@ export function applyInputsSectionOpenStateFromStore(): void {
 }
 
 /**
+ * Sync user guide panel visibility, header "Show guide" control, and `<details open>` from state.
+ */
+export function applyUserGuideFromStore(): void {
+  const panel = document.getElementById("user-guide-panel");
+  const details = document.getElementById("user-guide") as HTMLDetailsElement | null;
+  const showBtn = document.getElementById(
+    "show-user-guide",
+  ) as HTMLButtonElement | null;
+  if (!panel || !details) return;
+  const visible = getUserGuideVisible();
+  panel.hidden = !visible;
+  if (showBtn) {
+    showBtn.hidden = visible;
+  }
+  if (visible) {
+    details.open = getUserGuideExpanded();
+  }
+}
+
+/**
  * Keep the Reset control in sync with whether localStorage holds app state.
  * (Must match `window.dispatchEvent` in `persist()` — listen on `window`, not `document`.)
  */
@@ -133,7 +163,8 @@ export function bindEvents(els: AppElements): void {
     resourceWikiLinkWrap,
     targetRateInput,
     productionFields,
-    productionAddSelect,
+    productionAddTrigger,
+    productionAddPanel,
     productionPresetSelect,
     productionPresetLoadMerge,
     productionPresetLoadReplace,
@@ -152,13 +183,16 @@ export function bindEvents(els: AppElements): void {
     treeCollapseAll,
     netBody,
     targetRecipeSection,
+    netFlowChartStyleSelect,
   } = els;
   const resultEls: ResultElements = {
     totalsBody: els.totalsBody,
     treeList: els.treeList,
     netBody: els.netBody,
+    netFlowChart: els.netFlowChart,
     productionFields: els.productionFields,
-    productionAddSelect: els.productionAddSelect,
+    productionAddTrigger: els.productionAddTrigger,
+    productionAddPanel: els.productionAddPanel,
     productionPresetSelect: els.productionPresetSelect,
     targetRecipeSection: els.targetRecipeSection,
   };
@@ -196,6 +230,10 @@ export function bindEvents(els: AppElements): void {
     ".resource-picker-wrap",
   ) as HTMLElement;
 
+  const productionAddWrap = productionAddTrigger.closest(
+    ".production-add-picker-wrap",
+  ) as HTMLElement;
+
   function closeResourcePicker(): void {
     resourcePickerPanel.hidden = true;
     resourcePickerTrigger.setAttribute("aria-expanded", "false");
@@ -204,6 +242,16 @@ export function bindEvents(els: AppElements): void {
   function openResourcePicker(): void {
     resourcePickerPanel.hidden = false;
     resourcePickerTrigger.setAttribute("aria-expanded", "true");
+  }
+
+  function closeProductionAddPicker(): void {
+    productionAddPanel.hidden = true;
+    productionAddTrigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openProductionAddPicker(): void {
+    productionAddPanel.hidden = false;
+    productionAddTrigger.setAttribute("aria-expanded", "true");
   }
 
   const RESOURCE_SEARCH_HIT_ACTIVE = "resource-search-hit-active";
@@ -257,10 +305,13 @@ export function bindEvents(els: AppElements): void {
     targetRateInput.classList.remove("input-invalid");
     productionPresetName.value = "";
     productionPresetSelect.value = "";
+    netFlowChartStyleSelect.value = getNetFlowChartStyle();
     applyResultsSectionOpenStateFromStore();
     applyInputsSectionOpenStateFromStore();
+    applyUserGuideFromStore();
     syncBaseRequirementsModeButtons();
     updateResults(resultEls);
+    renderRecentTargets(els.recentTargetResourcesWrap);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
     resetResourceSearchHighlight();
   }
@@ -281,6 +332,7 @@ export function bindEvents(els: AppElements): void {
     );
     setResourceWikiLink(resourceWikiLinkWrap, id);
     updateResults(resultEls);
+    renderRecentTargets(els.recentTargetResourcesWrap);
   }
 
   function handleResultPanelTargetClick(e: Event): void {
@@ -331,13 +383,25 @@ export function bindEvents(els: AppElements): void {
     setDependencyTreeBranchesExpanded(treeList, false);
   });
   netBody.addEventListener("click", handleResultPanelTargetClick);
+  els.recentTargetResourcesWrap?.addEventListener(
+    "click",
+    handleResultPanelTargetClick,
+  );
+
+  netFlowChartStyleSelect.addEventListener("change", () => {
+    setNetFlowChartStyle(netFlowChartStyleSelect.value as NetFlowChartStyle);
+    updateResults(resultEls);
+  });
 
   resourceSearchInput.addEventListener("input", () => {
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
     const q = resourceSearchInput.value.trim();
     setSearchListExpanded(resourceSearchInput, q !== "");
     resetResourceSearchHighlight();
-    if (q !== "") closeResourcePicker();
+    if (q !== "") {
+      closeResourcePicker();
+      closeProductionAddPicker();
+    }
   });
 
   resourceSearchInput.addEventListener("focus", () => {
@@ -429,6 +493,12 @@ export function bindEvents(els: AppElements): void {
     closeResourcePicker();
   });
 
+  document.addEventListener("click", (e: MouseEvent) => {
+    if (productionAddWrap.contains(e.target as Node)) return;
+    if (productionAddPanel.hidden) return;
+    closeProductionAddPicker();
+  });
+
   resourcePickerTrigger.addEventListener("click", (e: MouseEvent) => {
     e.stopPropagation();
     if (!resourcePickerPanel.hidden) {
@@ -440,6 +510,7 @@ export function bindEvents(els: AppElements): void {
       setSearchListExpanded(resourceSearchInput, false);
       resetResourceSearchHighlight();
     }
+    closeProductionAddPicker();
     openResourcePicker();
   });
 
@@ -452,12 +523,46 @@ export function bindEvents(els: AppElements): void {
     applyTargetResource(li.dataset.resourceId);
   });
 
+  productionAddTrigger.addEventListener("click", (e: MouseEvent) => {
+    e.stopPropagation();
+    if (productionAddTrigger.disabled) return;
+    if (!productionAddPanel.hidden) {
+      closeProductionAddPicker();
+      return;
+    }
+    if (!resourceSearchResults.hidden) {
+      resourceSearchResults.hidden = true;
+      setSearchListExpanded(resourceSearchInput, false);
+      resetResourceSearchHighlight();
+    }
+    closeResourcePicker();
+    openProductionAddPicker();
+  });
+
+  productionAddPanel.addEventListener("mousedown", (e: MouseEvent) => {
+    const li = (e.target as HTMLElement).closest(
+      "li.resource-picker-option",
+    ) as HTMLLIElement | null;
+    if (!li?.dataset.resourceId) return;
+    e.preventDefault();
+    addProductionExtraId(li.dataset.resourceId);
+    closeProductionAddPicker();
+    updateResults(resultEls);
+  });
+
   document.addEventListener("keydown", (e: KeyboardEvent) => {
     if (e.key !== "Escape") return;
-    if (resourcePickerPanel.hidden) return;
-    e.preventDefault();
-    closeResourcePicker();
-    resourcePickerTrigger.focus();
+    if (!resourcePickerPanel.hidden) {
+      e.preventDefault();
+      closeResourcePicker();
+      resourcePickerTrigger.focus();
+      return;
+    }
+    if (!productionAddPanel.hidden) {
+      e.preventDefault();
+      closeProductionAddPicker();
+      productionAddTrigger.focus();
+    }
   });
 
   targetRateInput.addEventListener("input", () => {
@@ -525,14 +630,6 @@ export function bindEvents(els: AppElements): void {
     updateResults(resultEls);
   });
 
-  productionAddSelect.addEventListener("change", () => {
-    const v = productionAddSelect.value;
-    if (!v) return;
-    addProductionExtraId(v);
-    productionAddSelect.value = "";
-    updateResults(resultEls);
-  });
-
   productionPresetLoadMerge.addEventListener("click", () => {
     const id = productionPresetSelect.value;
     if (!id) return;
@@ -563,6 +660,7 @@ export function bindEvents(els: AppElements): void {
 
   window.addEventListener("coi-state-persisted", () => {
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
+    applyUserGuideFromStore();
   });
 
   exportSavedDataButton.addEventListener("click", () => {
@@ -673,6 +771,38 @@ export function bindEvents(els: AppElements): void {
   ) as HTMLElement | null;
   if (panelInputs) {
     bindInputsSectionPersistence(panelInputs);
+  }
+
+  const userGuide = document.getElementById(
+    "user-guide",
+  ) as HTMLDetailsElement | null;
+  const userGuideDismiss = document.getElementById(
+    "user-guide-dismiss",
+  ) as HTMLButtonElement | null;
+  const showUserGuideBtn = document.getElementById(
+    "show-user-guide",
+  ) as HTMLButtonElement | null;
+
+  if (userGuide) {
+    applyUserGuideFromStore();
+    userGuide.addEventListener("toggle", () => {
+      if (!getUserGuideVisible()) return;
+      setUserGuideExpanded(userGuide.open);
+    });
+  }
+
+  if (userGuideDismiss) {
+    userGuideDismiss.addEventListener("click", (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setUserGuideVisible(false);
+    });
+  }
+
+  if (showUserGuideBtn) {
+    showUserGuideBtn.addEventListener("click", () => {
+      setUserGuideVisible(true);
+    });
   }
 }
 

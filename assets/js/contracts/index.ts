@@ -96,15 +96,25 @@ export interface ResultsSectionsState {
 
 /** Which configuration panel sections are expanded (`<details open>`). */
 export interface InputsSectionsState {
-  target: boolean;
   production: boolean;
   presets: boolean;
 }
 
+/** Net flow chart visualization (bottom of page). */
+export type NetFlowChartStyle =
+  | "horizontal-grouped"
+  | "vertical-grouped"
+  | "line";
+
+export const NET_FLOW_CHART_STYLE_DEFAULT: NetFlowChartStyle = "line";
+
 export interface AppState {
   resourceId: string;
   targetRate: number;
-  /** Index into `resources[resourceId].recipes` for the root resolve step. */
+  /**
+   * Index into {@link ResourceDef.recipes} for the current target resource.
+   * Must be a recipe that lists the target in `outputs`. Used as the root resolve step.
+   */
   targetRecipeIdx: number;
   /** `direct` = one recipe step; `full` = expand to leaf resources. */
   baseRequirementsMode: BaseRequirementsMode;
@@ -117,8 +127,18 @@ export interface AppState {
   productionPresets: ProductionPreset[];
   /** Collapsible results sections (Base / Net Flow / Dependency Tree). */
   resultsSections: ResultsSectionsState;
-  /** Collapsible configuration sections (target / production / presets). */
+  /** Collapsible configuration sections (production / presets). */
   inputsSections: InputsSectionsState;
+  /** Chart.js presentation for the net flow chart. */
+  netFlowChartStyle: NetFlowChartStyle;
+  /** Top-of-page user guide `<details>` expanded (when visible). */
+  userGuideExpanded: boolean;
+  /** Whether the user guide panel is shown; when false, use header "Show guide" to restore. */
+  userGuideVisible: boolean;
+  /**
+   * Most-recent target resources (max 12) for quick recall under the user guide.
+   */
+  recentTargetResourceIds: string[];
 }
 
 export interface PersistedEnvelope {

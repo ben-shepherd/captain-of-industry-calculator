@@ -12,29 +12,36 @@ import {
   getResourceId,
   getTargetRate,
   getTargetRecipeIdx,
+  getRecentTargetResourceIds,
   getProduction,
   getProductionExtraIds,
   getProductionDismissedIds,
   getProductionPresets,
+  getNetFlowChartStyle,
 } from '../app/state';
 import {
   getRelevantProductionResourceIds,
   refreshProductionFields,
-  updateProductionAddSelect,
+  renderProductionAddPicker,
 } from './productionView';
 import {
+  escapeHtml,
   resourceLabelWithIconHtml,
   setResourcePickerTrigger,
   setResourceWikiLink,
 } from './resourceIcon';
 import { renderTargetRecipeDiagram } from './recipeDiagram';
+import { renderNetFlowChart } from './netFlowChart';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
   treeList: HTMLElement;
   netBody: HTMLElement;
+  /** Bottom-of-page net flow diagram; optional for tests or stripped layouts. */
+  netFlowChart?: HTMLElement | null;
   productionFields?: HTMLElement;
-  productionAddSelect?: HTMLSelectElement;
+  productionAddTrigger?: HTMLButtonElement;
+  productionAddPanel?: HTMLElement;
   productionPresetSelect?: HTMLSelectElement;
   targetRecipeSection?: HTMLDetailsElement | null;
 }
@@ -178,12 +185,43 @@ export function renderResourceOptions(
   }
 }
 
+const RECENT_RESOURCES_EMPTY =
+  `<p class="recent-resources-empty">No recent resources yet — pick a resource below.</p>`;
+
+/**
+ * Fill the “Recent resources” area with chips (icon + label).
+ */
+export function renderRecentTargets(container: HTMLElement | null): void {
+  if (!container) return;
+  const ids = getRecentTargetResourceIds();
+  if (ids.length === 0) {
+    container.innerHTML = RECENT_RESOURCES_EMPTY;
+    return;
+  }
+  const current = getResourceId();
+  const items = ids.map((id) => {
+    const def = resources[id];
+    const label = def?.label ?? id;
+    const pressed = id === current ? "true" : "false";
+    const inner = resourceLabelWithIconHtml(id, label);
+    return (
+      `<li class="recent-resources-item" role="none">`
+      + `<button type="button" class="recent-resource-chip production-row-target" `
+      + `data-production-target="${escapeHtml(id)}" aria-pressed="${pressed}" `
+      + `aria-label="Set ${escapeHtml(label)} as target resource">${inner}</button>`
+      + `</li>`
+    );
+  });
+  container.innerHTML =
+    `<ul class="recent-resources-list" role="list">${items.join("")}</ul>`;
+}
+
 /**
  * Run the full calculation pipeline using current state and render
  * results into the provided DOM containers.
  */
 export function updateResults(els: ResultElements): void {
-  const { totalsBody, treeList, netBody } = els;
+  const { totalsBody, treeList, netBody, netFlowChart } = els;
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
   const targetRecipeIdx = getTargetRecipeIdx();
@@ -198,6 +236,12 @@ export function updateResults(els: ResultElements): void {
     netBody.innerHTML = row(
       ["Choose a target resource above to see net flow"],
       5,
+    );
+    renderNetFlowChart(
+      netFlowChart ?? null,
+      [],
+      "Choose a target resource above to see net flow.",
+      getNetFlowChartStyle(),
     );
     renderTargetRecipeDiagram(els.targetRecipeSection ?? null, "", 0);
     syncProductionPanel(els, {});
@@ -216,6 +260,12 @@ export function updateResults(els: ResultElements): void {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";
     netBody.innerHTML = "";
+    renderNetFlowChart(
+      netFlowChart ?? null,
+      [],
+      "Error running calculation.",
+      getNetFlowChartStyle(),
+    );
     renderTargetRecipeDiagram(
       els.targetRecipeSection ?? null,
       resourceId,
@@ -228,6 +278,12 @@ export function updateResults(els: ResultElements): void {
   renderTotals(totalsBody, result.totals);
   renderTree(treeList, result.tree);
   renderNet(netBody, result.totals, production);
+  renderNetFlowChart(
+    netFlowChart ?? null,
+    formatNetTotals(calculateNet(result.totals, production)),
+    "No net data",
+    getNetFlowChartStyle(),
+  );
   renderTargetRecipeDiagram(
     els.targetRecipeSection ?? null,
     resourceId,
@@ -242,6 +298,15 @@ const PRESET_CATEGORY_ORDER = [
   "Construction",
   "Petrochemical",
   "Electronics",
+  "Mid — Chemicals",
+  "Mid — Metals & alloys",
+  "Mid — Construction & maintenance",
+  "Mid — Electronics",
+  "Mid — Petrochemical",
+  "Late — Nuclear & power",
+  "Late — Microchips & computing",
+  "Late — High-tier construction",
+  "Late — Vehicles & space",
   "Saved",
 ];
 
@@ -306,7 +371,7 @@ function syncProductionPanel(
 ): void {
   if (els.productionFields) {
     const rebuilt = refreshProductionFields(els.productionFields, totals);
-    if (rebuilt && els.productionAddSelect) {
+    if (rebuilt && els.productionAddTrigger && els.productionAddPanel) {
       const ids = new Set(
         getRelevantProductionResourceIds(
           totals,
@@ -315,7 +380,7 @@ function syncProductionPanel(
           getProductionDismissedIds(),
         ),
       );
-      updateProductionAddSelect(els.productionAddSelect, ids);
+      renderProductionAddPicker(els.productionAddPanel, els.productionAddTrigger, ids);
     }
   }
   if (els.productionPresetSelect) {

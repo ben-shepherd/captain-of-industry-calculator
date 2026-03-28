@@ -17,7 +17,18 @@
           width="200"
         />
         <div class="app-brand-text">
-          <h1>Resource Calculator</h1>
+          <div class="app-heading-row">
+            <h1>Resource Calculator</h1>
+            <button
+              type="button"
+              id="show-user-guide"
+              class="btn btn-secondary app-show-user-guide"
+              hidden
+              aria-label="Show how to use this calculator"
+            >
+              Show guide
+            </button>
+          </div>
           <p class="subtitle">Production chains, base resources, and net flow</p>
         </div>
       </div>
@@ -58,91 +69,128 @@
     </div>
   </header>
 
+  <section
+    id="user-guide-panel"
+    class="panel panel-user-guide"
+    aria-label="How to use this calculator"
+  >
+    <details class="results-section" id="user-guide" open>
+      <summary class="results-section-summary user-guide-summary">
+        <span class="user-guide-summary-heading">How to use this calculator</span>
+        <button
+          type="button"
+          id="user-guide-dismiss"
+          class="btn btn-secondary user-guide-dismiss"
+          aria-label="Dismiss user guide"
+        >
+          Dismiss
+        </button>
+      </summary>
+      <div class="results-section-body user-guide-body">
+        <ul class="user-guide-list">
+          <li><strong>Target</strong> — Search or browse by category, then set your desired <strong>output rate per minute</strong>.</li>
+          <li><strong>Configuration</strong> — Under <strong>Your production</strong>, adjust chain rates, add extra resources, or clear rows. Use <strong>Presets</strong> to save, load, merge, or replace production setups.</li>
+          <li><strong>Results</strong> — <strong>Base resources required</strong>, <strong>Net flow</strong>, and <strong>Dependency tree</strong> show the breakdown; each block can be collapsed.</li>
+          <li><strong>Net flow chart</strong> — At the bottom of the page; pick a chart style from the dropdown above the chart.</li>
+          <li><strong>Export / Import / Reset</strong> — Use the header buttons to back up your saved settings, restore from a file, or clear stored data for this browser.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="recent-resources-section" aria-label="Recent resources">
+    <h2 class="recent-resources-heading">Recent resources</h2>
+    <div id="recent-resources" class="recent-resources" aria-live="polite"></div>
+  </section>
+
+  <section
+    class="panel app-target-panel"
+    aria-label="Target resource and production rate"
+  >
+    <h2>Target resource &amp; rate</h2>
+    <div class="app-target-panel-body">
+      <div class="field field-resource-target">
+        <label for="resource-picker-trigger">Target Resource</label>
+        <div class="resource-search-wrap">
+          <input
+            type="search"
+            id="resource-search"
+            placeholder="Search resources…"
+            autocomplete="off"
+            role="combobox"
+            aria-label="Search target resources"
+            aria-expanded="false"
+            aria-controls="resource-search-results"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+          />
+          <ul
+            id="resource-search-results"
+            class="resource-search-results"
+            role="listbox"
+            aria-label="Matching resources"
+            hidden
+          ></ul>
+        </div>
+        <div class="resource-picker-wrap">
+          <button
+            type="button"
+            id="resource-picker-trigger"
+            class="resource-picker-trigger"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="resource-picker-panel"
+          >
+            Choose a resource
+          </button>
+          <div
+            id="resource-picker-panel"
+            class="resource-picker-panel"
+            role="listbox"
+            aria-label="Browse resources by category"
+            hidden
+          ></div>
+          <select
+            id="resource-select"
+            class="resource-select-sr"
+            aria-hidden="true"
+            tabindex="-1"
+          ></select>
+        </div>
+        <p
+          class="resource-wiki-link-wrap"
+          id="resource-wiki-link-wrap"
+          hidden
+        ></p>
+      </div>
+
+      <details
+        class="results-section recipe-diagram-section"
+        id="target-recipe-section"
+        hidden
+        open
+      >
+        <summary class="results-section-summary">Production recipes</summary>
+        <div class="results-section-body recipe-diagram-section-body">
+          <div
+            id="target-recipe-diagram"
+            class="target-recipe-diagram"
+            aria-live="polite"
+          ></div>
+        </div>
+      </details>
+
+      <div class="field">
+        <label for="target-rate">Target Rate (per min)</label>
+        <input id="target-rate" type="number" min="0.01" step="any" />
+      </div>
+    </div>
+  </section>
+
   <main class="app-main">
     <!-- Inputs -->
     <section class="panel panel-inputs">
       <h2>Configuration</h2>
-
-      <details class="results-section" id="config-section-target" open>
-        <summary class="results-section-summary">Target resource &amp; rate</summary>
-        <div class="results-section-body">
-          <details
-            class="results-section recipe-diagram-section"
-            id="target-recipe-section"
-            hidden
-            open
-          >
-            <summary class="results-section-summary">Production recipes</summary>
-            <div class="results-section-body recipe-diagram-section-body">
-              <div
-                id="target-recipe-diagram"
-                class="target-recipe-diagram"
-                aria-live="polite"
-              ></div>
-            </div>
-          </details>
-
-          <div class="field field-resource-target">
-            <label for="resource-picker-trigger">Target Resource</label>
-            <div class="resource-search-wrap">
-              <input
-                type="search"
-                id="resource-search"
-                placeholder="Search resources…"
-                autocomplete="off"
-                role="combobox"
-                aria-label="Search target resources"
-                aria-expanded="false"
-                aria-controls="resource-search-results"
-                aria-autocomplete="list"
-                aria-haspopup="listbox"
-              />
-              <ul
-                id="resource-search-results"
-                class="resource-search-results"
-                role="listbox"
-                aria-label="Matching resources"
-                hidden
-              ></ul>
-            </div>
-            <div class="resource-picker-wrap">
-              <button
-                type="button"
-                id="resource-picker-trigger"
-                class="resource-picker-trigger"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-controls="resource-picker-panel"
-              >
-                Choose a resource
-              </button>
-              <div
-                id="resource-picker-panel"
-                class="resource-picker-panel"
-                role="listbox"
-                aria-label="Browse resources by category"
-                hidden
-              ></div>
-              <select
-                id="resource-select"
-                class="resource-select-sr"
-                aria-hidden="true"
-                tabindex="-1"
-              ></select>
-            </div>
-            <p
-              class="resource-wiki-link-wrap"
-              id="resource-wiki-link-wrap"
-              hidden
-            ></p>
-          </div>
-
-          <div class="field">
-            <label for="target-rate">Target Rate (per min)</label>
-            <input id="target-rate" type="number" min="0.01" step="any" />
-          </div>
-        </div>
-      </details>
 
       <details class="results-section" id="config-section-production" open>
         <summary class="results-section-summary production-section-summary">
@@ -153,8 +201,26 @@
           <p class="production-hint">Shows your dependency chain, saved rates, and added resources. × clears the row; chain resources stay hidden until you change target or add them again.</p>
           <div id="production-fields"></div>
           <div class="field production-add-field">
-            <label for="production-add-select">Add resource</label>
-            <select id="production-add-select" aria-label="Add production for another resource"></select>
+            <label for="production-add-trigger">Add resource</label>
+            <div class="resource-picker-wrap production-add-picker-wrap">
+              <button
+                type="button"
+                id="production-add-trigger"
+                class="resource-picker-trigger production-add-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="production-add-panel"
+              >
+                Add a resource…
+              </button>
+              <div
+                id="production-add-panel"
+                class="resource-picker-panel"
+                role="listbox"
+                aria-label="Add production for a resource by category"
+                hidden
+              ></div>
+            </div>
           </div>
         </div>
       </details>
@@ -252,6 +318,26 @@
       </details>
     </section>
   </main>
+
+  <section
+    class="panel net-flow-chart-panel"
+    aria-label="Net flow chart"
+  >
+    <h2 class="net-flow-chart-heading">Net flow chart</h2>
+    <div class="net-flow-chart-toolbar">
+      <label for="net-flow-chart-style">Chart style</label>
+      <select id="net-flow-chart-style" aria-label="Net flow chart style">
+        <option value="line">Line chart</option>
+        <option value="horizontal-grouped">Horizontal grouped bars</option>
+        <option value="vertical-grouped">Vertical grouped bars</option>
+      </select>
+    </div>
+    <div
+      id="net-flow-chart"
+      class="net-flow-chart-root"
+      aria-live="polite"
+    ></div>
+  </section>
 
   <footer class="app-footer">
     <div class="app-footer-inner">

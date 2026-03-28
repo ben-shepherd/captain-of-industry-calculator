@@ -35,6 +35,13 @@ describe("built-in production presets", () => {
     expect(p?.production.ironOre).toBe(120);
   });
 
+  it("exposes mid-game phase+domain built-in preset", () => {
+    const p = findProductionPresetById("builtin-mid-chemicals-hub");
+    expect(p?.isBuiltin).toBe(true);
+    expect(p?.category).toBe("Mid — Chemicals");
+    expect(p?.production.hydrogen).toBe(48);
+  });
+
   it("replaces production with a built-in preset only", () => {
     setProduction("cement", 100);
     applyProductionPresetReplace("builtin-smelting-basic");

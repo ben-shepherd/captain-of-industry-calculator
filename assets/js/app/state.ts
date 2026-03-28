@@ -2,12 +2,14 @@ import { indexOfFirstProducingRecipe } from '../calculator/recipePick';
 import { resources } from '../data/resources';
 import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
 import { clearState, loadState, saveState } from './persistence';
-import type {
-  AppState,
-  BaseRequirementsMode,
-  InputsSectionsState,
-  ProductionPreset,
-  ResultsSectionsState,
+import {
+  NET_FLOW_CHART_STYLE_DEFAULT,
+  type AppState,
+  type BaseRequirementsMode,
+  type InputsSectionsState,
+  type NetFlowChartStyle,
+  type ProductionPreset,
+  type ResultsSectionsState,
 } from '../contracts';
 
 /**
@@ -24,22 +26,27 @@ const DEFAULT_RESULTS_SECTIONS: ResultsSectionsState = {
 };
 
 const DEFAULT_INPUTS_SECTIONS: InputsSectionsState = {
-  target: true,
   production: true,
   presets: true,
 };
+
+const MAX_RECENT_TARGET_RESOURCES = 12;
 
 const DEFAULT_STATE: AppState = {
   resourceId: "",
   targetRate: 12,
   targetRecipeIdx: 0,
   baseRequirementsMode: "direct",
+  recentTargetResourceIds: [],
   production: {},
   productionExtraIds: [],
   productionDismissedIds: [],
   productionPresets: [],
   resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
   inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
+  netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
+  userGuideExpanded: true,
+  userGuideVisible: true,
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -77,6 +84,19 @@ function normalizeTargetRecipeIdx(resourceId: string, idx: unknown): number {
  * Replace in-memory state from a persisted snapshot, validate against current
  * resource definitions, and persist to localStorage.
  */
+function clampTargetRecipeIdx(resourceId: string, idx: number): number {
+  const def = resources[resourceId];
+  if (!def) return 0;
+  const valid: number[] = [];
+  for (let i = 0; i < def.recipes.length; i++) {
+    const recipe = def.recipes[i];
+    if (recipe && (recipe.outputs[resourceId] ?? 0) > 0) valid.push(i);
+  }
+  if (valid.length === 0) return 0;
+  if (valid.includes(idx)) return idx;
+  return valid[0] ?? 0;
+}
+
 export function applyLoadedState(saved: AppState): void {
   state = { ...DEFAULT_STATE, ...saved };
   if (!resources[state.resourceId]) {
@@ -85,6 +105,13 @@ export function applyLoadedState(saved: AppState): void {
   if (!isValidTargetRate(state.targetRate)) {
     state.targetRate = DEFAULT_STATE.targetRate;
   }
+  const rawIdx = state.targetRecipeIdx;
+  state.targetRecipeIdx = clampTargetRecipeIdx(
+    state.resourceId,
+    typeof rawIdx === "number" && Number.isInteger(rawIdx) && rawIdx >= 0
+      ? rawIdx
+      : 0,
+  );
   const prod: Record<string, number> = {};
   for (const [id, amt] of Object.entries(state.production)) {
     if (resources[id]) prod[id] = amt;
@@ -105,6 +132,12 @@ export function applyLoadedState(saved: AppState): void {
   );
   state.baseRequirementsMode = normalizeBaseRequirementsMode(
     state.baseRequirementsMode,
+  );
+  state.netFlowChartStyle = normalizeNetFlowChartStyle(state.netFlowChartStyle);
+  state.userGuideExpanded = normalizeUserGuideExpanded(state.userGuideExpanded);
+  state.userGuideVisible = normalizeUserGuideVisible(state.userGuideVisible);
+  state.recentTargetResourceIds = normalizeRecentTargetResourceIds(
+    state.recentTargetResourceIds,
   );
   persist();
 }
@@ -134,7 +167,6 @@ function normalizeInputsSections(
   is: AppState["inputsSections"] | undefined,
 ): InputsSectionsState {
   return {
-    target: is?.target ?? true,
     production: is?.production ?? true,
     presets: is?.presets ?? true,
   };
@@ -157,6 +189,42 @@ export function setBaseRequirementsMode(mode: BaseRequirementsMode): void {
   persist();
 }
 
+const NET_FLOW_CHART_STYLES: readonly NetFlowChartStyle[] = [
+  "horizontal-grouped",
+  "vertical-grouped",
+  "line",
+];
+
+function normalizeNetFlowChartStyle(v: unknown): NetFlowChartStyle {
+  return NET_FLOW_CHART_STYLES.includes(v as NetFlowChartStyle)
+    ? (v as NetFlowChartStyle)
+    : NET_FLOW_CHART_STYLE_DEFAULT;
+}
+
+function normalizeUserGuideExpanded(v: unknown): boolean {
+  return typeof v === "boolean" ? v : true;
+}
+
+function normalizeUserGuideVisible(v: unknown): boolean {
+  return typeof v === "boolean" ? v : true;
+}
+
+function normalizeRecentTargetResourceIds(
+  raw: unknown,
+): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const item of raw) {
+    if (typeof item !== "string" || !resources[item]) continue;
+    if (seen.has(item)) continue;
+    seen.add(item);
+    out.push(item);
+    if (out.length >= MAX_RECENT_TARGET_RESOURCES) break;
+  }
+  return out;
+}
+
 export function getResourceId(): string {
   return state.resourceId;
 }
@@ -166,6 +234,12 @@ export function setResourceId(id: string): void {
   state.resourceId = id;
   state.productionDismissedIds = [];
   state.targetRecipeIdx = firstProducingRecipeIndex(id);
+  if (id) {
+    state.recentTargetResourceIds = [
+      id,
+      ...state.recentTargetResourceIds.filter((x) => x !== id),
+    ].slice(0, MAX_RECENT_TARGET_RESOURCES);
+  }
   persist();
 }
 
@@ -183,6 +257,10 @@ export function setTargetRecipeIdx(idx: number): void {
   if (state.targetRecipeIdx === idx) return;
   state.targetRecipeIdx = idx;
   persist();
+}
+
+export function getRecentTargetResourceIds(): readonly string[] {
+  return state.recentTargetResourceIds;
 }
 
 export function getTargetRate(): number {
@@ -391,6 +469,37 @@ export function setInputsSectionExpanded(
   persist();
 }
 
+export function getNetFlowChartStyle(): NetFlowChartStyle {
+  return state.netFlowChartStyle;
+}
+
+export function setNetFlowChartStyle(style: NetFlowChartStyle): void {
+  const next = normalizeNetFlowChartStyle(style);
+  if (state.netFlowChartStyle === next) return;
+  state.netFlowChartStyle = next;
+  persist();
+}
+
+export function getUserGuideExpanded(): boolean {
+  return state.userGuideExpanded;
+}
+
+export function setUserGuideExpanded(expanded: boolean): void {
+  if (state.userGuideExpanded === expanded) return;
+  state.userGuideExpanded = expanded;
+  persist();
+}
+
+export function getUserGuideVisible(): boolean {
+  return state.userGuideVisible;
+}
+
+export function setUserGuideVisible(visible: boolean): void {
+  if (state.userGuideVisible === visible) return;
+  state.userGuideVisible = visible;
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -411,12 +520,18 @@ export function getSnapshot(): AppState {
     })),
     resultsSections: { ...state.resultsSections },
     inputsSections: { ...state.inputsSections },
+    netFlowChartStyle: state.netFlowChartStyle,
+    userGuideExpanded: state.userGuideExpanded,
+    userGuideVisible: state.userGuideVisible,
+    recentTargetResourceIds: [...state.recentTargetResourceIds],
   };
 }
 
 export function resetState(): void {
   state = {
     ...DEFAULT_STATE,
+    targetRecipeIdx: 0,
+    recentTargetResourceIds: [],
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],
@@ -435,6 +550,8 @@ export function wipeAllPersistedDataAndResetToDefaults(): void {
   clearState();
   state = {
     ...DEFAULT_STATE,
+    targetRecipeIdx: 0,
+    recentTargetResourceIds: [],
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],

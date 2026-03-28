@@ -1,4 +1,4 @@
-import { resources, getResourceEntriesInPickerOrder } from "../data/resources";
+import { resources, getResourcePickerGroups } from "../data/resources";
 import { resourceLabelWithIconHtml } from "./resourceIcon";
 import {
   getProduction,
@@ -7,7 +7,8 @@ import {
   getResourceId,
 } from "../app/state";
 
-let lastMembershipKey = "";
+/** `null` forces the first sync to build rows so the add picker is populated even when the list is empty. */
+let lastMembershipKey: string | null = null;
 
 /** Keys from the last `refreshProductionFields` totals map (current chain required). */
 let lastRequiredTotalsKeys = new Set<string>();
@@ -64,7 +65,7 @@ export function refreshProductionFields(
   );
   lastRequiredTotalsKeys = new Set(Object.keys(totals));
   const key = membershipKey(ids);
-  if (key !== lastMembershipKey) {
+  if (lastMembershipKey === null || key !== lastMembershipKey) {
     lastMembershipKey = key;
     container.innerHTML = buildRowsHtml(ids);
     return true;
@@ -127,23 +128,54 @@ function buildRowsHtml(ids: string[]): string {
     .join("");
 }
 
+/** Shown on the add-production trigger when resources can still be added. */
+export const PRODUCTION_ADD_PLACEHOLDER = "Add a resource…";
+
 /**
- * Options for resources not already listed in the production panel.
+ * Categorized picker (icons + labels) for resources not already in the production panel.
+ * Disables the trigger when every resource is already listed.
  */
-export function updateProductionAddSelect(
-  selectEl: HTMLSelectElement,
+export function renderProductionAddPicker(
+  panelEl: HTMLElement,
+  triggerEl: HTMLButtonElement,
   currentIds: Set<string>,
 ): void {
-  selectEl.replaceChildren();
-  const first = document.createElement("option");
-  first.value = "";
-  first.textContent = "— Add production for… —";
-  selectEl.appendChild(first);
-  for (const { id, label } of getResourceEntriesInPickerOrder()) {
-    if (currentIds.has(id)) continue;
-    const opt = document.createElement("option");
-    opt.value = id;
-    opt.textContent = label;
-    selectEl.appendChild(opt);
+  panelEl.replaceChildren();
+  let anyOption = false;
+  for (const group of getResourcePickerGroups()) {
+    const entries = group.entries.filter((e) => !currentIds.has(e.id));
+    if (entries.length === 0) continue;
+    anyOption = true;
+    const section = document.createElement("div");
+    section.className = "resource-picker-group";
+    const heading = document.createElement("div");
+    heading.className = "resource-picker-group-label";
+    heading.textContent = group.label;
+    section.appendChild(heading);
+    const ul = document.createElement("ul");
+    ul.className = "resource-picker-group-list";
+    ul.setAttribute("role", "presentation");
+    for (const { id, label } of entries) {
+      const li = document.createElement("li");
+      li.className = "resource-picker-option";
+      li.role = "option";
+      li.dataset.resourceId = id;
+      li.id = `production-add-option-${id}`;
+      li.innerHTML = resourceLabelWithIconHtml(id, label);
+      ul.appendChild(li);
+    }
+    section.appendChild(ul);
+    panelEl.appendChild(section);
   }
+  if (!anyOption) {
+    const empty = document.createElement("div");
+    empty.className = "resource-picker-empty";
+    empty.setAttribute("role", "presentation");
+    empty.textContent = "All resources are already listed.";
+    panelEl.appendChild(empty);
+  }
+  triggerEl.disabled = !anyOption;
+  triggerEl.textContent = anyOption
+    ? PRODUCTION_ADD_PLACEHOLDER
+    : "Nothing left to add";
 }
