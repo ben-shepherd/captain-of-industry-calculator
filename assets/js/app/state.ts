@@ -38,6 +38,7 @@ const DEFAULT_STATE: AppState = {
   resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
   inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
   netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
+  userGuideExpanded: true,
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -73,6 +74,7 @@ export function applyLoadedState(saved: AppState): void {
   state.resultsSections = normalizeResultsSections(state.resultsSections);
   state.inputsSections = normalizeInputsSections(state.inputsSections);
   state.netFlowChartStyle = normalizeNetFlowChartStyle(state.netFlowChartStyle);
+  state.userGuideExpanded = normalizeUserGuideExpanded(state.userGuideExpanded);
   persist();
 }
 
@@ -116,6 +118,10 @@ function normalizeNetFlowChartStyle(v: unknown): NetFlowChartStyle {
   return NET_FLOW_CHART_STYLES.includes(v as NetFlowChartStyle)
     ? (v as NetFlowChartStyle)
     : NET_FLOW_CHART_STYLE_DEFAULT;
+}
+
+function normalizeUserGuideExpanded(v: unknown): boolean {
+  return typeof v === "boolean" ? v : true;
 }
 
 export function getResourceId(): string {
@@ -346,6 +352,16 @@ export function setNetFlowChartStyle(style: NetFlowChartStyle): void {
   persist();
 }
 
+export function getUserGuideExpanded(): boolean {
+  return state.userGuideExpanded;
+}
+
+export function setUserGuideExpanded(expanded: boolean): void {
+  if (state.userGuideExpanded === expanded) return;
+  state.userGuideExpanded = expanded;
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -365,6 +381,7 @@ export function getSnapshot(): AppState {
     resultsSections: { ...state.resultsSections },
     inputsSections: { ...state.inputsSections },
     netFlowChartStyle: state.netFlowChartStyle,
+    userGuideExpanded: state.userGuideExpanded,
   };
 }
 

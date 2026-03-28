@@ -12,7 +12,7 @@ import {
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 9;
+const STATE_VERSION = 10;
 
 /**
  * Write the current application state to localStorage.
@@ -139,6 +139,8 @@ export function migrateEnvelopeToAppState(
       productionPresets: [],
       resultsSections: { base: true, net: true, tree: false },
       inputsSections: { production: true, presets: true },
+      netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
+      userGuideExpanded: true,
     };
     version = 2;
   }
@@ -195,7 +197,7 @@ export function migrateEnvelopeToAppState(
         typeof d.targetRecipeIdx === "number" && Number.isInteger(d.targetRecipeIdx)
           ? d.targetRecipeIdx
           : 0,
-    };
+    } as AppState;
     version = 6;
   }
 
@@ -205,7 +207,7 @@ export function migrateEnvelopeToAppState(
       ...d,
       baseRequirementsMode:
         d.baseRequirementsMode === "full" ? "full" : "direct",
-    };
+    } as AppState;
     version = 7;
   }
 
@@ -231,6 +233,15 @@ export function migrateEnvelopeToAppState(
       netFlowChartStyle: d.netFlowChartStyle ?? NET_FLOW_CHART_STYLE_DEFAULT,
     };
     version = 9;
+  }
+
+  if (version === 9) {
+    const d = data as AppState & { userGuideExpanded?: boolean };
+    data = {
+      ...d,
+      userGuideExpanded: d.userGuideExpanded ?? true,
+    };
+    version = 10;
   }
 
   if (version !== STATE_VERSION) {

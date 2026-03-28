@@ -159,6 +159,13 @@ body {
   }
 }
 
+.panel-user-guide {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--gap);
+}
+
 .app-target-panel {
   max-width: min(100%, var(--layout-max-width));
   margin-left: auto;
@@ -284,13 +291,15 @@ body {
 ========================= */
 .panel-results .results-section,
 .panel-inputs .results-section,
-.app-target-panel .results-section {
+.app-target-panel .results-section,
+.panel-user-guide .results-section {
   margin-bottom: 0.5rem;
 }
 
 .panel-results .results-section:last-child,
 .panel-inputs .results-section:last-child,
-.app-target-panel .results-section:last-child {
+.app-target-panel .results-section:last-child,
+.panel-user-guide .results-section:last-child {
   margin-bottom: 0;
 }
 
@@ -300,7 +309,8 @@ body {
 
 .panel-results .results-section-summary,
 .panel-inputs .results-section-summary,
-.app-target-panel .results-section-summary {
+.app-target-panel .results-section-summary,
+.panel-user-guide .results-section-summary {
   color: var(--color-heading);
   font-size: 1.05rem;
   font-weight: 700;
@@ -315,13 +325,15 @@ body {
 
 .panel-results .results-section-summary::-webkit-details-marker,
 .panel-inputs .results-section-summary::-webkit-details-marker,
-.app-target-panel .results-section-summary::-webkit-details-marker {
+.app-target-panel .results-section-summary::-webkit-details-marker,
+.panel-user-guide .results-section-summary::-webkit-details-marker {
   display: none;
 }
 
 .panel-results .results-section-summary::before,
 .panel-inputs .results-section-summary::before,
-.app-target-panel .results-section-summary::before {
+.app-target-panel .results-section-summary::before,
+.panel-user-guide .results-section-summary::before {
   content: "";
   display: inline-block;
   width: 0.45em;
@@ -336,14 +348,29 @@ body {
 
 .panel-results .results-section[open] .results-section-summary::before,
 .panel-inputs .results-section[open] .results-section-summary::before,
-.app-target-panel .results-section[open] .results-section-summary::before {
+.app-target-panel .results-section[open] .results-section-summary::before,
+.panel-user-guide .results-section[open] .results-section-summary::before {
   transform: rotate(45deg);
   margin-bottom: 0.1em;
 }
 
 .panel-results .results-section-body,
 .panel-inputs .results-section-body,
-.app-target-panel .results-section-body {
+.app-target-panel .results-section-body,
+.panel-user-guide .results-section-body {
+  padding-left: 0.15rem;
+}
+
+.user-guide-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.user-guide-list li {
   padding-left: 0.15rem;
 }
 

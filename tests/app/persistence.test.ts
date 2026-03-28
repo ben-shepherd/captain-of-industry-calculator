@@ -45,6 +45,7 @@ const emptyV4 = {
   resultsSections: { ...defaultResultsSections },
   inputsSections: { ...defaultInputsSections },
   netFlowChartStyle: "line" as AppState["netFlowChartStyle"],
+  userGuideExpanded: true,
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -172,6 +173,7 @@ describe("migration", () => {
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
+      userGuideExpanded: true,
     });
   });
 
@@ -201,6 +203,7 @@ describe("migration", () => {
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
+      userGuideExpanded: true,
     });
   });
 
@@ -232,6 +235,7 @@ describe("migration", () => {
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
+      userGuideExpanded: true,
     });
   });
 
@@ -264,6 +268,40 @@ describe("migration", () => {
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
+      userGuideExpanded: true,
+    });
+  });
+
+  it("migrates v9 envelope without userGuideExpanded to v10", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 9,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: {},
+          productionExtraIds: [],
+          productionDismissedIds: [],
+          productionPresets: [],
+          resultsSections: { ...defaultResultsSections },
+          inputsSections: { ...defaultInputsSections },
+          netFlowChartStyle: "line",
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      production: {},
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
+      netFlowChartStyle: "line",
+      userGuideExpanded: true,
     });
   });
 });
@@ -303,6 +341,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
+      userGuideExpanded: true,
     });
   });
 

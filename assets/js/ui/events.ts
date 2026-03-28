@@ -20,6 +20,8 @@ import {
   getTargetRate,
   getNetFlowChartStyle,
   setNetFlowChartStyle,
+  getUserGuideExpanded,
+  setUserGuideExpanded,
   getSnapshot,
   applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
@@ -107,6 +109,15 @@ export function applyInputsSectionOpenStateFromStore(): void {
     if (!el) continue;
     el.open = ins[key];
   }
+}
+
+/**
+ * Sync top user guide `<details open>` from persisted state.
+ */
+export function applyUserGuideOpenStateFromStore(): void {
+  const el = document.getElementById("user-guide") as HTMLDetailsElement | null;
+  if (!el) return;
+  el.open = getUserGuideExpanded();
 }
 
 /**
@@ -248,6 +259,7 @@ export function bindEvents(els: AppElements): void {
     netFlowChartStyleSelect.value = getNetFlowChartStyle();
     applyResultsSectionOpenStateFromStore();
     applyInputsSectionOpenStateFromStore();
+    applyUserGuideOpenStateFromStore();
     updateResults(resultEls);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
     resetResourceSearchHighlight();
@@ -683,6 +695,16 @@ export function bindEvents(els: AppElements): void {
   ) as HTMLElement | null;
   if (panelInputs) {
     bindInputsSectionPersistence(panelInputs);
+  }
+
+  const userGuide = document.getElementById(
+    "user-guide",
+  ) as HTMLDetailsElement | null;
+  if (userGuide) {
+    applyUserGuideOpenStateFromStore();
+    userGuide.addEventListener("toggle", () => {
+      setUserGuideExpanded(userGuide.open);
+    });
   }
 }
 
