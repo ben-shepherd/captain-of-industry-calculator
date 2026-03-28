@@ -8,11 +8,7 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-<<<<<<< Updated upstream
-const STATE_VERSION = 5;
-=======
 const STATE_VERSION = 8;
->>>>>>> Stashed changes
 
 /**
  * Write the current application state to localStorage.
@@ -187,8 +183,6 @@ export function migrateEnvelopeToAppState(
     version = 5;
   }
 
-<<<<<<< Updated upstream
-=======
   if (version === 5) {
     const d = data as AppState & { targetRecipeIdx?: number };
     data = {
@@ -226,7 +220,6 @@ export function migrateEnvelopeToAppState(
     version = 8;
   }
 
->>>>>>> Stashed changes
   if (version !== STATE_VERSION) {
     console.warn(
       `Unable to migrate state from v${originalVersion} to v${STATE_VERSION}. Discarding.`,

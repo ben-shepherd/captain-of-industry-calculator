@@ -159,8 +159,6 @@ body {
   }
 }
 
-<<<<<<< Updated upstream
-=======
 .app-target-panel {
   max-width: min(100%, var(--layout-max-width));
   margin-left: auto;
@@ -222,7 +220,6 @@ body {
   color: color-mix(in srgb, var(--color-accent) 75%, #fff);
 }
 
->>>>>>> Stashed changes
 /* =========================
    Panels
 ========================= */
