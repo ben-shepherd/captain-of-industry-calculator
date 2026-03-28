@@ -128,6 +128,8 @@ export interface AppState {
   inputsSections: InputsSectionsState;
   /** Chart.js presentation for the net flow chart. */
   netFlowChartStyle: NetFlowChartStyle;
+  /** Top-of-page user guide `<details>` expanded. */
+  userGuideExpanded: boolean;
 }
 
 export interface PersistedEnvelope {
