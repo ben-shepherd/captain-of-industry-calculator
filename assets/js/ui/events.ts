@@ -22,11 +22,14 @@ import {
   setTargetRecipeIdx,
   getBaseRequirementsMode,
   setBaseRequirementsMode,
+  getNetFlowChartStyle,
+  setNetFlowChartStyle,
   getSnapshot,
   applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
   type ResultsSectionKey,
 } from "../app/state";
+import type { NetFlowChartStyle } from "../contracts";
 import {
   buildExportJson,
   hasPersistedStorage,
@@ -74,6 +77,7 @@ export interface AppElements extends ResultElements {
   baseRequirementsFull: HTMLButtonElement;
   treeExpandAll: HTMLButtonElement;
   treeCollapseAll: HTMLButtonElement;
+  netFlowChartStyleSelect: HTMLSelectElement;
 }
 
 const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
@@ -153,11 +157,13 @@ export function bindEvents(els: AppElements): void {
     treeCollapseAll,
     netBody,
     targetRecipeSection,
+    netFlowChartStyleSelect,
   } = els;
   const resultEls: ResultElements = {
     totalsBody: els.totalsBody,
     treeList: els.treeList,
     netBody: els.netBody,
+    netFlowChart: els.netFlowChart,
     productionFields: els.productionFields,
     productionAddTrigger: els.productionAddTrigger,
     productionAddPanel: els.productionAddPanel,
@@ -273,6 +279,7 @@ export function bindEvents(els: AppElements): void {
     targetRateInput.classList.remove("input-invalid");
     productionPresetName.value = "";
     productionPresetSelect.value = "";
+    netFlowChartStyleSelect.value = getNetFlowChartStyle();
     applyResultsSectionOpenStateFromStore();
     applyInputsSectionOpenStateFromStore();
     syncBaseRequirementsModeButtons();
@@ -347,6 +354,11 @@ export function bindEvents(els: AppElements): void {
     setDependencyTreeBranchesExpanded(treeList, false);
   });
   netBody.addEventListener("click", handleResultPanelTargetClick);
+
+  netFlowChartStyleSelect.addEventListener("change", () => {
+    setNetFlowChartStyle(netFlowChartStyleSelect.value as NetFlowChartStyle);
+    updateResults(resultEls);
+  });
 
   resourceSearchInput.addEventListener("input", () => {
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);

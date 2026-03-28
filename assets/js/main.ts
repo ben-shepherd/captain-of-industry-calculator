@@ -1,5 +1,5 @@
 import { initGoogleAnalytics } from './analytics';
-import { initState, getTargetRate } from './app/state';
+import { initState, getTargetRate, getNetFlowChartStyle } from './app/state';
 import { renderResourceOptions, updateResults } from './ui/controller';
 import { bindEvents, syncResetSavedDataButtonDisabled } from './ui/events';
 
@@ -74,6 +74,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "tree-collapse-all",
     ) as HTMLButtonElement,
     netBody: document.getElementById("net-body")!,
+    netFlowChart: document.getElementById("net-flow-chart"),
+    netFlowChartStyleSelect: document.getElementById(
+      "net-flow-chart-style",
+    ) as HTMLSelectElement,
     targetRecipeSection: document.getElementById(
       "target-recipe-section",
     ) as HTMLDetailsElement | null,
@@ -91,12 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   bindEvents(els);
 
+  els.netFlowChartStyleSelect.value = getNetFlowChartStyle();
+
   syncResetSavedDataButtonDisabled(els.resetSavedDataButton);
 
   updateResults({
     totalsBody: els.totalsBody,
     treeList: els.treeList,
     netBody: els.netBody,
+    netFlowChart: els.netFlowChart,
     productionFields: els.productionFields,
     productionAddTrigger: els.productionAddTrigger,
     productionAddPanel: els.productionAddPanel,

@@ -918,6 +918,64 @@ input.input-invalid {
 }
 
 /* =========================
+   Net flow chart (Chart.js, bottom of page)
+========================= */
+.net-flow-chart-panel {
+  max-width: min(100%, var(--layout-max-width));
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: var(--gap);
+}
+
+.net-flow-chart-root {
+  min-height: 0.5rem;
+}
+
+.net-flow-chart-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.net-flow-chart-toolbar label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--color-accent) 55%, var(--color-balanced));
+}
+
+.net-flow-chart-toolbar select {
+  min-width: 12rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-recipe-border);
+  border-radius: 6px;
+}
+
+.net-flow-chart-legend {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--color-text) 88%, transparent);
+  margin-bottom: 0.75rem;
+  line-height: 1.45;
+}
+
+.net-flow-chart-empty {
+  font-size: 0.9rem;
+  color: var(--color-balanced);
+  margin: 0;
+}
+
+.net-flow-chart-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* =========================
    Dependency Tree
 ========================= */
 .tree-toolbar {

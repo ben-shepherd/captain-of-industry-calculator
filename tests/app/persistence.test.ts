@@ -46,6 +46,7 @@ const emptyV4 = {
   resultsSections: { ...defaultResultsSections },
   inputsSections: { ...defaultInputsSections },
   baseRequirementsMode: "direct" as AppState["baseRequirementsMode"],
+  netFlowChartStyle: "line" as AppState["netFlowChartStyle"],
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -178,8 +179,7 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
-      targetRecipeIdx: 0,
-      baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -208,8 +208,7 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
-      targetRecipeIdx: 0,
-      baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -240,8 +239,7 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
-      targetRecipeIdx: 0,
-      baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -273,8 +271,7 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
-      targetRecipeIdx: 0,
-      baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -307,6 +304,7 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      netFlowChartStyle: "line",
     });
   });
 
@@ -340,6 +338,7 @@ describe("migration", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+      netFlowChartStyle: "line",
     });
   });
 
@@ -364,6 +363,7 @@ describe("migration", () => {
       ...envelope.data,
       targetRecipeIdx: 1,
       baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 });
@@ -403,8 +403,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
-      targetRecipeIdx: 0,
-      baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
