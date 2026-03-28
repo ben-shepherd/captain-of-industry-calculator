@@ -8,7 +8,7 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 6;
+const STATE_VERSION = 7;
 
 /**
  * Write the current application state to localStorage.
@@ -128,6 +128,7 @@ export function migrateEnvelopeToAppState(
       resourceId: d.resourceId,
       targetRate: d.targetRate,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: d.production ?? {},
       productionExtraIds: Array.isArray(d.productionExtraIds)
         ? d.productionExtraIds
@@ -195,6 +196,16 @@ export function migrateEnvelopeToAppState(
           : 0,
     };
     version = 6;
+  }
+
+  if (version === 6) {
+    const d = data as AppState & { baseRequirementsMode?: string };
+    data = {
+      ...d,
+      baseRequirementsMode:
+        d.baseRequirementsMode === "full" ? "full" : "direct",
+    };
+    version = 7;
   }
 
   if (version !== STATE_VERSION) {

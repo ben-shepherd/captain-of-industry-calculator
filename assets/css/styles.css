@@ -889,6 +889,13 @@ input.input-invalid {
   padding: 0.32rem 0.6rem;
 }
 
+.base-requirements-toolbar .tree-bulk-btn[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-muted);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
 .tree-container {
   margin-bottom: 1.25rem;
 }

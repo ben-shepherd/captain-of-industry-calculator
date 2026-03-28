@@ -58,6 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resetSavedDataButton: document.getElementById(
       "reset-saved-data",
     ) as HTMLButtonElement,
+    baseRequirementsDirect: document.getElementById(
+      "base-requirements-direct",
+    ) as HTMLButtonElement,
+    baseRequirementsFull: document.getElementById(
+      "base-requirements-full",
+    ) as HTMLButtonElement,
     totalsBody: document.getElementById("totals-body")!,
     treeList: document.getElementById("tree-list")!,
     treeExpandAll: document.getElementById("tree-expand-all") as HTMLButtonElement,

@@ -8,6 +8,7 @@ import { calculateNet } from '../calculator/net';
 import { formatTotals, formatNetTotals } from '../formatters/flatFormatter';
 import type { DependencyNode, ProductionPreset } from '../contracts';
 import {
+  getBaseRequirementsMode,
   getResourceId,
   getTargetRate,
   getTargetRecipeIdx,
@@ -205,7 +206,12 @@ export function updateResults(els: ResultElements): void {
 
   let result;
   try {
-    result = calculate(resourceId, targetRate, targetRecipeIdx);
+    result = calculate(
+      resourceId,
+      targetRate,
+      targetRecipeIdx,
+      getBaseRequirementsMode(),
+    );
   } catch {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";

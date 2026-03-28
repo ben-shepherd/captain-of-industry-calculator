@@ -1,8 +1,10 @@
+import { indexOfFirstProducingRecipe } from '../calculator/recipePick';
 import { resources } from '../data/resources';
 import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
 import { clearState, loadState, saveState } from './persistence';
 import type {
   AppState,
+  BaseRequirementsMode,
   InputsSectionsState,
   ProductionPreset,
   ResultsSectionsState,
@@ -31,6 +33,7 @@ const DEFAULT_STATE: AppState = {
   resourceId: "",
   targetRate: 12,
   targetRecipeIdx: 0,
+  baseRequirementsMode: "direct",
   production: {},
   productionExtraIds: [],
   productionDismissedIds: [],
@@ -48,12 +51,7 @@ function isValidTargetRate(rate: unknown): rate is number {
 /** Smallest index of a recipe that outputs `resourceId`, or 0 if none. */
 export function firstProducingRecipeIndex(resourceId: string): number {
   if (!resourceId) return 0;
-  const def = resources[resourceId];
-  if (!def?.recipes?.length) return 0;
-  const i = def.recipes.findIndex(
-    (r) => (r.outputs[resourceId] ?? 0) > 0,
-  );
-  return i >= 0 ? i : 0;
+  return indexOfFirstProducingRecipe(resourceId) ?? 0;
 }
 
 function normalizeTargetRecipeIdx(resourceId: string, idx: unknown): number {
@@ -105,6 +103,9 @@ export function applyLoadedState(saved: AppState): void {
     state.resourceId,
     state.targetRecipeIdx,
   );
+  state.baseRequirementsMode = normalizeBaseRequirementsMode(
+    state.baseRequirementsMode,
+  );
   persist();
 }
 
@@ -137,6 +138,23 @@ function normalizeInputsSections(
     production: is?.production ?? true,
     presets: is?.presets ?? true,
   };
+}
+
+function normalizeBaseRequirementsMode(
+  m: BaseRequirementsMode | undefined,
+): BaseRequirementsMode {
+  return m === "full" ? "full" : "direct";
+}
+
+export function getBaseRequirementsMode(): BaseRequirementsMode {
+  return state.baseRequirementsMode;
+}
+
+export function setBaseRequirementsMode(mode: BaseRequirementsMode): void {
+  if (mode !== "direct" && mode !== "full") return;
+  if (state.baseRequirementsMode === mode) return;
+  state.baseRequirementsMode = mode;
+  persist();
 }
 
 export function getResourceId(): string {
@@ -381,6 +399,7 @@ export function getSnapshot(): AppState {
     resourceId: state.resourceId,
     targetRate: state.targetRate,
     targetRecipeIdx: state.targetRecipeIdx,
+    baseRequirementsMode: state.baseRequirementsMode,
     production: { ...state.production },
     productionExtraIds: [...state.productionExtraIds],
     productionDismissedIds: [...state.productionDismissedIds],

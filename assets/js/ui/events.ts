@@ -20,6 +20,8 @@ import {
   getTargetRate,
   getTargetRecipeIdx,
   setTargetRecipeIdx,
+  getBaseRequirementsMode,
+  setBaseRequirementsMode,
   getSnapshot,
   applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
@@ -67,6 +69,8 @@ export interface AppElements extends ResultElements {
   importSavedDataButton: HTMLButtonElement;
   importSavedDataInput: HTMLInputElement;
   resetSavedDataButton: HTMLButtonElement;
+  baseRequirementsDirect: HTMLButtonElement;
+  baseRequirementsFull: HTMLButtonElement;
   treeExpandAll: HTMLButtonElement;
   treeCollapseAll: HTMLButtonElement;
 }
@@ -140,6 +144,8 @@ export function bindEvents(els: AppElements): void {
     importSavedDataButton,
     importSavedDataInput,
     resetSavedDataButton,
+    baseRequirementsDirect,
+    baseRequirementsFull,
     totalsBody,
     treeList,
     treeExpandAll,
@@ -156,6 +162,31 @@ export function bindEvents(els: AppElements): void {
     productionPresetSelect: els.productionPresetSelect,
     targetRecipeSection: els.targetRecipeSection,
   };
+
+  function syncBaseRequirementsModeButtons(): void {
+    const mode = getBaseRequirementsMode();
+    baseRequirementsDirect.setAttribute(
+      "aria-pressed",
+      mode === "direct" ? "true" : "false",
+    );
+    baseRequirementsFull.setAttribute(
+      "aria-pressed",
+      mode === "full" ? "true" : "false",
+    );
+  }
+
+  baseRequirementsDirect.addEventListener("click", () => {
+    setBaseRequirementsMode("direct");
+    syncBaseRequirementsModeButtons();
+    updateResults(resultEls);
+  });
+  baseRequirementsFull.addEventListener("click", () => {
+    setBaseRequirementsMode("full");
+    syncBaseRequirementsModeButtons();
+    updateResults(resultEls);
+  });
+
+  syncBaseRequirementsModeButtons();
 
   const resourceSearchWrap = resourceSearchInput.closest(
     ".resource-search-wrap",
@@ -228,6 +259,7 @@ export function bindEvents(els: AppElements): void {
     productionPresetSelect.value = "";
     applyResultsSectionOpenStateFromStore();
     applyInputsSectionOpenStateFromStore();
+    syncBaseRequirementsModeButtons();
     updateResults(resultEls);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
     resetResourceSearchHighlight();
@@ -614,7 +646,12 @@ export function bindEvents(els: AppElements): void {
         totals = {};
       } else {
         try {
-          totals = calculate(rid, getTargetRate(), getTargetRecipeIdx()).totals;
+          totals = calculate(
+            rid,
+            getTargetRate(),
+            getTargetRecipeIdx(),
+            getBaseRequirementsMode(),
+          ).totals;
         } catch {
           return;
         }

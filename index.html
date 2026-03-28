@@ -187,6 +187,28 @@
       <details class="results-section" id="results-section-base" open>
         <summary class="results-section-summary">Base Resources Required</summary>
         <div class="results-section-body">
+          <div
+            class="tree-toolbar base-requirements-toolbar"
+            role="group"
+            aria-label="Base requirements scope"
+          >
+            <button
+              type="button"
+              id="base-requirements-direct"
+              class="btn btn-secondary tree-bulk-btn"
+              aria-pressed="true"
+            >
+              This recipe only
+            </button>
+            <button
+              type="button"
+              id="base-requirements-full"
+              class="btn btn-secondary tree-bulk-btn"
+              aria-pressed="false"
+            >
+              Full dependency chain
+            </button>
+          </div>
           <table class="data-table">
             <thead>
               <tr>

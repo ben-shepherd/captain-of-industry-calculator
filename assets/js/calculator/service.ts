@@ -1,21 +1,28 @@
 import { resources } from '../data/resources';
+import type { BaseRequirementsMode, CalculationResult } from '../contracts';
 import { resolve } from './resolver';
-import type { CalculationResult } from '../contracts';
 
 /**
  * Public entry point for the calculator.
  *
- * Validates inputs, delegates to the resolver (direct recipe inputs only),
- * and returns a result object ready for formatting or rendering.
+ * Validates inputs, delegates to the resolver, and returns a result object
+ * ready for formatting or rendering.
  */
 export function calculate(
   resourceId: string,
   targetRate: number,
   targetRecipeIdx = 0,
+  baseRequirementsMode: BaseRequirementsMode = 'direct',
 ): CalculationResult {
   validate(resourceId, targetRate, targetRecipeIdx);
 
-  const { totals, tree } = resolve(resourceId, targetRate, targetRecipeIdx);
+  const resolveMode = baseRequirementsMode === 'full' ? 'full' : 'direct';
+  const { totals, tree } = resolve(
+    resourceId,
+    targetRate,
+    targetRecipeIdx,
+    resolveMode,
+  );
 
   return { resourceId, targetRate, totals, tree };
 }

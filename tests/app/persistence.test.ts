@@ -46,6 +46,7 @@ const emptyV4 = {
   productionPresets: [] as AppState["productionPresets"],
   resultsSections: { ...defaultResultsSections },
   inputsSections: { ...defaultInputsSections },
+  baseRequirementsMode: "direct" as AppState["baseRequirementsMode"],
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -171,6 +172,7 @@ describe("migration", () => {
       resourceId: "steel",
       targetRate: 12,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: { iron: 5 },
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -198,6 +200,7 @@ describe("migration", () => {
       resourceId: "steel",
       targetRate: 12,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: {},
       productionExtraIds: ["iron"],
       productionDismissedIds: [],
@@ -227,6 +230,7 @@ describe("migration", () => {
       resourceId: "steel",
       targetRate: 12,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: {},
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -257,6 +261,7 @@ describe("migration", () => {
       resourceId: "steel",
       targetRate: 12,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: {},
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -288,6 +293,40 @@ describe("migration", () => {
       resourceId: "steel",
       targetRate: 12,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
+      production: {},
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
+    });
+  });
+
+  it("migrates v6 envelope without baseRequirementsMode to v7", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 6,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          targetRecipeIdx: 0,
+          production: {},
+          productionExtraIds: [],
+          productionDismissedIds: [],
+          productionPresets: [],
+          resultsSections: { ...defaultResultsSections },
+          inputsSections: { ...defaultInputsSections },
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: {},
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -305,6 +344,7 @@ describe("migration", () => {
         resourceId: "steel",
         targetRate: 12,
         targetRecipeIdx: 1,
+        baseRequirementsMode: "direct",
         production: {},
         productionExtraIds: [],
         productionDismissedIds: [],
@@ -316,6 +356,7 @@ describe("migration", () => {
     expect(migrateEnvelopeToAppState(envelope)).toEqual({
       ...envelope.data,
       targetRecipeIdx: 1,
+      baseRequirementsMode: "direct",
     });
   });
 });
@@ -348,6 +389,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       resourceId: "steel",
       targetRate: 12,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: { iron: 5 },
       productionExtraIds: [],
       productionDismissedIds: [],

@@ -46,6 +46,22 @@ describe("calculate", () => {
     });
   });
 
+  it("full mode nests the dependency tree and omits intermediate resources from totals", () => {
+    const full = calculate("constructionParts", 6, 0, "full");
+    const ironBranch = full.tree.children.find((c) => c.id === "iron");
+    expect(ironBranch?.children?.length).toBeGreaterThan(0);
+    expect(full.totals.iron).toBeUndefined();
+    expect(full.totals.concreteSlab).toBeUndefined();
+    /** Direct CP wood plus wood for coal (first coal recipe is charcoal from wood). */
+    expect(full.totals.wood).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("full mode matches direct totals for a single-step chain to a raw resource", () => {
+    const direct = calculate("ironOreCrushed", 16, 0, "direct");
+    const full = calculate("ironOreCrushed", 16, 0, "full");
+    expect(full.totals).toEqual(direct.totals);
+  });
+
   it("returns a dependency tree from the resolver", () => {
     const { tree } = calculate("ironOreCrushed", 16);
     expect(tree.id).toBe("ironOreCrushed");

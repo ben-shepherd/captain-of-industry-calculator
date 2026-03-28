@@ -37,6 +37,9 @@ export interface CalculationResult extends ResolveResult {
   targetRate: number;
 }
 
+/** How “Base resources required” and the dependency tree are computed. */
+export type BaseRequirementsMode = 'direct' | 'full';
+
 export type NetStatus = 'surplus' | 'deficit' | 'balanced';
 
 export interface NetEntry {
@@ -103,6 +106,8 @@ export interface AppState {
   targetRate: number;
   /** Index into `resources[resourceId].recipes` for the root resolve step. */
   targetRecipeIdx: number;
+  /** `direct` = one recipe step; `full` = expand to leaf resources. */
+  baseRequirementsMode: BaseRequirementsMode;
   production: Record<string, number>;
   /** Resources the user explicitly added for production (not in current chain). */
   productionExtraIds: string[];
