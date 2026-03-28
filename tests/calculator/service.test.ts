@@ -100,10 +100,20 @@ describe("calculate", () => {
       expect(() => calculate("steel", 12, 0.5)).toThrow(
         "targetRecipeIdx must be a non-negative integer",
       );
+      expect(() => calculate("steel", 12, 1.5)).toThrow(
+        "targetRecipeIdx must be a non-negative integer",
+      );
+    });
+
+    it("throws when targetRecipeIdx is negative", () => {
+      expect(() => calculate("steel", 12, -1)).toThrow(
+        "targetRecipeIdx must be a non-negative integer",
+      );
     });
 
     it("throws when targetRecipeIdx is out of range", () => {
       expect(() => calculate("steel", 12, 99)).toThrow("out of range");
+      expect(() => calculate("steel", 12, 999)).toThrow("out of range");
     });
 
     it("throws for targetRecipeIdx > 0 when resource has no recipes", () => {

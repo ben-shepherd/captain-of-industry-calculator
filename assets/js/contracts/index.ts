@@ -111,7 +111,10 @@ export const NET_FLOW_CHART_STYLE_DEFAULT: NetFlowChartStyle = "line";
 export interface AppState {
   resourceId: string;
   targetRate: number;
-  /** Index into `resources[resourceId].recipes` for the root resolve step. */
+  /**
+   * Index into {@link ResourceDef.recipes} for the current target resource.
+   * Must be a recipe that lists the target in `outputs`. Used as the root resolve step.
+   */
   targetRecipeIdx: number;
   /** `direct` = one recipe step; `full` = expand to leaf resources. */
   baseRequirementsMode: BaseRequirementsMode;

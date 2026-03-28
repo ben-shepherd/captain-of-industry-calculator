@@ -80,6 +80,19 @@ function normalizeTargetRecipeIdx(resourceId: string, idx: unknown): number {
  * Replace in-memory state from a persisted snapshot, validate against current
  * resource definitions, and persist to localStorage.
  */
+function clampTargetRecipeIdx(resourceId: string, idx: number): number {
+  const def = resources[resourceId];
+  if (!def) return 0;
+  const valid: number[] = [];
+  for (let i = 0; i < def.recipes.length; i++) {
+    const recipe = def.recipes[i];
+    if (recipe && (recipe.outputs[resourceId] ?? 0) > 0) valid.push(i);
+  }
+  if (valid.length === 0) return 0;
+  if (valid.includes(idx)) return idx;
+  return valid[0] ?? 0;
+}
+
 export function applyLoadedState(saved: AppState): void {
   state = { ...DEFAULT_STATE, ...saved };
   if (!resources[state.resourceId]) {
@@ -88,6 +101,13 @@ export function applyLoadedState(saved: AppState): void {
   if (!isValidTargetRate(state.targetRate)) {
     state.targetRate = DEFAULT_STATE.targetRate;
   }
+  const rawIdx = state.targetRecipeIdx;
+  state.targetRecipeIdx = clampTargetRecipeIdx(
+    state.resourceId,
+    typeof rawIdx === "number" && Number.isInteger(rawIdx) && rawIdx >= 0
+      ? rawIdx
+      : 0,
+  );
   const prod: Record<string, number> = {};
   for (const [id, amt] of Object.entries(state.production)) {
     if (resources[id]) prod[id] = amt;
@@ -460,6 +480,7 @@ export function getSnapshot(): AppState {
 export function resetState(): void {
   state = {
     ...DEFAULT_STATE,
+    targetRecipeIdx: 0,
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],
@@ -478,6 +499,7 @@ export function wipeAllPersistedDataAndResetToDefaults(): void {
   clearState();
   state = {
     ...DEFAULT_STATE,
+    targetRecipeIdx: 0,
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],

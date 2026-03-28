@@ -242,6 +242,10 @@ export function migrateEnvelopeToAppState(
     data = {
       ...d,
       userGuideExpanded: d.userGuideExpanded ?? true,
+      targetRecipeIdx:
+        typeof d.targetRecipeIdx === "number" && Number.isInteger(d.targetRecipeIdx)
+          ? d.targetRecipeIdx
+          : 0,
     };
     version = 10;
   }

@@ -41,6 +41,7 @@ const defaultInputsSections: AppState["inputsSections"] = {
 };
 
 const emptyV4 = {
+  targetRecipeIdx: 0,
   productionDismissedIds: [] as string[],
   productionPresets: [] as AppState["productionPresets"],
   resultsSections: { ...defaultResultsSections },
@@ -405,6 +406,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
+      targetRecipeIdx: 0,
     });
   });
 });
