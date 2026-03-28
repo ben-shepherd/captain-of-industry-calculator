@@ -97,6 +97,14 @@ export interface InputsSectionsState {
   presets: boolean;
 }
 
+/** Net flow chart visualization (bottom of page). */
+export type NetFlowChartStyle =
+  | "horizontal-grouped"
+  | "vertical-grouped"
+  | "line";
+
+export const NET_FLOW_CHART_STYLE_DEFAULT: NetFlowChartStyle = "line";
+
 export interface AppState {
   resourceId: string;
   targetRate: number;
@@ -111,6 +119,8 @@ export interface AppState {
   resultsSections: ResultsSectionsState;
   /** Collapsible configuration sections (production / presets). */
   inputsSections: InputsSectionsState;
+  /** Chart.js presentation for the net flow chart. */
+  netFlowChartStyle: NetFlowChartStyle;
 }
 
 export interface PersistedEnvelope {

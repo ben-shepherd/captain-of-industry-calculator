@@ -1,11 +1,13 @@
 import { resources } from '../data/resources';
 import { BUILTIN_PRODUCTION_PRESETS } from '../data/defaultProductionPresets';
 import { clearState, loadState, saveState } from './persistence';
-import type {
-  AppState,
-  InputsSectionsState,
-  ProductionPreset,
-  ResultsSectionsState,
+import {
+  NET_FLOW_CHART_STYLE_DEFAULT,
+  type AppState,
+  type InputsSectionsState,
+  type NetFlowChartStyle,
+  type ProductionPreset,
+  type ResultsSectionsState,
 } from '../contracts';
 
 /**
@@ -35,6 +37,7 @@ const DEFAULT_STATE: AppState = {
   productionPresets: [],
   resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
   inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
+  netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -69,6 +72,7 @@ export function applyLoadedState(saved: AppState): void {
   state.productionPresets = sanitizePresets(state.productionPresets ?? []);
   state.resultsSections = normalizeResultsSections(state.resultsSections);
   state.inputsSections = normalizeInputsSections(state.inputsSections);
+  state.netFlowChartStyle = normalizeNetFlowChartStyle(state.netFlowChartStyle);
   persist();
 }
 
@@ -100,6 +104,18 @@ function normalizeInputsSections(
     production: is?.production ?? true,
     presets: is?.presets ?? true,
   };
+}
+
+const NET_FLOW_CHART_STYLES: readonly NetFlowChartStyle[] = [
+  "horizontal-grouped",
+  "vertical-grouped",
+  "line",
+];
+
+function normalizeNetFlowChartStyle(v: unknown): NetFlowChartStyle {
+  return NET_FLOW_CHART_STYLES.includes(v as NetFlowChartStyle)
+    ? (v as NetFlowChartStyle)
+    : NET_FLOW_CHART_STYLE_DEFAULT;
 }
 
 export function getResourceId(): string {
@@ -319,6 +335,17 @@ export function setInputsSectionExpanded(
   persist();
 }
 
+export function getNetFlowChartStyle(): NetFlowChartStyle {
+  return state.netFlowChartStyle;
+}
+
+export function setNetFlowChartStyle(style: NetFlowChartStyle): void {
+  const next = normalizeNetFlowChartStyle(style);
+  if (state.netFlowChartStyle === next) return;
+  state.netFlowChartStyle = next;
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -337,6 +364,7 @@ export function getSnapshot(): AppState {
     })),
     resultsSections: { ...state.resultsSections },
     inputsSections: { ...state.inputsSections },
+    netFlowChartStyle: state.netFlowChartStyle,
   };
 }
 

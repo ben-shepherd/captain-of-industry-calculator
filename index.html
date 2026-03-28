@@ -252,6 +252,26 @@
     </section>
   </main>
 
+  <section
+    class="panel net-flow-chart-panel"
+    aria-label="Net flow chart"
+  >
+    <h2 class="net-flow-chart-heading">Net flow chart</h2>
+    <div class="net-flow-chart-toolbar">
+      <label for="net-flow-chart-style">Chart style</label>
+      <select id="net-flow-chart-style" aria-label="Net flow chart style">
+        <option value="line">Line chart</option>
+        <option value="horizontal-grouped">Horizontal grouped bars</option>
+        <option value="vertical-grouped">Vertical grouped bars</option>
+      </select>
+    </div>
+    <div
+      id="net-flow-chart"
+      class="net-flow-chart-root"
+      aria-live="polite"
+    ></div>
+  </section>
+
   <script type="module" src="assets/js/main.ts"></script>
 </body>
 </html>

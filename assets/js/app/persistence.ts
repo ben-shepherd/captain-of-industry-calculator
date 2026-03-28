@@ -1,4 +1,8 @@
-import type { AppState, PersistedEnvelope } from '../contracts';
+import {
+  NET_FLOW_CHART_STYLE_DEFAULT,
+  type AppState,
+  type PersistedEnvelope,
+} from '../contracts';
 
 /**
  * Persist and restore user state via localStorage.
@@ -8,7 +12,7 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 8;
+const STATE_VERSION = 9;
 
 /**
  * Write the current application state to localStorage.
@@ -218,6 +222,15 @@ export function migrateEnvelopeToAppState(
       },
     };
     version = 8;
+  }
+
+  if (version === 8) {
+    const d = data as AppState & { netFlowChartStyle?: AppState["netFlowChartStyle"] };
+    data = {
+      ...d,
+      netFlowChartStyle: d.netFlowChartStyle ?? NET_FLOW_CHART_STYLE_DEFAULT,
+    };
+    version = 9;
   }
 
   if (version !== STATE_VERSION) {

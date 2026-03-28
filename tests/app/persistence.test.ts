@@ -44,6 +44,7 @@ const emptyV4 = {
   productionPresets: [] as AppState["productionPresets"],
   resultsSections: { ...defaultResultsSections },
   inputsSections: { ...defaultInputsSections },
+  netFlowChartStyle: "line" as AppState["netFlowChartStyle"],
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -170,6 +171,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -198,6 +200,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -228,6 +231,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 
@@ -259,6 +263,7 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 });
@@ -297,6 +302,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       inputsSections: { ...defaultInputsSections },
       targetRecipeIdx: 0,
       baseRequirementsMode: "direct",
+      netFlowChartStyle: "line",
     });
   });
 

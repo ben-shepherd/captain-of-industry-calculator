@@ -14,6 +14,7 @@ import {
   getProductionExtraIds,
   getProductionDismissedIds,
   getProductionPresets,
+  getNetFlowChartStyle,
 } from '../app/state';
 import {
   getRelevantProductionResourceIds,
@@ -26,11 +27,14 @@ import {
   setResourceWikiLink,
 } from './resourceIcon';
 import { renderTargetRecipeDiagram } from './recipeDiagram';
+import { renderNetFlowChart } from './netFlowChart';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
   treeList: HTMLElement;
   netBody: HTMLElement;
+  /** Bottom-of-page net flow diagram; optional for tests or stripped layouts. */
+  netFlowChart?: HTMLElement | null;
   productionFields?: HTMLElement;
   productionAddTrigger?: HTMLButtonElement;
   productionAddPanel?: HTMLElement;
@@ -182,7 +186,7 @@ export function renderResourceOptions(
  * results into the provided DOM containers.
  */
 export function updateResults(els: ResultElements): void {
-  const { totalsBody, treeList, netBody } = els;
+  const { totalsBody, treeList, netBody, netFlowChart } = els;
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
   const production = getProduction();
@@ -197,6 +201,12 @@ export function updateResults(els: ResultElements): void {
       ["Choose a target resource above to see net flow"],
       5,
     );
+    renderNetFlowChart(
+      netFlowChart ?? null,
+      [],
+      "Choose a target resource above to see net flow.",
+      getNetFlowChartStyle(),
+    );
     renderTargetRecipeDiagram(els.targetRecipeSection ?? null, "");
     syncProductionPanel(els, {});
     return;
@@ -209,6 +219,12 @@ export function updateResults(els: ResultElements): void {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";
     netBody.innerHTML = "";
+    renderNetFlowChart(
+      netFlowChart ?? null,
+      [],
+      "Error running calculation.",
+      getNetFlowChartStyle(),
+    );
     renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
     syncProductionPanel(els, {});
     return;
@@ -217,6 +233,12 @@ export function updateResults(els: ResultElements): void {
   renderTotals(totalsBody, result.totals);
   renderTree(treeList, result.tree);
   renderNet(netBody, result.totals, production);
+  renderNetFlowChart(
+    netFlowChart ?? null,
+    formatNetTotals(calculateNet(result.totals, production)),
+    "No net data",
+    getNetFlowChartStyle(),
+  );
   renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
   syncProductionPanel(els, result.totals);
 }
