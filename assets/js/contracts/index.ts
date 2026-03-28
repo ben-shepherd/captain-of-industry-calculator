@@ -13,6 +13,8 @@ export interface ResourceDef {
   unit: string;
   /** Link to the corresponding wiki article */
   wikiUrl: string;
+  /** Direct URL to the wiki icon image (File:{label}.png), or empty if not found */
+  imageUrl: string;
   recipes: Recipe[];
 }
 

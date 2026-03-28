@@ -5,17 +5,18 @@ export const craftedResources: ResourcesMap = {
     label: "Aluminum",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Aluminum",
+    imageUrl: "https://wiki.coigame.com/images/b/ba/Aluminum.png",
     recipes: [
       {
-        name: "Metal caster: AluminumCasting",
-        building: "Metal caster",
+        name: "Metal Caster: AluminumCasting",
+        building: "Metal Caster",
         durationSec: 40,
         inputs: {"moltenAluminum":8},
         outputs: {"aluminum":8},
       },
       {
-        name: "Metal caster II: AluminumCastingT2",
-        building: "Metal caster II",
+        name: "Metal Caster II: AluminumCastingT2",
+        building: "Metal Caster II",
         durationSec: 20,
         inputs: {"moltenAluminum":8},
         outputs: {"aluminum":8},
@@ -26,6 +27,7 @@ export const craftedResources: ResourcesMap = {
     label: "Asteroid Booster Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Asteroid_Booster_Parts",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly V: AsteroidBoosterPartsAssembly",
@@ -40,6 +42,7 @@ export const craftedResources: ResourcesMap = {
     label: "Composite Core",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Composite_Core",
+    imageUrl: "https://wiki.coigame.com/images/3/3f/Composite_Core.png",
     recipes: [
       {
         name: "Assembly V: CompositeCoreAssembly",
@@ -54,6 +57,7 @@ export const craftedResources: ResourcesMap = {
     label: "Composite Core Basic",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Composite_Core_Basic",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: CompositeCoreBasicAssemblyT1",
@@ -82,6 +86,7 @@ export const craftedResources: ResourcesMap = {
     label: "Composite Panel",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Composite_Panel",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: CompositePanelAssemblyT1",
@@ -110,10 +115,11 @@ export const craftedResources: ResourcesMap = {
     label: "Computing",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Computing",
+    imageUrl: "https://wiki.coigame.com/images/1/1d/Computing.png",
     recipes: [
       {
-        name: "Data center: BasicServerRack",
-        building: "Data center",
+        name: "Data Center: BasicServerRack",
+        building: "Data Center",
         durationSec: 60,
         inputs: {"chilledWater":24,"maintenanceIii":42,"electricity":4080},
         outputs: {"water":24,"computing":192},
@@ -124,6 +130,7 @@ export const craftedResources: ResourcesMap = {
     label: "Concrete Slab",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Concrete_Slab",
+    imageUrl: "https://wiki.coigame.com/images/4/42/Concrete_Slab.png",
     recipes: [
       {
         name: "Concrete Mixer: ConcreteMixingGravel",
@@ -222,6 +229,7 @@ export const craftedResources: ResourcesMap = {
     label: "Construction Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Construction_Parts",
+    imageUrl: "https://wiki.coigame.com/images/e/e2/Construction_Parts.png",
     recipes: [
       {
         name: "Assembly I: CpAssemblyT1",
@@ -285,6 +293,7 @@ export const craftedResources: ResourcesMap = {
     label: "Construction Parts II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Construction_Parts_II",
+    imageUrl: "https://wiki.coigame.com/images/4/4e/Construction_Parts_II.png",
     recipes: [
       {
         name: "Assembly I: Cp2AssemblyT1",
@@ -327,6 +336,7 @@ export const craftedResources: ResourcesMap = {
     label: "Construction Parts III",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Construction_Parts_III",
+    imageUrl: "https://wiki.coigame.com/images/1/1f/Construction_Parts_III.png",
     recipes: [
       {
         name: "Assembly II: Cp3AssemblyT1",
@@ -362,6 +372,7 @@ export const craftedResources: ResourcesMap = {
     label: "Construction Parts IV",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Construction_Parts_IV",
+    imageUrl: "https://wiki.coigame.com/images/f/f3/Construction_Parts_IV.png",
     recipes: [
       {
         name: "Assembly III: Cp4AssemblyElectrifiedT2",
@@ -390,6 +401,7 @@ export const craftedResources: ResourcesMap = {
     label: "Consumer Electronics",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Consumer_Electronics",
+    imageUrl: "https://wiki.coigame.com/images/0/01/Consumer_Electronics.png",
     recipes: [
       {
         name: "Assembly V: ConsumerElectronicsAssemblyT1",
@@ -404,17 +416,18 @@ export const craftedResources: ResourcesMap = {
     label: "Copper",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Copper",
+    imageUrl: "https://wiki.coigame.com/images/1/12/Copper.png",
     recipes: [
       {
-        name: "Copper electrolysis: CopperElectrolysisProcess",
-        building: "Copper electrolysis",
+        name: "Copper Electrolysis: CopperElectrolysisProcess",
+        building: "Copper Electrolysis",
         durationSec: 40,
         inputs: {"impureCopper":16,"acid":4},
         outputs: {"copper":16},
       },
       {
-        name: "Copper electrolysis: CopperElectrolysisWithWater",
-        building: "Copper electrolysis",
+        name: "Copper Electrolysis: CopperElectrolysisWithWater",
+        building: "Copper Electrolysis",
         durationSec: 40,
         inputs: {"impureCopper":16,"water":4},
         outputs: {"copper":13},
@@ -425,6 +438,7 @@ export const craftedResources: ResourcesMap = {
     label: "Crew Supplies",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Crew_Supplies",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: CrewSuppliesAssemblyT1",
@@ -453,10 +467,11 @@ export const craftedResources: ResourcesMap = {
     label: "Diamond",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Diamond",
+    imageUrl: "https://wiki.coigame.com/images/e/ea/Diamond.png",
     recipes: [
       {
-        name: "Diamond reactor: DiamondSynthesis",
-        building: "Diamond reactor",
+        name: "Diamond Reactor: DiamondSynthesis",
+        building: "Diamond Reactor",
         durationSec: 60,
         inputs: {"graphite":2,"salt":2},
         outputs: {"diamond":2},
@@ -467,6 +482,7 @@ export const craftedResources: ResourcesMap = {
     label: "Electronics",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Electronics",
+    imageUrl: "https://wiki.coigame.com/images/d/dd/Electronics.png",
     recipes: [
       {
         name: "Assembly I: ElectronicsAssemblyT1",
@@ -509,6 +525,7 @@ export const craftedResources: ResourcesMap = {
     label: "Electronics II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Electronics_II",
+    imageUrl: "https://wiki.coigame.com/images/8/8f/Electronics_II.png",
     recipes: [
       {
         name: "Assembly III: Electronics2AssemblyT1",
@@ -537,6 +554,7 @@ export const craftedResources: ResourcesMap = {
     label: "Electronics III",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Electronics_III",
+    imageUrl: "https://wiki.coigame.com/images/4/4b/Electronics_III.png",
     recipes: [
       {
         name: "Assembly IV: Electronics3AssemblyRoboticT1",
@@ -558,6 +576,7 @@ export const craftedResources: ResourcesMap = {
     label: "Electronics IV",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Electronics_IV",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly V: Electronics4Assembly",
@@ -572,6 +591,7 @@ export const craftedResources: ResourcesMap = {
     label: "Filter Media",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Filter_Media",
+    imageUrl: "https://wiki.coigame.com/images/3/3f/Filter_Media.png",
     recipes: [
       {
         name: "Mixer: FilterMediaMixing",
@@ -607,6 +627,7 @@ export const craftedResources: ResourcesMap = {
     label: "Flowers",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Flowers",
+    imageUrl: "https://wiki.coigame.com/images/a/a5/Flowers.png",
     recipes: [
       {
         name: "Greenhouse: Crop_Flowers_Product_Fertilizer",
@@ -656,17 +677,18 @@ export const craftedResources: ResourcesMap = {
     label: "Glass",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Glass",
+    imageUrl: "https://wiki.coigame.com/images/1/15/Glass.png",
     recipes: [
       {
-        name: "Glass maker: GlassCastingT1",
-        building: "Glass maker",
+        name: "Glass Maker: GlassCastingT1",
+        building: "Glass Maker",
         durationSec: 20,
         inputs: {"moltenGlass":8},
         outputs: {"glass":4,"brokenGlass":4},
       },
       {
-        name: "Glass maker II: GlassCastingT2",
-        building: "Glass maker II",
+        name: "Glass Maker II: GlassCastingT2",
+        building: "Glass Maker II",
         durationSec: 20,
         inputs: {"moltenGlass":8},
         outputs: {"glass":8},
@@ -677,17 +699,18 @@ export const craftedResources: ResourcesMap = {
     label: "Gold",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Gold",
+    imageUrl: "https://wiki.coigame.com/images/1/10/Gold.png",
     recipes: [
       {
-        name: "Gold furnace: GoldScrapSmelting",
-        building: "Gold furnace",
+        name: "Gold Furnace: GoldScrapSmelting",
+        building: "Gold Furnace",
         durationSec: 20,
         inputs: {"goldScrap":3},
         outputs: {"gold":3},
       },
       {
-        name: "Gold furnace: GoldSmelting",
-        building: "Gold furnace",
+        name: "Gold Furnace: GoldSmelting",
+        building: "Gold Furnace",
         durationSec: 20,
         inputs: {"goldOreConcentrate":6,"sand":1},
         outputs: {"gold":3,"exhaust":4},
@@ -698,6 +721,7 @@ export const craftedResources: ResourcesMap = {
     label: "Household Appliances",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Household_Appliances",
+    imageUrl: "https://wiki.coigame.com/images/1/1d/Household_Appliances.png",
     recipes: [
       {
         name: "Assembly III: HouseholdAppliancesAssemblyT1",
@@ -726,6 +750,7 @@ export const craftedResources: ResourcesMap = {
     label: "Household Goods",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Household_Goods",
+    imageUrl: "https://wiki.coigame.com/images/6/62/Household_Goods.png",
     recipes: [
       {
         name: "Assembly II: HouseholdGoodsAssemblyT1",
@@ -761,6 +786,7 @@ export const craftedResources: ResourcesMap = {
     label: "Imported Goods",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Imported_Goods",
+    imageUrl: "",
     recipes: [
     ],
   },
@@ -768,17 +794,18 @@ export const craftedResources: ResourcesMap = {
     label: "Iron",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Iron",
+    imageUrl: "https://wiki.coigame.com/images/4/45/Iron.png",
     recipes: [
       {
-        name: "Metal caster: IronCasting",
-        building: "Metal caster",
+        name: "Metal Caster: IronCasting",
+        building: "Metal Caster",
         durationSec: 40,
         inputs: {"moltenIron":8},
         outputs: {"iron":8},
       },
       {
-        name: "Metal caster II: IronCastingCooled",
-        building: "Metal caster II",
+        name: "Metal Caster II: IronCastingCooled",
+        building: "Metal Caster II",
         durationSec: 20,
         inputs: {"moltenIron":8},
         outputs: {"iron":8},
@@ -789,6 +816,7 @@ export const craftedResources: ResourcesMap = {
     label: "Lab Equipment",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Lab_Equipment",
+    imageUrl: "https://wiki.coigame.com/images/d/d7/Lab_Equipment.png",
     recipes: [
       {
         name: "Assembly II: LabEquipment1AssemblyT1",
@@ -824,6 +852,7 @@ export const craftedResources: ResourcesMap = {
     label: "Lab Equipment II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Lab_Equipment_II",
+    imageUrl: "https://wiki.coigame.com/images/a/a3/Lab_Equipment_II.png",
     recipes: [
       {
         name: "Assembly III: LabEquipment2AssemblyT2",
@@ -852,6 +881,7 @@ export const craftedResources: ResourcesMap = {
     label: "Lab Equipment III",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Lab_Equipment_III",
+    imageUrl: "https://wiki.coigame.com/images/d/d9/Lab_Equipment_III.png",
     recipes: [
       {
         name: "Assembly III: LabEquipment3AssemblyT1",
@@ -880,6 +910,7 @@ export const craftedResources: ResourcesMap = {
     label: "Lab Equipment IV",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Lab_Equipment_IV",
+    imageUrl: "https://wiki.coigame.com/images/8/89/Lab_Equipment_IV.png",
     recipes: [
       {
         name: "Assembly IV: LabEquipment4AssemblyT2",
@@ -901,10 +932,11 @@ export const craftedResources: ResourcesMap = {
     label: "Lens",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Lens",
+    imageUrl: "https://wiki.coigame.com/images/a/ae/Lens.png",
     recipes: [
       {
-        name: "Lens polisher: LensMaking",
-        building: "Lens polisher",
+        name: "Lens Polisher: LensMaking",
+        building: "Lens Polisher",
         durationSec: 30,
         inputs: {"sapphireWafer":1,"diamondPaste":1,"ethanol":1},
         outputs: {"lens":1},
@@ -915,6 +947,7 @@ export const craftedResources: ResourcesMap = {
     label: "Luxury Goods",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Luxury_Goods",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: LuxuryGoodsAssemblyT1",
@@ -943,24 +976,25 @@ export const craftedResources: ResourcesMap = {
     label: "Maintenance I",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Maintenance_I",
+    imageUrl: "https://wiki.coigame.com/images/2/2d/Maintenance_I.png",
     recipes: [
       {
-        name: "Maintenance depot: MaintenanceT1Recipe",
-        building: "Maintenance depot",
+        name: "Maintenance Depot: MaintenanceT1Recipe",
+        building: "Maintenance Depot",
         durationSec: 20,
         inputs: {"mechanicalParts":8,"electronics":4},
         outputs: {"maintenanceI":160},
       },
       {
-        name: "Maintenance depot: MaintenanceT1Recycling",
-        building: "Maintenance depot",
+        name: "Maintenance Depot: MaintenanceT1Recycling",
+        building: "Maintenance Depot",
         durationSec: 20,
         inputs: {"mechanicalParts":8,"electronics":4},
         outputs: {"maintenanceI":160,"recyclables":6},
       },
       {
-        name: "Maintenance depot (basic): MaintenanceT0Recipe",
-        building: "Maintenance depot (basic)",
+        name: "Maintenance Depot (Basic): MaintenanceT0Recipe",
+        building: "Maintenance Depot (Basic)",
         durationSec: 30,
         inputs: {"mechanicalParts":6,"electronics":3},
         outputs: {"maintenanceI":110},
@@ -971,17 +1005,18 @@ export const craftedResources: ResourcesMap = {
     label: "Maintenance II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Maintenance_II",
+    imageUrl: "https://wiki.coigame.com/images/0/0d/Maintenance_II.png",
     recipes: [
       {
-        name: "Maintenance II depot: MaintenanceT2Recipe",
-        building: "Maintenance II depot",
+        name: "Maintenance II Depot: MaintenanceT2Recipe",
+        building: "Maintenance II Depot",
         durationSec: 20,
         inputs: {"mechanicalParts":6,"electronicsIi":4},
         outputs: {"maintenanceIi":160},
       },
       {
-        name: "Maintenance II depot: MaintenanceT2Recycling",
-        building: "Maintenance II depot",
+        name: "Maintenance II Depot: MaintenanceT2Recycling",
+        building: "Maintenance II Depot",
         durationSec: 20,
         inputs: {"mechanicalParts":6,"electronicsIi":4},
         outputs: {"maintenanceIi":160,"recyclables":8},
@@ -992,17 +1027,18 @@ export const craftedResources: ResourcesMap = {
     label: "Maintenance III",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Maintenance_III",
+    imageUrl: "https://wiki.coigame.com/images/f/f1/Maintenance_III.png",
     recipes: [
       {
-        name: "Maintenance III depot: MaintenanceT3Recipe",
-        building: "Maintenance III depot",
+        name: "Maintenance III Depot: MaintenanceT3Recipe",
+        building: "Maintenance III Depot",
         durationSec: 20,
         inputs: {"mechanicalParts":3,"electronicsIii":2},
         outputs: {"maintenanceIii":80},
       },
       {
-        name: "Maintenance III depot: MaintenanceT3Recycling",
-        building: "Maintenance III depot",
+        name: "Maintenance III Depot: MaintenanceT3Recycling",
+        building: "Maintenance III Depot",
         durationSec: 20,
         inputs: {"mechanicalParts":3,"electronicsIii":2},
         outputs: {"maintenanceIii":80,"recyclables":8},
@@ -1013,6 +1049,7 @@ export const craftedResources: ResourcesMap = {
     label: "Mechanical Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Mechanical_Parts",
+    imageUrl: "https://wiki.coigame.com/images/a/a5/Mechanical_Parts.png",
     recipes: [
       {
         name: "Assembly I: MechPartsAssemblyT1",
@@ -1076,17 +1113,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips",
+    imageUrl: "https://wiki.coigame.com/images/4/44/Microchips.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdFinalStage",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdFinalStage",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage4B":3,"gold":1},
         outputs: {"microchips":6},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdFinalStage",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdFinalStage",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage4B":6,"gold":2},
         outputs: {"microchips":12},
@@ -1097,17 +1135,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 1 A",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_1_A",
+    imageUrl: "https://wiki.coigame.com/images/e/e9/Microchips_Stage_1_A.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage1A",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage1A",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"siliconWafer":3,"acid":1,"water":1},
         outputs: {"microchipsStage1A":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage1A",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage1A",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"siliconWafer":6,"acid":2,"water":2},
         outputs: {"microchipsStage1A":6},
@@ -1118,17 +1157,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 1 B",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_1_B",
+    imageUrl: "https://wiki.coigame.com/images/1/18/Microchips_Stage_1_B.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage2A",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage2A",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage1A":3,"copper":1,"plastic":1},
         outputs: {"microchipsStage1B":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage2A",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage2A",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage1A":6,"copper":2,"plastic":2},
         outputs: {"microchipsStage1B":6},
@@ -1139,17 +1179,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 1 C",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_1_C",
+    imageUrl: "https://wiki.coigame.com/images/a/ad/Microchips_Stage_1_C.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage3A",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage3A",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage1B":3,"gold":1},
         outputs: {"microchipsStage1C":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage3A",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage3A",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage1B":6,"gold":1},
         outputs: {"microchipsStage1C":6},
@@ -1160,17 +1201,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 2 A",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_2_A",
+    imageUrl: "https://wiki.coigame.com/images/1/19/Microchips_Stage_2_A.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage1B",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage1B",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage1C":3,"acid":1,"water":1},
         outputs: {"microchipsStage2A":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage1B",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage1B",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage1C":6,"acid":2,"water":2},
         outputs: {"microchipsStage2A":6},
@@ -1181,17 +1223,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 2 B",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_2_B",
+    imageUrl: "https://wiki.coigame.com/images/9/92/Microchips_Stage_2_B.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage2B",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage2B",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage2A":3,"copper":1,"plastic":1},
         outputs: {"microchipsStage2B":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage2B",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage2B",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage2A":6,"copper":2,"plastic":2},
         outputs: {"microchipsStage2B":6},
@@ -1202,17 +1245,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 2 C",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_2_C",
+    imageUrl: "https://wiki.coigame.com/images/7/75/Microchips_Stage_2_C.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage3B",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage3B",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage2B":3,"gold":1},
         outputs: {"microchipsStage2C":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage3B",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage3B",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage2B":6,"gold":1},
         outputs: {"microchipsStage2C":6},
@@ -1223,17 +1267,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 3 A",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_3_A",
+    imageUrl: "https://wiki.coigame.com/images/0/0c/Microchips_Stage_3_A.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage1C",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage1C",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage2C":3,"acid":1,"water":1},
         outputs: {"microchipsStage3A":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage1C",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage1C",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage2C":6,"acid":2,"water":2},
         outputs: {"microchipsStage3A":6},
@@ -1244,17 +1289,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 3 B",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_3_B",
+    imageUrl: "https://wiki.coigame.com/images/8/82/Microchips_Stage_3_B.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage2C",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage2C",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage3A":3,"copper":1,"plastic":1},
         outputs: {"microchipsStage3B":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage2C",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage2C",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage3A":6,"copper":2,"plastic":2},
         outputs: {"microchipsStage3B":6},
@@ -1265,17 +1311,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 3 C",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_3_C",
+    imageUrl: "https://wiki.coigame.com/images/8/82/Microchips_Stage_3_C.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage3C",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage3C",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage3B":3,"gold":1},
         outputs: {"microchipsStage3C":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage3C",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage3C",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage3B":6,"gold":2},
         outputs: {"microchipsStage3C":6},
@@ -1286,17 +1333,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 4 A",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_4_A",
+    imageUrl: "https://wiki.coigame.com/images/f/f9/Microchips_Stage_4_A.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage1D",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage1D",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage3C":3,"acid":1,"water":1},
         outputs: {"microchipsStage4A":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage1D",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage1D",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage3C":6,"acid":2,"water":2},
         outputs: {"microchipsStage4A":6},
@@ -1307,17 +1355,18 @@ export const craftedResources: ResourcesMap = {
     label: "Microchips Stage 4 B",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Microchips_Stage_4_B",
+    imageUrl: "https://wiki.coigame.com/images/7/70/Microchips_Stage_4_B.png",
     recipes: [
       {
-        name: "Microchip machine: MicrochipMachine_MicrochipProdStage2D",
-        building: "Microchip machine",
+        name: "Microchip Machine: MicrochipMachine_MicrochipProdStage2D",
+        building: "Microchip Machine",
         durationSec: 30,
         inputs: {"microchipsStage4A":3,"copper":1,"plastic":1},
         outputs: {"microchipsStage4B":3},
       },
       {
-        name: "Microchip machine II: MicrochipMachineT2_MicrochipProdStage2D",
-        building: "Microchip machine II",
+        name: "Microchip Machine II: MicrochipMachineT2_MicrochipProdStage2D",
+        building: "Microchip Machine II",
         durationSec: 20,
         inputs: {"microchipsStage4A":6,"copper":2,"plastic":2},
         outputs: {"microchipsStage4B":6},
@@ -1328,6 +1377,7 @@ export const craftedResources: ResourcesMap = {
     label: "Office Supplies",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Office_Supplies",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: OfficeSuppliesAssemblyT1",
@@ -1356,17 +1406,18 @@ export const craftedResources: ResourcesMap = {
     label: "Paper",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Paper",
+    imageUrl: "https://wiki.coigame.com/images/b/b2/Paper.png",
     recipes: [
       {
-        name: "Chemical plant: PaperProduction",
-        building: "Chemical plant",
+        name: "Chemical Plant: PaperProduction",
+        building: "Chemical Plant",
         durationSec: 40,
         inputs: {"woodchips":4,"limestone":1,"steamHigh":1},
         outputs: {"paper":8},
       },
       {
-        name: "Chemical plant II: PaperProductionT2",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: PaperProductionT2",
+        building: "Chemical Plant II",
         durationSec: 20,
         inputs: {"woodchips":4,"limestone":1,"steamHigh":1},
         outputs: {"paper":8},
@@ -1377,6 +1428,7 @@ export const craftedResources: ResourcesMap = {
     label: "PCB",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/PCB",
+    imageUrl: "https://wiki.coigame.com/images/0/00/PCB.png",
     recipes: [
       {
         name: "Assembly III: PCBAssemblyT1",
@@ -1405,6 +1457,7 @@ export const craftedResources: ResourcesMap = {
     label: "Rail Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Rail_Parts",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: RailPartsAssemblyT1",
@@ -1433,6 +1486,7 @@ export const craftedResources: ResourcesMap = {
     label: "Sapphire Wafer",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Sapphire_Wafer",
+    imageUrl: "",
     recipes: [
       {
         name: "Crystallizer: AluminaCrystallization",
@@ -1447,6 +1501,7 @@ export const craftedResources: ResourcesMap = {
     label: "Server",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Server",
+    imageUrl: "https://wiki.coigame.com/images/7/78/Server.png",
     recipes: [
       {
         name: "Assembly IV: ServerAssemblyT1",
@@ -1468,10 +1523,11 @@ export const craftedResources: ResourcesMap = {
     label: "Silicon (Poly)",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Silicon_%2528Poly%2529",
+    imageUrl: "https://wiki.coigame.com/images/9/9d/Silicon_%28Poly%29.png",
     recipes: [
       {
-        name: "Silicon reactor: SiliconTreatment",
-        building: "Silicon reactor",
+        name: "Silicon Reactor: SiliconTreatment",
+        building: "Silicon Reactor",
         durationSec: 15,
         inputs: {"moltenSilicon":3,"hydrogen":1},
         outputs: {"siliconPoly":3},
@@ -1482,6 +1538,7 @@ export const craftedResources: ResourcesMap = {
     label: "Silicon Wafer",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Silicon_Wafer",
+    imageUrl: "https://wiki.coigame.com/images/4/4e/Silicon_Wafer.png",
     recipes: [
       {
         name: "Crystallizer: SiliconCrystallization",
@@ -1496,6 +1553,7 @@ export const craftedResources: ResourcesMap = {
     label: "Solar Cell",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Solar_Cell",
+    imageUrl: "https://wiki.coigame.com/images/f/f5/Solar_Cell.png",
     recipes: [
       {
         name: "Assembly III: SolarCellAssemblyT1",
@@ -1524,6 +1582,7 @@ export const craftedResources: ResourcesMap = {
     label: "Solar Cell Mono",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Solar_Cell_Mono",
+    imageUrl: "https://wiki.coigame.com/images/b/b6/Solar_Cell_Mono.png",
     recipes: [
       {
         name: "Assembly V: SolarCellMonoAssemblyT1",
@@ -1538,6 +1597,7 @@ export const craftedResources: ResourcesMap = {
     label: "Space Probe Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Space_Probe_Parts",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly V: ProbePartsAssembly",
@@ -1552,6 +1612,7 @@ export const craftedResources: ResourcesMap = {
     label: "Station Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Station_Parts",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly V: StationPartsAssembly",
@@ -1566,6 +1627,7 @@ export const craftedResources: ResourcesMap = {
     label: "Station Parts (Basic)",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Station_Parts_%2528Basic%2529",
+    imageUrl: "",
     recipes: [
       {
         name: "Assembly III: StationPartsBasicAssemblyT1",
@@ -1594,17 +1656,18 @@ export const craftedResources: ResourcesMap = {
     label: "Steel",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Steel",
+    imageUrl: "https://wiki.coigame.com/images/c/c9/Steel.png",
     recipes: [
       {
-        name: "Cooled caster: SteelCastingCooled",
-        building: "Cooled caster",
+        name: "Cooled Caster: SteelCastingCooled",
+        building: "Cooled Caster",
         durationSec: 40,
         inputs: {"moltenSteel":8,"water":4},
         outputs: {"steel":8},
       },
       {
-        name: "Cooled caster II: SteelCastingCooledT2",
-        building: "Cooled caster II",
+        name: "Cooled Caster II: SteelCastingCooledT2",
+        building: "Cooled Caster II",
         durationSec: 20,
         inputs: {"moltenSteel":8,"water":4},
         outputs: {"steel":8},
@@ -1615,6 +1678,7 @@ export const craftedResources: ResourcesMap = {
     label: "Vehicle Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Vehicle_Parts",
+    imageUrl: "https://wiki.coigame.com/images/0/0c/Vehicle_Parts.png",
     recipes: [
       {
         name: "Assembly I: VehicleParts1AssemblyT1",
@@ -1657,6 +1721,7 @@ export const craftedResources: ResourcesMap = {
     label: "Vehicle Parts II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Vehicle_Parts_II",
+    imageUrl: "https://wiki.coigame.com/images/b/b4/Vehicle_Parts_II.png",
     recipes: [
       {
         name: "Assembly III: VehicleParts2AssemblyT1",
@@ -1685,6 +1750,7 @@ export const craftedResources: ResourcesMap = {
     label: "Vehicle Parts III",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Vehicle_Parts_III",
+    imageUrl: "https://wiki.coigame.com/images/6/64/Vehicle_Parts_III.png",
     recipes: [
       {
         name: "Assembly III: VehicleParts3AssemblyT1",

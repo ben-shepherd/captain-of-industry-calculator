@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const JSON_PATH = join(__dirname, "wiki-recipes.json");
+const IMAGES_JSON_PATH = join(__dirname, "wiki-resource-images.json");
 const OUT_DIR = join(ROOT, "assets", "js", "data", "resources");
 
 function displayToId(display) {
@@ -227,6 +228,16 @@ function main() {
   const raw = JSON.parse(readFileSync(JSON_PATH, "utf8"));
   const rows = raw.rows;
 
+  let imageMap = {};
+  try {
+    const imgRaw = JSON.parse(readFileSync(IMAGES_JSON_PATH, "utf8"));
+    imageMap = imgRaw.images ?? {};
+  } catch {
+    console.warn(
+      "wiki-resource-images.json not found; all imageUrl fields will be empty. Run: node scripts/scrape-recipes.mjs",
+    );
+  }
+
   const nameToId = new Map();
   const resources = new Map();
 
@@ -364,6 +375,7 @@ function main() {
       lines.push(`    label: ${escapeStr(meta.label)},`);
       lines.push(`    unit: "t/m",`);
       lines.push(`    wikiUrl: ${escapeStr(meta.wikiUrl)},`);
+      lines.push(`    imageUrl: ${escapeStr(imageMap[meta.label] ?? "")},`);
       lines.push(`    recipes: [`);
       if (recipes.length === 0) {
         lines.push(`    ],`);
@@ -382,23 +394,8 @@ function main() {
     console.log(`Wrote ${file} (${entries.length} resources)`);
   }
 
-  const indexLines = [];
-  indexLines.push(`import type { ResourcesMap } from "../../contracts";`);
-  for (const { varName, file } of files) {
-    const base = file.replace(/\.ts$/, "");
-    indexLines.push(`import { ${varName} } from "./${base}";`);
-  }
-  indexLines.push("");
-  indexLines.push(`/** Full game resource graph (from wiki Cargo RecipesImport). */`);
-  indexLines.push(`export const resources: ResourcesMap = {`);
-  for (const { varName } of files) {
-    indexLines.push(`  ...${varName},`);
-  }
-  indexLines.push(`};`);
-  indexLines.push("");
-  writeFileSync(join(OUT_DIR, "index.ts"), indexLines.join("\n"), "utf8");
-  console.log("Wrote index.ts");
   console.log(`Total resources: ${sortedIds.length}`);
+  console.log("Skipped index.ts (picker helpers are maintained manually).");
 }
 
 main();

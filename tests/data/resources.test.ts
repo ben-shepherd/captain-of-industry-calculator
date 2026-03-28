@@ -23,6 +23,13 @@ describe("resources dataset", () => {
     expect(resource.wikiUrl).toMatch(/^https:\/\/wiki\.coigame\.com\//);
   });
 
+  it.each(entries)("%s has an imageUrl string", (_id, resource) => {
+    expect(typeof resource.imageUrl).toBe("string");
+    if (resource.imageUrl.length > 0) {
+      expect(resource.imageUrl).toMatch(/^https:\/\/wiki\.coigame\.com\//);
+    }
+  });
+
   it.each(entries)("%s has a recipes array", (_id, resource) => {
     expect(Array.isArray(resource.recipes)).toBe(true);
   });
