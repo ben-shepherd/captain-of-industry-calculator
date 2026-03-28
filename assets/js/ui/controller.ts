@@ -78,6 +78,7 @@ export function refreshResourceSearchResults(
     const li = document.createElement("li");
     li.role = "option";
     li.dataset.resourceId = id;
+    li.id = `resource-search-hit-${id}`;
     li.className = "resource-search-hit";
     const url = resources[id]?.imageUrl;
     if (url) {

@@ -331,7 +331,8 @@ body {
 }
 
 .resource-search-results li[role="option"]:hover,
-.resource-search-results li[role="option"]:focus {
+.resource-search-results li[role="option"]:focus,
+.resource-search-results li[role="option"].resource-search-hit-active {
   background: var(--color-accent-muted);
   outline: none;
 }

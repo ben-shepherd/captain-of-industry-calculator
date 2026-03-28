@@ -150,6 +150,44 @@ export function bindEvents(els: AppElements): void {
     ".resource-search-wrap",
   ) as HTMLElement;
 
+  const RESOURCE_SEARCH_HIT_ACTIVE = "resource-search-hit-active";
+
+  let resourceSearchHighlightIndex = -1;
+
+  function getResourceSearchHitElements(): HTMLLIElement[] {
+    return Array.from(
+      resourceSearchResults.querySelectorAll<HTMLLIElement>(
+        "li[data-resource-id]",
+      ),
+    );
+  }
+
+  function syncResourceSearchHighlight(): void {
+    const hits = getResourceSearchHitElements();
+    for (const li of hits) {
+      li.classList.remove(RESOURCE_SEARCH_HIT_ACTIVE);
+      li.removeAttribute("aria-selected");
+    }
+    resourceSearchInput.removeAttribute("aria-activedescendant");
+    if (
+      resourceSearchHighlightIndex < 0 ||
+      resourceSearchHighlightIndex >= hits.length
+    ) {
+      return;
+    }
+    const li = hits[resourceSearchHighlightIndex];
+    if (!li) return;
+    li.classList.add(RESOURCE_SEARCH_HIT_ACTIVE);
+    li.setAttribute("aria-selected", "true");
+    resourceSearchInput.setAttribute("aria-activedescendant", li.id);
+    li.scrollIntoView({ block: "nearest" });
+  }
+
+  function resetResourceSearchHighlight(): void {
+    resourceSearchHighlightIndex = -1;
+    syncResourceSearchHighlight();
+  }
+
   function refreshAfterStateRestore(): void {
     renderResourceOptions(
       resourceSelect,
@@ -166,12 +204,15 @@ export function bindEvents(els: AppElements): void {
     applyInputsSectionOpenStateFromStore();
     updateResults(resultEls);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
+    resetResourceSearchHighlight();
   }
 
   function applyTargetResource(id: string): void {
+    resourceSearchHighlightIndex = -1;
     resourceSelect.value = id;
     resourceSearchInput.value = "";
     refreshResourceSearchResults(resourceSearchResults, "");
+    syncResourceSearchHighlight();
     setSearchListExpanded(resourceSearchInput, false);
     setResourceId(id);
     setResourceIconSlot(resourceSelectIconSlot, id);
@@ -195,6 +236,7 @@ export function bindEvents(els: AppElements): void {
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
     const q = resourceSearchInput.value.trim();
     setSearchListExpanded(resourceSearchInput, q !== "");
+    resetResourceSearchHighlight();
   });
 
   resourceSearchInput.addEventListener("focus", () => {
@@ -202,6 +244,7 @@ export function bindEvents(els: AppElements): void {
     if (!q) return;
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
     setSearchListExpanded(resourceSearchInput, true);
+    resetResourceSearchHighlight();
   });
 
   resourceSearchInput.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -209,15 +252,57 @@ export function bindEvents(els: AppElements): void {
       resourceSearchInput.value = "";
       refreshResourceSearchResults(resourceSearchResults, "");
       setSearchListExpanded(resourceSearchInput, false);
+      resetResourceSearchHighlight();
       return;
     }
-    if (e.key !== "Enter") return;
-    const q = resourceSearchInput.value.trim();
-    if (!q) return;
-    const first = matchResourcesForSearch(q)[0];
-    if (!first) return;
-    e.preventDefault();
-    applyTargetResource(first.id);
+
+    const hits = getResourceSearchHitElements();
+    const listOpen = !resourceSearchResults.hidden && hits.length > 0;
+
+    if (listOpen && e.key === "ArrowDown") {
+      e.preventDefault();
+      resourceSearchHighlightIndex = Math.min(
+        resourceSearchHighlightIndex + 1,
+        hits.length - 1,
+      );
+      if (resourceSearchHighlightIndex < 0) {
+        resourceSearchHighlightIndex = 0;
+      }
+      syncResourceSearchHighlight();
+      return;
+    }
+
+    if (listOpen && e.key === "ArrowUp") {
+      e.preventDefault();
+      resourceSearchHighlightIndex = Math.max(
+        resourceSearchHighlightIndex - 1,
+        -1,
+      );
+      syncResourceSearchHighlight();
+      return;
+    }
+
+    if (e.key === "Enter") {
+      const q = resourceSearchInput.value.trim();
+      if (!q) return;
+      if (
+        resourceSearchHighlightIndex >= 0 &&
+        resourceSearchHighlightIndex < hits.length
+      ) {
+        const hitLi = hits[resourceSearchHighlightIndex];
+        const id = hitLi?.dataset.resourceId;
+        if (id) {
+          e.preventDefault();
+          applyTargetResource(id);
+        }
+        return;
+      }
+      const first = matchResourcesForSearch(q)[0];
+      if (!first) return;
+      e.preventDefault();
+      applyTargetResource(first.id);
+      return;
+    }
   });
 
   resourceSearchResults.addEventListener("mousedown", (e: MouseEvent) => {
@@ -234,6 +319,7 @@ export function bindEvents(els: AppElements): void {
     if (resourceSearchResults.hidden) return;
     resourceSearchResults.hidden = true;
     setSearchListExpanded(resourceSearchInput, false);
+    resetResourceSearchHighlight();
   });
 
   resourceSelect.addEventListener("change", () => {
