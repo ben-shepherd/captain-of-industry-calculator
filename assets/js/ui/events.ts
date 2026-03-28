@@ -45,6 +45,7 @@ import {
   setDependencyTreeBranchesExpanded,
   TARGET_RESOURCE_PLACEHOLDER,
   updateResults,
+  renderRecentTargets,
 } from "./controller";
 import { setResourcePickerTrigger, setResourceWikiLink } from "./resourceIcon";
 import type { ResultElements } from "./controller";
@@ -80,6 +81,7 @@ export interface AppElements extends ResultElements {
   treeExpandAll: HTMLButtonElement;
   treeCollapseAll: HTMLButtonElement;
   netFlowChartStyleSelect: HTMLSelectElement;
+  recentTargetResourcesWrap: HTMLElement | null;
 }
 
 const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
@@ -296,6 +298,7 @@ export function bindEvents(els: AppElements): void {
     applyUserGuideOpenStateFromStore();
     syncBaseRequirementsModeButtons();
     updateResults(resultEls);
+    renderRecentTargets(els.recentTargetResourcesWrap);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
     resetResourceSearchHighlight();
   }
@@ -316,6 +319,7 @@ export function bindEvents(els: AppElements): void {
     );
     setResourceWikiLink(resourceWikiLinkWrap, id);
     updateResults(resultEls);
+    renderRecentTargets(els.recentTargetResourcesWrap);
   }
 
   function handleResultPanelTargetClick(e: Event): void {
@@ -366,6 +370,10 @@ export function bindEvents(els: AppElements): void {
     setDependencyTreeBranchesExpanded(treeList, false);
   });
   netBody.addEventListener("click", handleResultPanelTargetClick);
+  els.recentTargetResourcesWrap?.addEventListener(
+    "click",
+    handleResultPanelTargetClick,
+  );
 
   netFlowChartStyleSelect.addEventListener("change", () => {
     setNetFlowChartStyle(netFlowChartStyleSelect.value as NetFlowChartStyle);

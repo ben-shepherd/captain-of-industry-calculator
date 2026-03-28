@@ -12,7 +12,7 @@ import {
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 10;
+const STATE_VERSION = 11;
 
 /**
  * Write the current application state to localStorage.
@@ -248,6 +248,17 @@ export function migrateEnvelopeToAppState(
           : 0,
     };
     version = 10;
+  }
+
+  if (version === 10) {
+    const d = data as AppState & { recentTargetResourceIds?: string[] };
+    data = {
+      ...d,
+      recentTargetResourceIds: Array.isArray(d.recentTargetResourceIds)
+        ? d.recentTargetResourceIds
+        : [],
+    };
+    version = 11;
   }
 
   if (version !== STATE_VERSION) {

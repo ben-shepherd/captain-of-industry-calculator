@@ -30,11 +30,14 @@ const DEFAULT_INPUTS_SECTIONS: InputsSectionsState = {
   presets: true,
 };
 
+const MAX_RECENT_TARGET_RESOURCES = 12;
+
 const DEFAULT_STATE: AppState = {
   resourceId: "",
   targetRate: 12,
   targetRecipeIdx: 0,
   baseRequirementsMode: "direct",
+  recentTargetResourceIds: [],
   production: {},
   productionExtraIds: [],
   productionDismissedIds: [],
@@ -131,6 +134,9 @@ export function applyLoadedState(saved: AppState): void {
   );
   state.netFlowChartStyle = normalizeNetFlowChartStyle(state.netFlowChartStyle);
   state.userGuideExpanded = normalizeUserGuideExpanded(state.userGuideExpanded);
+  state.recentTargetResourceIds = normalizeRecentTargetResourceIds(
+    state.recentTargetResourceIds,
+  );
   persist();
 }
 
@@ -197,6 +203,22 @@ function normalizeUserGuideExpanded(v: unknown): boolean {
   return typeof v === "boolean" ? v : true;
 }
 
+function normalizeRecentTargetResourceIds(
+  raw: unknown,
+): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const item of raw) {
+    if (typeof item !== "string" || !resources[item]) continue;
+    if (seen.has(item)) continue;
+    seen.add(item);
+    out.push(item);
+    if (out.length >= MAX_RECENT_TARGET_RESOURCES) break;
+  }
+  return out;
+}
+
 export function getResourceId(): string {
   return state.resourceId;
 }
@@ -206,6 +228,12 @@ export function setResourceId(id: string): void {
   state.resourceId = id;
   state.productionDismissedIds = [];
   state.targetRecipeIdx = firstProducingRecipeIndex(id);
+  if (id) {
+    state.recentTargetResourceIds = [
+      id,
+      ...state.recentTargetResourceIds.filter((x) => x !== id),
+    ].slice(0, MAX_RECENT_TARGET_RESOURCES);
+  }
   persist();
 }
 
@@ -223,6 +251,10 @@ export function setTargetRecipeIdx(idx: number): void {
   if (state.targetRecipeIdx === idx) return;
   state.targetRecipeIdx = idx;
   persist();
+}
+
+export function getRecentTargetResourceIds(): readonly string[] {
+  return state.recentTargetResourceIds;
 }
 
 export function getTargetRate(): number {
@@ -474,6 +506,7 @@ export function getSnapshot(): AppState {
     inputsSections: { ...state.inputsSections },
     netFlowChartStyle: state.netFlowChartStyle,
     userGuideExpanded: state.userGuideExpanded,
+    recentTargetResourceIds: [...state.recentTargetResourceIds],
   };
 }
 
@@ -481,6 +514,7 @@ export function resetState(): void {
   state = {
     ...DEFAULT_STATE,
     targetRecipeIdx: 0,
+    recentTargetResourceIds: [],
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],
@@ -500,6 +534,7 @@ export function wipeAllPersistedDataAndResetToDefaults(): void {
   state = {
     ...DEFAULT_STATE,
     targetRecipeIdx: 0,
+    recentTargetResourceIds: [],
     production: {},
     productionExtraIds: [],
     productionDismissedIds: [],

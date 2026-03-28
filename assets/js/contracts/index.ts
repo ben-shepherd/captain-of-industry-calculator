@@ -133,6 +133,10 @@ export interface AppState {
   netFlowChartStyle: NetFlowChartStyle;
   /** Top-of-page user guide `<details>` expanded. */
   userGuideExpanded: boolean;
+  /**
+   * Most-recent target resources (max 12) for quick recall under the user guide.
+   */
+  recentTargetResourceIds: string[];
 }
 
 export interface PersistedEnvelope {

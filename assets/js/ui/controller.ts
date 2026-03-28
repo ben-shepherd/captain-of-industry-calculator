@@ -12,6 +12,7 @@ import {
   getResourceId,
   getTargetRate,
   getTargetRecipeIdx,
+  getRecentTargetResourceIds,
   getProduction,
   getProductionExtraIds,
   getProductionDismissedIds,
@@ -24,6 +25,7 @@ import {
   renderProductionAddPicker,
 } from './productionView';
 import {
+  escapeHtml,
   resourceLabelWithIconHtml,
   setResourcePickerTrigger,
   setResourceWikiLink,
@@ -181,6 +183,37 @@ export function renderResourceOptions(
   if (searchResultsList) {
     refreshResourceSearchResults(searchResultsList, "");
   }
+}
+
+const RECENT_RESOURCES_EMPTY =
+  `<p class="recent-resources-empty">No recent resources yet — pick a resource below.</p>`;
+
+/**
+ * Fill the “Recent resources” area with chips (icon + label).
+ */
+export function renderRecentTargets(container: HTMLElement | null): void {
+  if (!container) return;
+  const ids = getRecentTargetResourceIds();
+  if (ids.length === 0) {
+    container.innerHTML = RECENT_RESOURCES_EMPTY;
+    return;
+  }
+  const current = getResourceId();
+  const items = ids.map((id) => {
+    const def = resources[id];
+    const label = def?.label ?? id;
+    const pressed = id === current ? "true" : "false";
+    const inner = resourceLabelWithIconHtml(id, label);
+    return (
+      `<li class="recent-resources-item" role="none">`
+      + `<button type="button" class="recent-resource-chip production-row-target" `
+      + `data-production-target="${escapeHtml(id)}" aria-pressed="${pressed}" `
+      + `aria-label="Set ${escapeHtml(label)} as target resource">${inner}</button>`
+      + `</li>`
+    );
+  });
+  container.innerHTML =
+    `<ul class="recent-resources-list" role="list">${items.join("")}</ul>`;
 }
 
 /**
