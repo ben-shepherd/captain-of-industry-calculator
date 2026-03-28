@@ -8,7 +8,11 @@ import type { AppState, PersistedEnvelope } from '../contracts';
  */
 
 const STORAGE_KEY = "coi-calculator-state";
+<<<<<<< Updated upstream
 const STATE_VERSION = 5;
+=======
+const STATE_VERSION = 8;
+>>>>>>> Stashed changes
 
 /**
  * Write the current application state to localStorage.
@@ -134,7 +138,7 @@ export function migrateEnvelopeToAppState(
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { base: true, net: true, tree: false },
-      inputsSections: { target: true, production: true, presets: true },
+      inputsSections: { production: true, presets: true },
     };
     version = 2;
   }
@@ -176,7 +180,6 @@ export function migrateEnvelopeToAppState(
     data = {
       ...d,
       inputsSections: {
-        target: ins?.target ?? true,
         production: ins?.production ?? true,
         presets: ins?.presets ?? true,
       },
@@ -184,6 +187,46 @@ export function migrateEnvelopeToAppState(
     version = 5;
   }
 
+<<<<<<< Updated upstream
+=======
+  if (version === 5) {
+    const d = data as AppState & { targetRecipeIdx?: number };
+    data = {
+      ...d,
+      targetRecipeIdx:
+        typeof d.targetRecipeIdx === "number" && Number.isInteger(d.targetRecipeIdx)
+          ? d.targetRecipeIdx
+          : 0,
+    };
+    version = 6;
+  }
+
+  if (version === 6) {
+    const d = data as AppState & { baseRequirementsMode?: string };
+    data = {
+      ...d,
+      baseRequirementsMode:
+        d.baseRequirementsMode === "full" ? "full" : "direct",
+    };
+    version = 7;
+  }
+
+  if (version === 7) {
+    const d = data as AppState & {
+      inputsSections?: AppState["inputsSections"] & { target?: boolean };
+    };
+    const ins = d.inputsSections;
+    data = {
+      ...d,
+      inputsSections: {
+        production: ins?.production ?? true,
+        presets: ins?.presets ?? true,
+      },
+    };
+    version = 8;
+  }
+
+>>>>>>> Stashed changes
   if (version !== STATE_VERSION) {
     console.warn(
       `Unable to migrate state from v${originalVersion} to v${STATE_VERSION}. Discarding.`,

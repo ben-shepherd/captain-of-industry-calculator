@@ -58,91 +58,94 @@
     </div>
   </header>
 
+  <section
+    class="panel app-target-panel"
+    aria-label="Target resource and production rate"
+  >
+    <h2>Target resource &amp; rate</h2>
+    <div class="app-target-panel-body">
+      <div class="field field-resource-target">
+        <label for="resource-picker-trigger">Target Resource</label>
+        <div class="resource-search-wrap">
+          <input
+            type="search"
+            id="resource-search"
+            placeholder="Search resources…"
+            autocomplete="off"
+            role="combobox"
+            aria-label="Search target resources"
+            aria-expanded="false"
+            aria-controls="resource-search-results"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+          />
+          <ul
+            id="resource-search-results"
+            class="resource-search-results"
+            role="listbox"
+            aria-label="Matching resources"
+            hidden
+          ></ul>
+        </div>
+        <div class="resource-picker-wrap">
+          <button
+            type="button"
+            id="resource-picker-trigger"
+            class="resource-picker-trigger"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="resource-picker-panel"
+          >
+            Choose a resource
+          </button>
+          <div
+            id="resource-picker-panel"
+            class="resource-picker-panel"
+            role="listbox"
+            aria-label="Browse resources by category"
+            hidden
+          ></div>
+          <select
+            id="resource-select"
+            class="resource-select-sr"
+            aria-hidden="true"
+            tabindex="-1"
+          ></select>
+        </div>
+        <p
+          class="resource-wiki-link-wrap"
+          id="resource-wiki-link-wrap"
+          hidden
+        ></p>
+      </div>
+
+      <details
+        class="results-section recipe-diagram-section"
+        id="target-recipe-section"
+        hidden
+        open
+      >
+        <summary class="results-section-summary">Production recipes</summary>
+        <div class="results-section-body recipe-diagram-section-body">
+          <div
+            id="target-recipe-diagram"
+            class="target-recipe-diagram"
+            aria-live="polite"
+          ></div>
+        </div>
+      </details>
+
+      <div class="field">
+        <label for="target-rate">Target Rate (per min)</label>
+        <input id="target-rate" type="number" min="0.01" step="any" />
+      </div>
+    </div>
+  </section>
+
   <main class="app-main">
     <!-- Inputs -->
     <section class="panel panel-inputs">
       <h2>Configuration</h2>
-
-      <details class="results-section" id="config-section-target" open>
-        <summary class="results-section-summary">Target resource &amp; rate</summary>
-        <div class="results-section-body">
-          <details
-            class="results-section recipe-diagram-section"
-            id="target-recipe-section"
-            hidden
-            open
-          >
-            <summary class="results-section-summary">Production recipes</summary>
-            <div class="results-section-body recipe-diagram-section-body">
-              <div
-                id="target-recipe-diagram"
-                class="target-recipe-diagram"
-                aria-live="polite"
-              ></div>
-            </div>
-          </details>
-
-          <div class="field field-resource-target">
-            <label for="resource-picker-trigger">Target Resource</label>
-            <div class="resource-search-wrap">
-              <input
-                type="search"
-                id="resource-search"
-                placeholder="Search resources…"
-                autocomplete="off"
-                role="combobox"
-                aria-label="Search target resources"
-                aria-expanded="false"
-                aria-controls="resource-search-results"
-                aria-autocomplete="list"
-                aria-haspopup="listbox"
-              />
-              <ul
-                id="resource-search-results"
-                class="resource-search-results"
-                role="listbox"
-                aria-label="Matching resources"
-                hidden
-              ></ul>
-            </div>
-            <div class="resource-picker-wrap">
-              <button
-                type="button"
-                id="resource-picker-trigger"
-                class="resource-picker-trigger"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-controls="resource-picker-panel"
-              >
-                Choose a resource
-              </button>
-              <div
-                id="resource-picker-panel"
-                class="resource-picker-panel"
-                role="listbox"
-                aria-label="Browse resources by category"
-                hidden
-              ></div>
-              <select
-                id="resource-select"
-                class="resource-select-sr"
-                aria-hidden="true"
-                tabindex="-1"
-              ></select>
-            </div>
-            <p
-              class="resource-wiki-link-wrap"
-              id="resource-wiki-link-wrap"
-              hidden
-            ></p>
-          </div>
-
-          <div class="field">
-            <label for="target-rate">Target Rate (per min)</label>
-            <input id="target-rate" type="number" min="0.01" step="any" />
-          </div>
-        </div>
-      </details>
 
       <details class="results-section" id="config-section-production" open>
         <summary class="results-section-summary production-section-summary">

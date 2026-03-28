@@ -35,7 +35,6 @@ const defaultResultsSections: AppState["resultsSections"] = {
 };
 
 const defaultInputsSections: AppState["inputsSections"] = {
-  target: true,
   production: true,
   presets: true,
 };
