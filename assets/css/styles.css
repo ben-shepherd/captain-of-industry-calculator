@@ -12,6 +12,8 @@
   --color-surplus: #4ecca3;
   --color-deficit: #e53935;
   --color-balanced: #9e9e9e;
+  --color-rate: #5dade2;
+  --color-recipe-border: #444444;
   --color-on-accent: #111111;
   --radius: 8px;
   --gap: 1.5rem;
@@ -800,4 +802,229 @@ input.input-invalid {
 .tree-arrow {
   color: color-mix(in srgb, var(--color-accent) 55%, var(--color-balanced));
   margin-right: 0.25rem;
+}
+
+/* =========================
+   Target resource recipe diagram (compact, collapsible)
+========================= */
+.panel-inputs .recipe-diagram-section.results-section {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.panel-inputs .recipe-diagram-section .results-section-summary {
+  font-size: 0.88rem;
+  padding: 0.28rem 0.4rem 0.28rem 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.panel-inputs .recipe-diagram-section .results-section-body {
+  padding-bottom: 0.25rem;
+}
+
+.recipe-diagram-section[hidden] {
+  display: none !important;
+}
+
+.target-recipe-diagram {
+  margin: 0;
+}
+
+.recipe-diagram-hint {
+  font-size: 0.68rem;
+  color: var(--color-balanced);
+  line-height: 1.35;
+  margin: 0 0 0.4rem;
+}
+
+.recipe-diagram-accent {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.recipe-diagram-empty {
+  font-size: 0.75rem;
+  color: var(--color-balanced);
+  margin: 0;
+}
+
+.recipe-card-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.recipe-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.45rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--color-recipe-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.recipe-machine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.1rem 0.25rem;
+  flex: 0 1 auto;
+  min-width: min(100%, 9rem);
+  color: var(--color-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.recipe-machine-icon {
+  display: inline-flex;
+  color: var(--color-text);
+  opacity: 0.95;
+}
+
+.recipe-machine-svg {
+  display: block;
+  vertical-align: middle;
+}
+
+.recipe-machine-sep {
+  color: var(--color-heading);
+  font-weight: 700;
+}
+
+.recipe-building-name {
+  font-weight: 600;
+}
+
+.recipe-io {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem 0.35rem;
+  flex: 1 1 10rem;
+}
+
+.recipe-item-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  min-width: 2.35rem;
+}
+
+.recipe-item-stack .resource-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.recipe-item-qty {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  line-height: 1.2;
+}
+
+.recipe-item-rate {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-rate);
+  line-height: 1.2;
+}
+
+.recipe-item-icon-fallback {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-balanced) 25%, transparent);
+}
+
+.recipe-no-inputs {
+  color: var(--color-balanced);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.recipe-plus {
+  color: var(--color-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  align-self: center;
+  padding: 0 0.05rem;
+  line-height: 1;
+}
+
+.recipe-arrow-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  flex: 0 0 auto;
+  min-width: 4.25rem;
+}
+
+.recipe-time-primary,
+.recipe-time-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  line-height: 1.2;
+}
+
+.recipe-time-secondary {
+  color: var(--color-rate);
+}
+
+.recipe-time-val {
+  white-space: nowrap;
+}
+
+.recipe-out-rate-suffix {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--color-rate);
+  opacity: 0.9;
+}
+
+.recipe-clock-svg {
+  flex-shrink: 0;
+  color: currentColor;
+  opacity: 0.85;
+}
+
+.recipe-arrow {
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: var(--color-heading);
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .recipe-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .recipe-io {
+    justify-content: flex-start;
+  }
+
+  .recipe-arrow-block {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: 0;
+    width: 100%;
+    justify-content: center;
+  }
 }

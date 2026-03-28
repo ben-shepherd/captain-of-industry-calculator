@@ -26,6 +26,7 @@ import {
   setResourceIconSlot,
   setResourceWikiLink,
 } from './resourceIcon';
+import { renderTargetRecipeDiagram } from './recipeDiagram';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
@@ -34,6 +35,7 @@ export interface ResultElements {
   productionFields?: HTMLElement;
   productionAddSelect?: HTMLSelectElement;
   productionPresetSelect?: HTMLSelectElement;
+  targetRecipeSection?: HTMLDetailsElement | null;
 }
 
 /**
@@ -158,6 +160,7 @@ export function updateResults(els: ResultElements): void {
       ["Choose a target resource above to see net flow"],
       5,
     );
+    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, "");
     syncProductionPanel(els, {});
     return;
   }
@@ -169,6 +172,7 @@ export function updateResults(els: ResultElements): void {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";
     netBody.innerHTML = "";
+    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
     syncProductionPanel(els, {});
     return;
   }
@@ -176,6 +180,7 @@ export function updateResults(els: ResultElements): void {
   renderTotals(totalsBody, result.totals);
   renderTree(treeList, result.tree);
   renderNet(netBody, result.totals, production);
+  renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
   syncProductionPanel(els, result.totals);
 }
 

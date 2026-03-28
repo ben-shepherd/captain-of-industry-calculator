@@ -53,6 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
     totalsBody: document.getElementById("totals-body")!,
     treeList: document.getElementById("tree-list")!,
     netBody: document.getElementById("net-body")!,
+    targetRecipeSection: document.getElementById(
+      "target-recipe-section",
+    ) as HTMLDetailsElement | null,
   };
 
   renderResourceOptions(
@@ -75,5 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
     productionFields: els.productionFields,
     productionAddSelect: els.productionAddSelect,
     productionPresetSelect: els.productionPresetSelect,
+    targetRecipeSection: els.targetRecipeSection,
   });
 });

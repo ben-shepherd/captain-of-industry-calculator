@@ -66,6 +66,22 @@
       <details class="results-section" id="config-section-target" open>
         <summary class="results-section-summary">Target resource &amp; rate</summary>
         <div class="results-section-body">
+          <details
+            class="results-section recipe-diagram-section"
+            id="target-recipe-section"
+            hidden
+            open
+          >
+            <summary class="results-section-summary">Production recipes</summary>
+            <div class="results-section-body recipe-diagram-section-body">
+              <div
+                id="target-recipe-diagram"
+                class="target-recipe-diagram"
+                aria-live="polite"
+              ></div>
+            </div>
+          </details>
+
           <div class="field field-resource-target">
             <label for="resource-select">Target Resource</label>
             <div class="resource-search-wrap">

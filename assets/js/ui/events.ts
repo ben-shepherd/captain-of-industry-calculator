@@ -143,6 +143,7 @@ export function bindEvents(els: AppElements): void {
     productionFields: els.productionFields,
     productionAddSelect: els.productionAddSelect,
     productionPresetSelect: els.productionPresetSelect,
+    targetRecipeSection: els.targetRecipeSection,
   };
 
   const resourceSearchWrap = resourceSearchInput.closest(
