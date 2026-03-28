@@ -26,7 +26,7 @@ Chart.register(
   PointElement,
 );
 
-const chartByContainer = new WeakMap<HTMLElement, Chart>();
+const chartByContainer = new WeakMap<HTMLElement, Chart<"line"> | Chart<"bar">>();
 
 function readCssVar(name: string, fallback: string): string {
   if (typeof document === "undefined") return fallback;
@@ -121,11 +121,11 @@ export function renderNetFlowChart(
     labels: { color: textColor, font: { size: 12 } },
   };
 
-  const tooltipLabelColorBarLine = (item: TooltipItem<"bar" | "line">) => {
+  function tooltipLabelColor(item: { datasetIndex?: number }) {
     const ds = item.datasetIndex ?? 0;
     const c = ds === 0 ? requiredColor : productionColor;
     return { borderColor: c, backgroundColor: c };
-  };
+  }
 
   const canvas = document.createElement("canvas");
   wrap.appendChild(canvas);
@@ -135,7 +135,7 @@ export function renderNetFlowChart(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  let chart: Chart;
+  let chart: Chart<"line"> | Chart<"bar">;
 
   if (style === "line") {
     wrap.style.height = `${Math.min(720, Math.max(260, 200 + Math.min(rowCount, 24) * 10))}px`;
@@ -208,7 +208,7 @@ export function renderNetFlowChart(
             callbacks: {
               afterBody: (items) =>
                 tooltipAfterBody(rows, unit, items as TooltipItem<"bar" | "line">[]),
-              labelColor: tooltipLabelColorBarLine,
+              labelColor: tooltipLabelColor,
             },
           },
         },
@@ -284,7 +284,7 @@ export function renderNetFlowChart(
             callbacks: {
               afterBody: (items) =>
                 tooltipAfterBody(rows, unit, items as TooltipItem<"bar" | "line">[]),
-              labelColor: tooltipLabelColorBarLine,
+              labelColor: tooltipLabelColor,
             },
           },
         },
@@ -355,7 +355,7 @@ export function renderNetFlowChart(
             callbacks: {
               afterBody: (items) =>
                 tooltipAfterBody(rows, unit, items as TooltipItem<"bar" | "line">[]),
-              labelColor: tooltipLabelColorBarLine,
+              labelColor: tooltipLabelColor,
             },
           },
         },
