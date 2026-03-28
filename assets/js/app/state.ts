@@ -30,6 +30,7 @@ const DEFAULT_INPUTS_SECTIONS: InputsSectionsState = {
 const DEFAULT_STATE: AppState = {
   resourceId: "",
   targetRate: 12,
+  targetRecipeIdx: 0,
   production: {},
   productionExtraIds: [],
   productionDismissedIds: [],
@@ -42,6 +43,36 @@ let state: AppState = { ...DEFAULT_STATE };
 
 function isValidTargetRate(rate: unknown): rate is number {
   return typeof rate === "number" && rate > 0 && isFinite(rate);
+}
+
+/** Smallest index of a recipe that outputs `resourceId`, or 0 if none. */
+export function firstProducingRecipeIndex(resourceId: string): number {
+  if (!resourceId) return 0;
+  const def = resources[resourceId];
+  if (!def?.recipes?.length) return 0;
+  const i = def.recipes.findIndex(
+    (r) => (r.outputs[resourceId] ?? 0) > 0,
+  );
+  return i >= 0 ? i : 0;
+}
+
+function normalizeTargetRecipeIdx(resourceId: string, idx: unknown): number {
+  if (
+    typeof idx !== "number"
+    || !Number.isInteger(idx)
+    || idx < 0
+  ) {
+    return firstProducingRecipeIndex(resourceId);
+  }
+  const def = resources[resourceId];
+  if (!def || idx >= def.recipes.length) {
+    return firstProducingRecipeIndex(resourceId);
+  }
+  const recipeAt = def.recipes[idx];
+  if (!recipeAt || (recipeAt.outputs[resourceId] ?? 0) <= 0) {
+    return firstProducingRecipeIndex(resourceId);
+  }
+  return idx;
 }
 
 /**
@@ -70,6 +101,10 @@ export function applyLoadedState(saved: AppState): void {
   state.productionPresets = sanitizePresets(state.productionPresets ?? []);
   state.resultsSections = normalizeResultsSections(state.resultsSections);
   state.inputsSections = normalizeInputsSections(state.inputsSections);
+  state.targetRecipeIdx = normalizeTargetRecipeIdx(
+    state.resourceId,
+    state.targetRecipeIdx,
+  );
   persist();
 }
 
@@ -112,6 +147,23 @@ export function setResourceId(id: string): void {
   if (id !== "" && !resources[id]) return;
   state.resourceId = id;
   state.productionDismissedIds = [];
+  state.targetRecipeIdx = firstProducingRecipeIndex(id);
+  persist();
+}
+
+export function getTargetRecipeIdx(): number {
+  return state.targetRecipeIdx;
+}
+
+export function setTargetRecipeIdx(idx: number): void {
+  if (!state.resourceId) return;
+  if (typeof idx !== "number" || !Number.isInteger(idx) || idx < 0) return;
+  const def = resources[state.resourceId];
+  if (!def || idx >= def.recipes.length) return;
+  const recipeAt = def.recipes[idx];
+  if (!recipeAt || (recipeAt.outputs[state.resourceId] ?? 0) <= 0) return;
+  if (state.targetRecipeIdx === idx) return;
+  state.targetRecipeIdx = idx;
   persist();
 }
 
@@ -328,6 +380,7 @@ export function getSnapshot(): AppState {
   return {
     resourceId: state.resourceId,
     targetRate: state.targetRate,
+    targetRecipeIdx: state.targetRecipeIdx,
     production: { ...state.production },
     productionExtraIds: [...state.productionExtraIds],
     productionDismissedIds: [...state.productionDismissedIds],

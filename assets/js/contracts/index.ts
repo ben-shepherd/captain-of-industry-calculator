@@ -101,6 +101,8 @@ export interface InputsSectionsState {
 export interface AppState {
   resourceId: string;
   targetRate: number;
+  /** Index into `resources[resourceId].recipes` for the root resolve step. */
+  targetRecipeIdx: number;
   production: Record<string, number>;
   /** Resources the user explicitly added for production (not in current chain). */
   productionExtraIds: string[];

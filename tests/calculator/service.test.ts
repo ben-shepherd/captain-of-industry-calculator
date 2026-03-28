@@ -19,6 +19,18 @@ describe("calculate", () => {
     expect(scrap === undefined || scrap === 0).toBe(true);
   });
 
+  it("uses target recipe index for Food Pack (eggs vs tofu chain)", () => {
+    const eggsTree = calculate("foodPack", 100, 0).tree;
+    const tofuTree = calculate("foodPack", 100, 2).tree;
+    const eggsInputs = new Set(eggsTree.children.map((c) => c.id));
+    const tofuInputs = new Set(tofuTree.children.map((c) => c.id));
+    expect(eggsInputs.has("eggs")).toBe(true);
+    expect(eggsInputs.has("bread")).toBe(true);
+    expect(tofuInputs.has("tofu")).toBe(true);
+    expect(tofuInputs.has("vegetables")).toBe(true);
+    expect(tofuInputs.has("eggs")).toBe(false);
+  });
+
   it("includes extractor bases (e.g. crude oil) in totals for Electricity", () => {
     const { totals } = calculate("electricity", 100);
     expect(totals.crudeOil).toBeDefined();
@@ -59,6 +71,22 @@ describe("calculate", () => {
     it("throws when targetRate is not a number", () => {
       // @ts-expect-error testing invalid input
       expect(() => calculate("steel", "12")).toThrow("targetRate must be a positive finite number");
+    });
+
+    it("throws when targetRecipeIdx is not an integer", () => {
+      expect(() => calculate("steel", 12, 0.5)).toThrow(
+        "targetRecipeIdx must be a non-negative integer",
+      );
+    });
+
+    it("throws when targetRecipeIdx is out of range", () => {
+      expect(() => calculate("steel", 12, 99)).toThrow("out of range");
+    });
+
+    it("throws for targetRecipeIdx > 0 when resource has no recipes", () => {
+      expect(() => calculate("ironOre", 50, 1)).toThrow(
+        "targetRecipeIdx must be 0 for \"ironOre\" (no recipes defined)",
+      );
     });
   });
 });

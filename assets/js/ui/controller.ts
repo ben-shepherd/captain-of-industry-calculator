@@ -10,6 +10,7 @@ import type { DependencyNode, ProductionPreset } from '../contracts';
 import {
   getResourceId,
   getTargetRate,
+  getTargetRecipeIdx,
   getProduction,
   getProductionExtraIds,
   getProductionDismissedIds,
@@ -184,6 +185,7 @@ export function updateResults(els: ResultElements): void {
   const { totalsBody, treeList, netBody } = els;
   const resourceId = getResourceId();
   const targetRate = getTargetRate();
+  const targetRecipeIdx = getTargetRecipeIdx();
   const production = getProduction();
 
   if (!resourceId) {
@@ -196,19 +198,23 @@ export function updateResults(els: ResultElements): void {
       ["Choose a target resource above to see net flow"],
       5,
     );
-    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, "");
+    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, "", 0);
     syncProductionPanel(els, {});
     return;
   }
 
   let result;
   try {
-    result = calculate(resourceId, targetRate);
+    result = calculate(resourceId, targetRate, targetRecipeIdx);
   } catch {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";
     netBody.innerHTML = "";
-    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
+    renderTargetRecipeDiagram(
+      els.targetRecipeSection ?? null,
+      resourceId,
+      targetRecipeIdx,
+    );
     syncProductionPanel(els, {});
     return;
   }
@@ -216,7 +222,11 @@ export function updateResults(els: ResultElements): void {
   renderTotals(totalsBody, result.totals);
   renderTree(treeList, result.tree);
   renderNet(netBody, result.totals, production);
-  renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
+  renderTargetRecipeDiagram(
+    els.targetRecipeSection ?? null,
+    resourceId,
+    targetRecipeIdx,
+  );
   syncProductionPanel(els, result.totals);
 }
 

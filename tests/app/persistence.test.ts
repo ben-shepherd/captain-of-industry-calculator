@@ -6,8 +6,9 @@ import {
   loadState,
   clearState,
   hasPersistedStorage,
+  migrateEnvelopeToAppState,
 } from "../../assets/js/app/persistence";
-import type { AppState } from "../../assets/js/contracts";
+import type { AppState, PersistedEnvelope } from "../../assets/js/contracts";
 
 /**
  * Provide a minimal in-memory localStorage stub so tests
@@ -52,6 +53,7 @@ describe("saveState + loadState round-trip", () => {
     const state: AppState = {
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,
@@ -64,6 +66,7 @@ describe("saveState + loadState round-trip", () => {
     const first: AppState = {
       resourceId: "a",
       targetRate: 1,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,
@@ -71,6 +74,7 @@ describe("saveState + loadState round-trip", () => {
     const second: AppState = {
       resourceId: "b",
       targetRate: 2,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,
@@ -109,6 +113,7 @@ describe("hasPersistedStorage", () => {
     const state: AppState = {
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,
@@ -121,6 +126,7 @@ describe("hasPersistedStorage", () => {
     const state: AppState = {
       resourceId: "x",
       targetRate: 1,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,
@@ -136,6 +142,7 @@ describe("clearState", () => {
     const state: AppState = {
       resourceId: "x",
       targetRate: 1,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,
@@ -163,6 +170,7 @@ describe("migration", () => {
     expect(loadState()).toEqual({
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: { iron: 5 },
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -189,6 +197,7 @@ describe("migration", () => {
     expect(loadState()).toEqual({
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: ["iron"],
       productionDismissedIds: [],
@@ -217,6 +226,7 @@ describe("migration", () => {
     expect(loadState()).toEqual({
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -246,12 +256,66 @@ describe("migration", () => {
     expect(loadState()).toEqual({
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { ...defaultResultsSections },
       inputsSections: { ...defaultInputsSections },
+    });
+  });
+
+  it("migrates v5 envelope without targetRecipeIdx to v6", () => {
+    localStorage.setItem(
+      "coi-calculator-state",
+      JSON.stringify({
+        version: 5,
+        savedAt: Date.now(),
+        data: {
+          resourceId: "steel",
+          targetRate: 12,
+          production: {},
+          productionExtraIds: [],
+          productionDismissedIds: [],
+          productionPresets: [],
+          resultsSections: { ...defaultResultsSections },
+          inputsSections: { ...defaultInputsSections },
+        },
+      }),
+    );
+    expect(loadState()).toEqual({
+      resourceId: "steel",
+      targetRate: 12,
+      targetRecipeIdx: 0,
+      production: {},
+      productionExtraIds: [],
+      productionDismissedIds: [],
+      productionPresets: [],
+      resultsSections: { ...defaultResultsSections },
+      inputsSections: { ...defaultInputsSections },
+    });
+  });
+
+  it("preserves targetRecipeIdx when migrating v5 to v6", () => {
+    const envelope: PersistedEnvelope = {
+      version: 5,
+      savedAt: Date.now(),
+      data: {
+        resourceId: "steel",
+        targetRate: 12,
+        targetRecipeIdx: 1,
+        production: {},
+        productionExtraIds: [],
+        productionDismissedIds: [],
+        productionPresets: [],
+        resultsSections: { ...defaultResultsSections },
+        inputsSections: { ...defaultInputsSections },
+      },
+    };
+    expect(migrateEnvelopeToAppState(envelope)).toEqual({
+      ...envelope.data,
+      targetRecipeIdx: 1,
     });
   });
 });
@@ -261,6 +325,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
     const state: AppState = {
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 1,
       production: { iron: 3 },
       productionExtraIds: [],
       ...emptyV4,
@@ -282,6 +347,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
     expect(parsePersistedEnvelope(raw)).toEqual({
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: { iron: 5 },
       productionExtraIds: [],
       productionDismissedIds: [],
@@ -295,6 +361,7 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
     const state: AppState = {
       resourceId: "steel",
       targetRate: 12,
+      targetRecipeIdx: 0,
       production: {},
       productionExtraIds: [],
       ...emptyV4,

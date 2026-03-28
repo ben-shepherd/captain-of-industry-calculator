@@ -18,6 +18,8 @@ import {
   clearAllProductionRates,
   getResourceId,
   getTargetRate,
+  getTargetRecipeIdx,
+  setTargetRecipeIdx,
   getSnapshot,
   applyLoadedState,
   wipeAllPersistedDataAndResetToDefaults,
@@ -143,6 +145,7 @@ export function bindEvents(els: AppElements): void {
     treeExpandAll,
     treeCollapseAll,
     netBody,
+    targetRecipeSection,
   } = els;
   const resultEls: ResultElements = {
     totalsBody: els.totalsBody,
@@ -254,6 +257,20 @@ export function bindEvents(els: AppElements): void {
     ) as HTMLButtonElement | null;
     if (!targetBtn?.dataset.productionTarget) return;
     applyTargetResource(targetBtn.dataset.productionTarget);
+  }
+
+  if (targetRecipeSection) {
+    targetRecipeSection.addEventListener("mousedown", (e: MouseEvent) => {
+      const btn = (e.target as HTMLElement).closest(
+        "button[data-recipe-idx]",
+      ) as HTMLButtonElement | null;
+      if (!btn?.dataset.recipeIdx) return;
+      e.preventDefault();
+      const idx = Number.parseInt(btn.dataset.recipeIdx, 10);
+      if (!Number.isInteger(idx) || idx < 0) return;
+      setTargetRecipeIdx(idx);
+      updateResults(resultEls);
+    });
   }
 
   totalsBody.addEventListener("click", handleResultPanelTargetClick);
@@ -597,7 +614,7 @@ export function bindEvents(els: AppElements): void {
         totals = {};
       } else {
         try {
-          totals = calculate(rid, getTargetRate()).totals;
+          totals = calculate(rid, getTargetRate(), getTargetRecipeIdx()).totals;
         } catch {
           return;
         }
