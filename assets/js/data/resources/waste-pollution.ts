@@ -667,7 +667,7 @@ export const wastePollutionResources: ResourcesMap = {
     label: "Red Mud",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Red_Mud",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/6/64/RedMud.png/48px-RedMud.png",
     recipes: [
       {
         name: "Chemical Plant II: BauxiteDigestion",
@@ -903,7 +903,7 @@ export const wastePollutionResources: ResourcesMap = {
     label: "Waste Pressed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Waste_Pressed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/3/35/WastePressed.png/48px-WastePressed.png",
     recipes: [
       {
         name: "Compactor: PressingOfWaste",

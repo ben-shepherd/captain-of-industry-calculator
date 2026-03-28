@@ -27,7 +27,7 @@ export const craftedResources: ResourcesMap = {
     label: "Asteroid Booster Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Asteroid_Booster_Parts",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/4/41/AsteroidBoosterParts.png/48px-AsteroidBoosterParts.png",
     recipes: [
       {
         name: "Assembly V: AsteroidBoosterPartsAssembly",
@@ -57,7 +57,7 @@ export const craftedResources: ResourcesMap = {
     label: "Composite Core Basic",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Composite_Core_Basic",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/b/b8/Composite_Core_Basic.png/48px-Composite_Core_Basic.png",
     recipes: [
       {
         name: "Assembly III: CompositeCoreBasicAssemblyT1",
@@ -86,7 +86,7 @@ export const craftedResources: ResourcesMap = {
     label: "Composite Panel",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Composite_Panel",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/c/cf/CompositePanel.png/48px-CompositePanel.png",
     recipes: [
       {
         name: "Assembly III: CompositePanelAssemblyT1",
@@ -438,7 +438,7 @@ export const craftedResources: ResourcesMap = {
     label: "Crew Supplies",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Crew_Supplies",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/f/f9/CrewSupplies.png/48px-CrewSupplies.png",
     recipes: [
       {
         name: "Assembly III: CrewSuppliesAssemblyT1",
@@ -576,7 +576,7 @@ export const craftedResources: ResourcesMap = {
     label: "Electronics IV",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Electronics_IV",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/5/52/Electronics4.png/48px-Electronics4.png",
     recipes: [
       {
         name: "Assembly V: Electronics4Assembly",
@@ -786,7 +786,7 @@ export const craftedResources: ResourcesMap = {
     label: "Imported Goods",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Imported_Goods",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/a/ad/Imported_Goods.png/48px-Imported_Goods.png",
     recipes: [
     ],
   },
@@ -947,7 +947,7 @@ export const craftedResources: ResourcesMap = {
     label: "Luxury Goods",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Luxury_Goods",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/a/a4/LuxuryGoods.png/48px-LuxuryGoods.png",
     recipes: [
       {
         name: "Assembly III: LuxuryGoodsAssemblyT1",
@@ -1377,7 +1377,7 @@ export const craftedResources: ResourcesMap = {
     label: "Office Supplies",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Office_Supplies",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/0/03/OfficeSupplies.png/48px-OfficeSupplies.png",
     recipes: [
       {
         name: "Assembly III: OfficeSuppliesAssemblyT1",
@@ -1457,7 +1457,7 @@ export const craftedResources: ResourcesMap = {
     label: "Rail Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Rail_Parts",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/f/fa/RailParts.png/48px-RailParts.png",
     recipes: [
       {
         name: "Assembly III: RailPartsAssemblyT1",
@@ -1486,7 +1486,7 @@ export const craftedResources: ResourcesMap = {
     label: "Sapphire Wafer",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Sapphire_Wafer",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/d/d2/SapphireWafer.png/48px-SapphireWafer.png",
     recipes: [
       {
         name: "Crystallizer: AluminaCrystallization",
@@ -1597,7 +1597,7 @@ export const craftedResources: ResourcesMap = {
     label: "Space Probe Parts",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Space_Probe_Parts",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/0/09/SpaceProbeParts.png/48px-SpaceProbeParts.png",
     recipes: [
       {
         name: "Assembly V: ProbePartsAssembly",
@@ -1626,8 +1626,8 @@ export const craftedResources: ResourcesMap = {
   stationPartsBasic: {
     label: "Station Parts (Basic)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Station_Parts_%2528Basic%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Station_Parts_(Basic)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/f/f8/SpaceStationParts1.png/48px-SpaceStationParts1.png",
     recipes: [
       {
         name: "Assembly III: StationPartsBasicAssemblyT1",

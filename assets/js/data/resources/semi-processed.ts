@@ -64,7 +64,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Aluminum Scrap Pressed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Aluminum_Scrap_Pressed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/3/38/AluminumScrapPressed.png/48px-AluminumScrapPressed.png",
     recipes: [
       {
         name: "Compactor: PressingOfAluminumScrap",
@@ -79,7 +79,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Bauxite Powder",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Bauxite_Powder",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/6/6a/BauxitePowder.png/48px-BauxitePowder.png",
     recipes: [
       {
         name: "Crusher: BauxiteMilling",
@@ -268,7 +268,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Copper Scrap Pressed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Copper_Scrap_Pressed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/2/24/CopperScrapPressed.png/48px-CopperScrapPressed.png",
     recipes: [
       {
         name: "Compactor: PressingOfCopperScrap",
@@ -283,7 +283,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Diamond Paste",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Diamond_Paste",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/9/9e/DiamondPaste.png/48px-DiamondPaste.png",
     recipes: [
       {
         name: "Chemical Plant II: DiamondPasteFromCookingOil",
@@ -415,7 +415,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Gold Scrap Pressed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Gold_Scrap_Pressed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/9/99/GoldScrapPressed.png/48px-GoldScrapPressed.png",
     recipes: [
       {
         name: "Compactor: PressingOfGoldScrap",
@@ -481,7 +481,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Hydrated Alumina",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Hydrated_Alumina",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/a/ac/AluminaHydrated.png/48px-AluminaHydrated.png",
     recipes: [
       {
         name: "Chemical Plant II: BauxiteDigestion",
@@ -562,7 +562,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Iron Scrap Pressed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Iron_Scrap_Pressed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/8/88/IronScrapPressed.png/48px-IronScrapPressed.png",
     recipes: [
       {
         name: "Compactor: PressingOfIronScrap",
@@ -577,7 +577,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Manufactured Sand",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Manufactured_Sand",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/d/d6/Manufactured_Sand.png/48px-Manufactured_Sand.png",
     recipes: [
       {
         name: "Crusher: GravelCrushing",
@@ -871,7 +871,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Molten Titanium",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Molten_Titanium",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/3/3c/TitaniumMolten.png/48px-TitaniumMolten.png",
     recipes: [
       {
         name: "Arc Furnace II: TitaniumSmeltingArc2",
@@ -886,7 +886,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Molten Titanium Alloy",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Molten_Titanium_Alloy",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/5/53/TitaniumAlloyMolten.png/48px-TitaniumAlloyMolten.png",
     recipes: [
       {
         name: "Alloy Mixer: TitaniumAlloyMixing",
@@ -901,7 +901,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Quartz Crushed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Quartz_Crushed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/0/05/QuartzCrushed.png/48px-QuartzCrushed.png",
     recipes: [
       {
         name: "Crusher: QuartzCrushing",
@@ -994,7 +994,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Recyclables Pressed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Recyclables_Pressed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/d/d3/RecyclablesPressed.png/48px-RecyclablesPressed.png",
     recipes: [
       {
         name: "Compactor: PressingOfRecyclables",
@@ -1082,7 +1082,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Titanium Chloride",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Titanium_Chloride",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/8/81/TitaniumChloride.png/48px-TitaniumChloride.png",
     recipes: [
       {
         name: "Chemical Plant II: TitaniumChlorination",
@@ -1096,8 +1096,8 @@ export const semiProcessedResources: ResourcesMap = {
   titaniumChloridePure: {
     label: "Titanium Chloride (Pure)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Titanium_Chloride_%2528Pure%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Titanium_Chloride_(Pure)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/5/58/TitaniumChloridePure.png/48px-TitaniumChloridePure.png",
     recipes: [
       {
         name: "Distillation (Stage III): TitaniumPurification",
@@ -1112,7 +1112,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Titanium Ore Crushed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Titanium_Ore_Crushed",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/3/36/TitaniumOreCrushed.png/48px-TitaniumOreCrushed.png",
     recipes: [
       {
         name: "Crusher: IlmeniteMilling",
@@ -1134,7 +1134,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Titanium Slag",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Titanium_Slag",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/2/23/TitaniumSlag.png/48px-TitaniumSlag.png",
     recipes: [
       {
         name: "Arc Furnace II: IlmeniteSmeltingArc2",
@@ -1164,7 +1164,7 @@ export const semiProcessedResources: ResourcesMap = {
     label: "Uranium Ore Powder",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Uranium_Ore_Powder",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/b/b0/UraniumOreCrushed.png/48px-UraniumOreCrushed.png",
     recipes: [
       {
         name: "Crusher: UraniumCrushing",

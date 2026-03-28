@@ -1286,7 +1286,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Tree Sapling",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Tree_Sapling",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/2/24/TreeSapling.png/48px-TreeSapling.png",
     recipes: [
       {
         name: "Farm: Crop_TreeSapling",

@@ -5,7 +5,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Blanket Fuel",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Blanket_Fuel",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/5/5d/BlanketFuel.png/48px-BlanketFuel.png",
     recipes: [
       {
         name: "Chemical Plant II: BlanketFuelFromDepleted",
@@ -61,8 +61,8 @@ export const powerNuclearResources: ResourcesMap = {
   blanketFuelEnriched: {
     label: "Blanket Fuel (Enriched)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Blanket_Fuel_%2528Enriched%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Blanket_Fuel_(Enriched)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/9/9c/BlanketFuelEnriched.png/48px-BlanketFuelEnriched.png",
     recipes: [
       {
         name: "Fast Breeder Reactor: FastBreederReactor-PowerLevel1-Enrichment3",
@@ -126,7 +126,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Chemical Fuel",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Chemical_Fuel",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/2/26/ChemicalFuel.png/48px-ChemicalFuel.png",
     recipes: [
       {
         name: "Chemical Plant II: ChemicalFuelProduction",
@@ -141,7 +141,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Compact Reactor",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Compact_Reactor",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/8/8a/CompactReactor.png/48px-CompactReactor.png",
     recipes: [
       {
         name: "Assembly V: CompactReactorAssembly",
@@ -156,7 +156,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Core Fuel",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Core_Fuel",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/1/19/CoreFuel.png/48px-CoreFuel.png",
     recipes: [
       {
         name: "Chemical Plant II: CoreFuelFromEnriched",
@@ -191,8 +191,8 @@ export const powerNuclearResources: ResourcesMap = {
   coreFuelSpent: {
     label: "Core Fuel (Spent)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Core_Fuel_%2528Spent%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Core_Fuel_(Spent)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/1/1a/CoreFuelDirty.png/48px-CoreFuelDirty.png",
     recipes: [
       {
         name: "Fast Breeder Reactor: FastBreederReactor",
@@ -284,7 +284,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Depleted Uranium",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Depleted_Uranium",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/0/0f/DepletedUranium.png/48px-DepletedUranium.png",
     recipes: [
       {
         name: "Enrichment Plant: ReprocessedUraniumEnrichment",
@@ -348,8 +348,8 @@ export const powerNuclearResources: ResourcesMap = {
   enrichedUranium20: {
     label: "Enriched Uranium (20%)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Enriched_Uranium_%252820%25%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Enriched_Uranium_(20%25)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/7/77/UraniumEnriched20Perc.png/48px-UraniumEnriched20Perc.png",
     recipes: [
       {
         name: "Assembly IV: UraniumEnrichedAssemblyT1",
@@ -377,8 +377,8 @@ export const powerNuclearResources: ResourcesMap = {
   enrichedUranium4: {
     label: "Enriched Uranium (4%)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Enriched_Uranium_%25284%25%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Enriched_Uranium_(4%25)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/0/0f/DepletedUranium.png/48px-DepletedUranium.png",
     recipes: [
       {
         name: "Enrichment Plant: ReprocessedUraniumEnrichment",
@@ -400,7 +400,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Fission Product",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Fission_Product",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/1/14/FissionProduct.png/48px-FissionProduct.png",
     recipes: [
       {
         name: "Nuclear Reprocessing Plant: CoreFuelReprocessing",
@@ -479,7 +479,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "MOX Rod",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/MOX_Rod",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/d/da/MoxRod.png/48px-MoxRod.png",
     recipes: [
       {
         name: "Chemical Plant II: MoxRodsAssemblyT1",
@@ -515,8 +515,8 @@ export const powerNuclearResources: ResourcesMap = {
   reprocessedUranium1: {
     label: "Reprocessed Uranium (1%)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Reprocessed_Uranium_%25281%25%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Reprocessed_Uranium_(1%25)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/d/df/ReprocessedUranium.png/48px-ReprocessedUranium.png",
     recipes: [
       {
         name: "Nuclear Reprocessing Plant: SpentFuelReprocessing",
@@ -531,7 +531,7 @@ export const powerNuclearResources: ResourcesMap = {
     label: "Retired Waste",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Retired_Waste",
-    imageUrl: "",
+    imageUrl: "https://wiki.coigame.com/images/thumb/4/44/RetiredWaste.png/48px-RetiredWaste.png",
     recipes: [
     ],
   },
@@ -631,8 +631,8 @@ export const powerNuclearResources: ResourcesMap = {
   steamDepleted: {
     label: "Steam (Depleted)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Steam_%2528Depleted%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Steam_(Depleted)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/2/21/SteamDepleated.png/48px-SteamDepleated.png",
     recipes: [
       {
         name: "Boiler (Gas): SteamGenerationHydrogen",
@@ -688,8 +688,8 @@ export const powerNuclearResources: ResourcesMap = {
   steamHigh: {
     label: "Steam (High)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Steam_%2528High%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Steam_(High)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/5/5c/SteamHp.png/48px-SteamHp.png",
     recipes: [
       {
         name: "Boiler: SteamGenerationAnimalFeed",
@@ -1005,8 +1005,8 @@ export const powerNuclearResources: ResourcesMap = {
   steamSuper: {
     label: "Steam (Super)",
     unit: "t/m",
-    wikiUrl: "https://wiki.coigame.com/Steam_%2528Super%2529",
-    imageUrl: "",
+    wikiUrl: "https://wiki.coigame.com/Steam_(Super)",
+    imageUrl: "https://wiki.coigame.com/images/thumb/a/a0/SteamSp.png/48px-SteamSp.png",
     recipes: [
       {
         name: "Boiler (Electric): SteamGenerationSpElectric",
