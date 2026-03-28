@@ -13,6 +13,20 @@ describe("calculate", () => {
     expect(totals).toEqual({ ironOre: 16 });
   });
 
+  it("does not inflate aluminum scrap for Food Pack (exhaust default recipe)", () => {
+    const { totals } = calculate("foodPack", 100);
+    const scrap = totals.aluminumScrap;
+    expect(scrap === undefined || scrap === 0).toBe(true);
+  });
+
+  it("includes extractor bases (e.g. crude oil) in totals for Electricity", () => {
+    const { totals } = calculate("electricity", 100);
+    expect(totals.crudeOil).toBeDefined();
+    expect(totals.crudeOil).toBeGreaterThan(0);
+    expect(totals.wood).toBeDefined();
+    expect(totals.wood).toBeGreaterThan(0);
+  });
+
   it("returns a dependency tree from the resolver", () => {
     const { tree } = calculate("ironOreCrushed", 16);
     expect(tree.id).toBe("ironOreCrushed");

@@ -1,10 +1,10 @@
 {
-  "fetchedAt": 1774642179066,
+  "fetchedAt": 1774693186148,
   "count": 640,
   "rows": [
     {
       "title": {
-        "Building": "Air separator",
+        "Building": "Air Separator",
         "RecipeId": "AirSeparation",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -35,7 +35,7 @@
     },
     {
       "title": {
-        "Building": "Alloy mixer",
+        "Building": "Alloy Mixer",
         "RecipeId": "TitaniumAlloyMixing",
         "Input1Name": "Molten Titanium",
         "Input1Qty": "32",
@@ -66,7 +66,7 @@
     },
     {
       "title": {
-        "Building": "Aluminum cell",
+        "Building": "Aluminum Cell",
         "RecipeId": "AluminumElectrolysis",
         "Input1Name": "Alumina",
         "Input1Qty": "16",
@@ -97,7 +97,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "CornDigestion",
         "Input1Name": "Corn",
         "Input1Qty": "14",
@@ -128,7 +128,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "EggsDigestion",
         "Input1Name": "Eggs",
         "Input1Qty": "12",
@@ -159,7 +159,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "FruitDigestion",
         "Input1Name": "Fruit",
         "Input1Qty": "12",
@@ -190,7 +190,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "MeatTrimmingsDigestion",
         "Input1Name": "Meat Trimmings",
         "Input1Qty": "8",
@@ -221,7 +221,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "PoppyDigestion",
         "Input1Name": "Poppy",
         "Input1Qty": "14",
@@ -252,7 +252,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "PotatoDigestion",
         "Input1Name": "Potato",
         "Input1Qty": "14",
@@ -283,7 +283,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "SludgeDigestion",
         "Input1Name": "Sludge",
         "Input1Qty": "18",
@@ -314,7 +314,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "SoybeanDigestion",
         "Input1Name": "Soybean",
         "Input1Qty": "14",
@@ -345,7 +345,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "SugarCaneDigestion",
         "Input1Name": "Sugar Cane",
         "Input1Qty": "12",
@@ -376,7 +376,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "VegetablesDigestion",
         "Input1Name": "Vegetables",
         "Input1Qty": "14",
@@ -407,7 +407,7 @@
     },
     {
       "title": {
-        "Building": "Anaerobic digester",
+        "Building": "Anaerobic Digester",
         "RecipeId": "WheatDigestion",
         "Input1Name": "Wheat",
         "Input1Qty": "12",
@@ -438,7 +438,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "AluminumSmeltingScrapArcT1",
         "Input1Name": "Aluminum Scrap",
         "Input1Qty": "8",
@@ -469,7 +469,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "CopperSmeltingArcScrapT1",
         "Input1Name": "Copper Scrap",
         "Input1Qty": "8",
@@ -500,7 +500,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "CopperSmeltingArcT1",
         "Input1Name": "Copper Ore Crushed",
         "Input1Qty": "8",
@@ -531,7 +531,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "GlassSmeltingArcT1",
         "Input1Name": "Glass Mix",
         "Input1Qty": "10",
@@ -562,7 +562,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "GlassSmeltingArcT1WithBroken",
         "Input1Name": "Broken Glass",
         "Input1Qty": "12",
@@ -593,7 +593,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "IronSmeltingArcScrapT1",
         "Input1Name": "Iron Scrap",
         "Input1Qty": "8",
@@ -624,7 +624,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "IronSmeltingArcT1",
         "Input1Name": "Iron Ore Crushed",
         "Input1Qty": "8",
@@ -655,7 +655,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace",
+        "Building": "Arc Furnace",
         "RecipeId": "SiliconSmeltingArc",
         "Input1Name": "Sand",
         "Input1Qty": "10",
@@ -686,7 +686,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "AluminumSmeltingScrapArcT2",
         "Input1Name": "Aluminum Scrap",
         "Input1Qty": "16",
@@ -717,7 +717,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "CopperSmeltingArc",
         "Input1Name": "Copper Ore Crushed",
         "Input1Qty": "16",
@@ -748,7 +748,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "CopperSmeltingArcScrap",
         "Input1Name": "Copper Scrap",
         "Input1Qty": "16",
@@ -779,7 +779,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "GlassSmeltingArc",
         "Input1Name": "Glass Mix",
         "Input1Qty": "20",
@@ -810,7 +810,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "GlassSmeltingArcWithBroken",
         "Input1Name": "Broken Glass",
         "Input1Qty": "24",
@@ -841,7 +841,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "IlmeniteSmeltingArc2",
         "Input1Name": "Titanium Ore Crushed",
         "Input1Qty": "16",
@@ -872,7 +872,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "IronSmeltingArc",
         "Input1Name": "Iron Ore Crushed",
         "Input1Qty": "16",
@@ -903,7 +903,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "IronSmeltingArcScrap",
         "Input1Name": "Iron Scrap",
         "Input1Qty": "16",
@@ -934,7 +934,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "SiliconSmeltingArc2",
         "Input1Name": "Sand",
         "Input1Qty": "20",
@@ -965,7 +965,7 @@
     },
     {
       "title": {
-        "Building": "Arc furnace II",
+        "Building": "Arc Furnace II",
         "RecipeId": "TitaniumSmeltingArc2",
         "Input1Name": "Titanium Sponge",
         "Input1Qty": "16",
@@ -5026,7 +5026,7 @@
     },
     {
       "title": {
-        "Building": "Baking unit",
+        "Building": "Baking Unit",
         "RecipeId": "BreadProduction",
         "Input1Name": "Flour",
         "Input1Qty": "8",
@@ -5057,7 +5057,7 @@
     },
     {
       "title": {
-        "Building": "Baking unit",
+        "Building": "Baking Unit",
         "RecipeId": "CakeProduction",
         "Input1Name": "Flour",
         "Input1Qty": "5",
@@ -5088,7 +5088,7 @@
     },
     {
       "title": {
-        "Building": "Basic distiller",
+        "Building": "Basic Distiller",
         "RecipeId": "DieselDistillationBasic",
         "Input1Name": "Crude Oil",
         "Input1Qty": "20",
@@ -5119,7 +5119,7 @@
     },
     {
       "title": {
-        "Building": "Basic distiller",
+        "Building": "Basic Distiller",
         "RecipeId": "WaterDesalinationBasic",
         "Input1Name": "Seawater",
         "Input1Qty": "10",
@@ -5150,7 +5150,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace",
+        "Building": "Blast Furnace",
         "RecipeId": "CopperSmeltingT1",
         "Input1Name": "Copper Ore",
         "Input1Qty": "10",
@@ -5181,7 +5181,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace",
+        "Building": "Blast Furnace",
         "RecipeId": "CopperSmeltingT1Scrap",
         "Input1Name": "Copper Scrap",
         "Input1Qty": "8",
@@ -5212,7 +5212,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace",
+        "Building": "Blast Furnace",
         "RecipeId": "GlassSmelting",
         "Input1Name": "Glass Mix",
         "Input1Qty": "10",
@@ -5243,7 +5243,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace",
+        "Building": "Blast Furnace",
         "RecipeId": "GlassSmeltingWithBroken",
         "Input1Name": "Broken Glass",
         "Input1Qty": "12",
@@ -5274,7 +5274,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace",
+        "Building": "Blast Furnace",
         "RecipeId": "IronSmeltingT1Coal",
         "Input1Name": "Iron Ore",
         "Input1Qty": "10",
@@ -5305,7 +5305,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace",
+        "Building": "Blast Furnace",
         "RecipeId": "IronSmeltingT1Scrap",
         "Input1Name": "Iron Scrap",
         "Input1Qty": "8",
@@ -5336,7 +5336,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace II",
+        "Building": "Blast Furnace II",
         "RecipeId": "CopperSmeltingT2",
         "Input1Name": "Copper Ore Crushed",
         "Input1Qty": "16",
@@ -5367,7 +5367,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace II",
+        "Building": "Blast Furnace II",
         "RecipeId": "CopperSmeltingT2Scrap",
         "Input1Name": "Copper Scrap",
         "Input1Qty": "16",
@@ -5398,7 +5398,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace II",
+        "Building": "Blast Furnace II",
         "RecipeId": "GlassSmeltingT2",
         "Input1Name": "Glass Mix",
         "Input1Qty": "20",
@@ -5429,7 +5429,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace II",
+        "Building": "Blast Furnace II",
         "RecipeId": "GlassSmeltingT2WithBroken",
         "Input1Name": "Broken Glass",
         "Input1Qty": "24",
@@ -5460,7 +5460,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace II",
+        "Building": "Blast Furnace II",
         "RecipeId": "IronSmeltingT2",
         "Input1Name": "Iron Ore Crushed",
         "Input1Qty": "16",
@@ -5491,7 +5491,7 @@
     },
     {
       "title": {
-        "Building": "Blast furnace II",
+        "Building": "Blast Furnace II",
         "RecipeId": "IronSmeltingT2Scrap",
         "Input1Name": "Iron Scrap",
         "Input1Qty": "16",
@@ -5646,7 +5646,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (electric)",
+        "Building": "Boiler (Electric)",
         "RecipeId": "SteamGenerationElectric",
         "Input1Name": "Water",
         "Input1Qty": "4",
@@ -5677,7 +5677,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (electric)",
+        "Building": "Boiler (Electric)",
         "RecipeId": "SteamGenerationElectricHalf",
         "Input1Name": "Water",
         "Input1Qty": "2",
@@ -5708,7 +5708,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (electric)",
+        "Building": "Boiler (Electric)",
         "RecipeId": "SteamGenerationSpElectric",
         "Input1Name": "Water",
         "Input1Qty": "2",
@@ -5739,7 +5739,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationEthanol",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5770,7 +5770,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationFuelGas",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5801,7 +5801,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationHeavyOil",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5832,7 +5832,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationHydrogen",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5863,7 +5863,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationLightOil",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5894,7 +5894,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationMediumOil",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5925,7 +5925,7 @@
     },
     {
       "title": {
-        "Building": "Boiler (gas)",
+        "Building": "Boiler (Gas)",
         "RecipeId": "SteamGenerationNaphtha",
         "Input1Name": "Water",
         "Input1Qty": "8",
@@ -5956,7 +5956,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "AnimalFeedBurning",
         "Input1Name": "Animal Feed",
         "Input1Qty": "6",
@@ -5987,7 +5987,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "BiomassBurning",
         "Input1Name": "Biomass",
         "Input1Qty": "6",
@@ -6018,7 +6018,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "CanolaBurning",
         "Input1Name": "Canola",
         "Input1Qty": "6",
@@ -6049,7 +6049,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "ChickenCarcassBurning",
         "Input1Name": "Chicken Carcass",
         "Input1Qty": "4",
@@ -6080,7 +6080,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "LandfillBurning",
         "Input1Name": "Waste",
         "Input1Qty": "6",
@@ -6111,7 +6111,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "MeatTrimmingsBurning",
         "Input1Name": "Meat Trimmings",
         "Input1Qty": "4",
@@ -6142,7 +6142,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "SludgeBurning",
         "Input1Name": "Sludge",
         "Input1Qty": "6",
@@ -6173,7 +6173,7 @@
     },
     {
       "title": {
-        "Building": "Burner (solid)",
+        "Building": "Burner (Solid)",
         "RecipeId": "SulfurBurning",
         "Input1Name": "Sulfur",
         "Input1Qty": "2",
@@ -6204,7 +6204,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "AmmoniaSynthesis",
         "Input1Name": "Hydrogen",
         "Input1Qty": "4",
@@ -6235,7 +6235,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "DisinfectantProduction",
         "Input1Name": "Ethanol",
         "Input1Qty": "3",
@@ -6266,7 +6266,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "EthanolCookingOilReforming",
         "Input1Name": "Ethanol",
         "Input1Qty": "5",
@@ -6297,7 +6297,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "FertilizerProduction",
         "Input1Name": "Ammonia",
         "Input1Qty": "4",
@@ -6328,7 +6328,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "FertilizerProductionFromOrganic",
         "Input1Name": "Fertilizer (Organic)",
         "Input1Qty": "10",
@@ -6359,7 +6359,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "GraphiteProductionT1",
         "Input1Name": "Coal",
         "Input1Qty": "4",
@@ -6390,7 +6390,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant",
+        "Building": "Chemical Plant",
         "RecipeId": "PaperProduction",
         "Input1Name": "Woodchips",
         "Input1Qty": "4",
@@ -6421,7 +6421,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "AmmoniaSynthesisT2",
         "Input1Name": "Hydrogen",
         "Input1Qty": "4",
@@ -6452,7 +6452,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "AnestheticsProduction",
         "Input1Name": "Ammonia",
         "Input1Qty": "2",
@@ -6483,7 +6483,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "BauxiteDigestion",
         "Input1Name": "Bauxite Powder",
         "Input1Qty": "36",
@@ -6514,7 +6514,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "BlanketFuelFromDepleted",
         "Input1Name": "Blanket Fuel (Enriched)",
         "Input1Qty": "2",
@@ -6545,7 +6545,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "BlanketFuelFromYellowcake",
         "Input1Name": "Yellowcake",
         "Input1Qty": "12",
@@ -6576,7 +6576,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "CarbonToEthanolProduction",
         "Input1Name": "Hydrogen",
         "Input1Qty": "12",
@@ -6607,7 +6607,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "ChemicalFuelProduction",
         "Input1Name": "Ammonia",
         "Input1Qty": "6",
@@ -6638,7 +6638,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "CoreFuelFromEnriched",
         "Input1Name": "Enriched Uranium (20%)",
         "Input1Qty": "2",
@@ -6669,7 +6669,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "CoreFuelFromPu",
         "Input1Name": "Plutonium",
         "Input1Qty": "1",
@@ -6700,7 +6700,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "DiamondPasteFromCookingOil",
         "Input1Name": "Diamond",
         "Input1Qty": "2",
@@ -6731,7 +6731,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "DiamondPasteFromHeavyOil",
         "Input1Name": "Diamond",
         "Input1Qty": "2",
@@ -6762,7 +6762,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "DisinfectantProductionT2",
         "Input1Name": "Ethanol",
         "Input1Qty": "3",
@@ -6793,7 +6793,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "EthanolCookingOilReformingT2",
         "Input1Name": "Ethanol",
         "Input1Qty": "5",
@@ -6824,7 +6824,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "FertilizerProductionFromOrganicT2",
         "Input1Name": "Fertilizer (Organic)",
         "Input1Qty": "10",
@@ -6855,7 +6855,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "FertilizerProductionT2",
         "Input1Name": "Ammonia",
         "Input1Qty": "4",
@@ -6886,7 +6886,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "FuelGasSynthesis",
         "Input1Name": "Hydrogen",
         "Input1Qty": "14",
@@ -6917,7 +6917,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "GraphiteProductionCo2",
         "Input1Name": "Carbon Dioxide",
         "Input1Qty": "24",
@@ -6948,7 +6948,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "GraphiteProductionT2",
         "Input1Name": "Coal",
         "Input1Qty": "4",
@@ -6979,7 +6979,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "MorphineProduction",
         "Input1Name": "Poppy",
         "Input1Qty": "4",
@@ -7010,7 +7010,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "MoxRodsAssemblyT1",
         "Input1Name": "Plutonium",
         "Input1Qty": "1",
@@ -7041,7 +7041,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "PaperProductionT2",
         "Input1Name": "Woodchips",
         "Input1Qty": "4",
@@ -7072,7 +7072,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "TitaniumChlorideReduction",
         "Input1Name": "Titanium Chloride (Pure)",
         "Input1Qty": "8",
@@ -7103,7 +7103,7 @@
     },
     {
       "title": {
-        "Building": "Chemical plant II",
+        "Building": "Chemical Plant II",
         "RecipeId": "TitaniumChlorination",
         "Input1Name": "Titanium Slag",
         "Input1Qty": "12",
@@ -7134,7 +7134,7 @@
     },
     {
       "title": {
-        "Building": "Chicken farm",
+        "Building": "Chicken Farm",
         "RecipeId": "ChickenFarm",
         "Input1Name": "Animal Feed",
         "Input1Qty": "15",
@@ -7165,7 +7165,7 @@
     },
     {
       "title": {
-        "Building": "Coal maker",
+        "Building": "Coal Maker",
         "RecipeId": "CharcoalBurning",
         "Input1Name": "Wood",
         "Input1Qty": "12",
@@ -7754,7 +7754,7 @@
     },
     {
       "title": {
-        "Building": "Cooled caster",
+        "Building": "Cooled Caster",
         "RecipeId": "SteelCastingCooled",
         "Input1Name": "Molten Steel",
         "Input1Qty": "8",
@@ -7785,7 +7785,7 @@
     },
     {
       "title": {
-        "Building": "Cooled caster II",
+        "Building": "Cooled Caster II",
         "RecipeId": "SteelCastingCooledT2",
         "Input1Name": "Molten Steel",
         "Input1Qty": "8",
@@ -7816,7 +7816,7 @@
     },
     {
       "title": {
-        "Building": "Cooled caster II",
+        "Building": "Cooled Caster II",
         "RecipeId": "TitaniumAlloyCastingT2",
         "Input1Name": "Molten Titanium Alloy",
         "Input1Qty": "8",
@@ -7847,7 +7847,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower",
+        "Building": "Cooling Tower",
         "RecipeId": "SteamDepletedCondensation",
         "Input1Name": "Steam (Depleted)",
         "Input1Qty": "4",
@@ -7878,7 +7878,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower",
+        "Building": "Cooling Tower",
         "RecipeId": "SteamHpCondensation",
         "Input1Name": "Steam (High)",
         "Input1Qty": "4",
@@ -7909,7 +7909,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower",
+        "Building": "Cooling Tower",
         "RecipeId": "SteamLpCondensation",
         "Input1Name": "Steam (Low)",
         "Input1Qty": "4",
@@ -7940,7 +7940,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower (large)",
+        "Building": "Cooling Tower (Large)",
         "RecipeId": "SteamDepletedCondensationT2",
         "Input1Name": "Steam (Depleted)",
         "Input1Qty": "16",
@@ -7971,7 +7971,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower (large)",
+        "Building": "Cooling Tower (Large)",
         "RecipeId": "SteamHpCondensationT2",
         "Input1Name": "Steam (High)",
         "Input1Qty": "16",
@@ -8002,7 +8002,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower (large)",
+        "Building": "Cooling Tower (Large)",
         "RecipeId": "SteamLpCondensationT2",
         "Input1Name": "Steam (Low)",
         "Input1Qty": "16",
@@ -8033,7 +8033,7 @@
     },
     {
       "title": {
-        "Building": "Cooling tower (large)",
+        "Building": "Cooling Tower (Large)",
         "RecipeId": "SteamSpCondensationT2",
         "Input1Name": "Steam (Super)",
         "Input1Qty": "16",
@@ -8064,7 +8064,7 @@
     },
     {
       "title": {
-        "Building": "Copper electrolysis",
+        "Building": "Copper Electrolysis",
         "RecipeId": "CopperElectrolysisProcess",
         "Input1Name": "Impure Copper",
         "Input1Qty": "16",
@@ -8095,7 +8095,7 @@
     },
     {
       "title": {
-        "Building": "Copper electrolysis",
+        "Building": "Copper Electrolysis",
         "RecipeId": "CopperElectrolysisWithWater",
         "Input1Name": "Impure Copper",
         "Input1Qty": "16",
@@ -8126,7 +8126,7 @@
     },
     {
       "title": {
-        "Building": "Cracking unit",
+        "Building": "Cracking Unit",
         "RecipeId": "DieselReforming",
         "Input1Name": "Diesel",
         "Input1Qty": "8",
@@ -8157,7 +8157,7 @@
     },
     {
       "title": {
-        "Building": "Cracking unit",
+        "Building": "Cracking Unit",
         "RecipeId": "FuelGasReforming",
         "Input1Name": "Fuel Gas",
         "Input1Qty": "12",
@@ -8188,7 +8188,7 @@
     },
     {
       "title": {
-        "Building": "Cracking unit",
+        "Building": "Cracking Unit",
         "RecipeId": "HeavyOilCracking",
         "Input1Name": "Heavy Oil",
         "Input1Qty": "8",
@@ -8219,7 +8219,7 @@
     },
     {
       "title": {
-        "Building": "Cracking unit",
+        "Building": "Cracking Unit",
         "RecipeId": "HeavyOilCrackingToNaphtha",
         "Input1Name": "Heavy Oil",
         "Input1Qty": "8",
@@ -8250,7 +8250,7 @@
     },
     {
       "title": {
-        "Building": "Cracking unit",
+        "Building": "Cracking Unit",
         "RecipeId": "NaphthaReforming",
         "Input1Name": "Naphtha",
         "Input1Qty": "8",
@@ -8281,7 +8281,7 @@
     },
     {
       "title": {
-        "Building": "Cracking unit",
+        "Building": "Cracking Unit",
         "RecipeId": "NaphthaReformingToGas",
         "Input1Name": "Naphtha",
         "Input1Qty": "12",
@@ -8684,7 +8684,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "BauxiteMillingT2",
         "Input1Name": "Bauxite",
         "Input1Qty": "48",
@@ -8715,7 +8715,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "CopperOreCrushingT2",
         "Input1Name": "Copper Ore",
         "Input1Qty": "96",
@@ -8746,7 +8746,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "GoldOreCrushingT2",
         "Input1Name": "Gold Ore",
         "Input1Qty": "48",
@@ -8777,7 +8777,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "GoldOreMillingT2",
         "Input1Name": "Gold Ore Crushed",
         "Input1Qty": "48",
@@ -8808,7 +8808,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "GravelCrushingT2",
         "Input1Name": "Gravel",
         "Input1Qty": "48",
@@ -8839,7 +8839,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "IlmeniteMillingT2",
         "Input1Name": "Titanium Ore",
         "Input1Qty": "48",
@@ -8870,7 +8870,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "IronOreCrushingT2",
         "Input1Name": "Iron Ore",
         "Input1Qty": "96",
@@ -8901,7 +8901,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "QuartzCrushingT2",
         "Input1Name": "Quartz",
         "Input1Qty": "96",
@@ -8932,7 +8932,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "QuartzMillingT2",
         "Input1Name": "Quartz Crushed",
         "Input1Qty": "96",
@@ -8963,7 +8963,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "RockCrushingT2",
         "Input1Name": "Rock",
         "Input1Qty": "48",
@@ -8994,7 +8994,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "SlagCrushingT2",
         "Input1Name": "Slag",
         "Input1Qty": "48",
@@ -9025,7 +9025,7 @@
     },
     {
       "title": {
-        "Building": "Crusher (large)",
+        "Building": "Crusher (Large)",
         "RecipeId": "UraniumCrushingT2",
         "Input1Name": "Uranium Ore",
         "Input1Qty": "72",
@@ -9118,7 +9118,7 @@
     },
     {
       "title": {
-        "Building": "Data center",
+        "Building": "Data Center",
         "RecipeId": "BasicServerRack",
         "Input1Name": "Chilled Water",
         "Input1Qty": "24",
@@ -9149,7 +9149,7 @@
     },
     {
       "title": {
-        "Building": "Diamond reactor",
+        "Building": "Diamond Reactor",
         "RecipeId": "DiamondSynthesis",
         "Input1Name": "Graphite",
         "Input1Qty": "2",
@@ -9180,7 +9180,7 @@
     },
     {
       "title": {
-        "Building": "Diesel generator",
+        "Building": "Diesel Generator",
         "RecipeId": "DieselGenerator",
         "Input1Name": "Diesel",
         "Input1Qty": "1",
@@ -9211,7 +9211,7 @@
     },
     {
       "title": {
-        "Building": "Diesel generator II",
+        "Building": "Diesel Generator II",
         "RecipeId": "DieselGeneratorT2",
         "Input1Name": "Diesel",
         "Input1Qty": "6",
@@ -9242,7 +9242,7 @@
     },
     {
       "title": {
-        "Building": "Distillation (stage I)",
+        "Building": "Distillation (Stage I)",
         "RecipeId": "CrudeOilRefiningT1",
         "Input1Name": "Crude Oil",
         "Input1Qty": "20",
@@ -9273,7 +9273,7 @@
     },
     {
       "title": {
-        "Building": "Distillation (stage II)",
+        "Building": "Distillation (Stage II)",
         "RecipeId": "CrudeOilRefiningT2",
         "Input1Name": "Medium Oil",
         "Input1Qty": "16",
@@ -9304,7 +9304,7 @@
     },
     {
       "title": {
-        "Building": "Distillation (stage III)",
+        "Building": "Distillation (Stage III)",
         "RecipeId": "HeavyDistillateRefining",
         "Input1Name": "Light Oil",
         "Input1Qty": "10",
@@ -9335,7 +9335,7 @@
     },
     {
       "title": {
-        "Building": "Distillation (stage III)",
+        "Building": "Distillation (Stage III)",
         "RecipeId": "TitaniumPurification",
         "Input1Name": "Titanium Chloride",
         "Input1Qty": "4",
@@ -9552,7 +9552,7 @@
     },
     {
       "title": {
-        "Building": "Enrichment plant",
+        "Building": "Enrichment Plant",
         "RecipeId": "BlanketFuelReprocessing",
         "Input1Name": "Blanket Fuel (Enriched)",
         "Input1Qty": "8",
@@ -9583,7 +9583,7 @@
     },
     {
       "title": {
-        "Building": "Enrichment plant",
+        "Building": "Enrichment Plant",
         "RecipeId": "BlanketFuelReprocessingToPu",
         "Input1Name": "Blanket Fuel (Enriched)",
         "Input1Qty": "16",
@@ -9614,7 +9614,7 @@
     },
     {
       "title": {
-        "Building": "Enrichment plant",
+        "Building": "Enrichment Plant",
         "RecipeId": "BlanketFuelReprocessingToU30",
         "Input1Name": "Blanket Fuel (Enriched)",
         "Input1Qty": "16",
@@ -9645,7 +9645,7 @@
     },
     {
       "title": {
-        "Building": "Enrichment plant",
+        "Building": "Enrichment Plant",
         "RecipeId": "ReprocessedUraniumEnrichment",
         "Input1Name": "Reprocessed Uranium (1%)",
         "Input1Qty": "4",
@@ -9676,7 +9676,7 @@
     },
     {
       "title": {
-        "Building": "Enrichment plant",
+        "Building": "Enrichment Plant",
         "RecipeId": "UraniumEnrichment",
         "Input1Name": "Yellowcake",
         "Input1Qty": "6",
@@ -9707,7 +9707,7 @@
     },
     {
       "title": {
-        "Building": "Enrichment plant",
+        "Building": "Enrichment Plant",
         "RecipeId": "UraniumEnrichment20",
         "Input1Name": "Enriched Uranium (4%)",
         "Input1Qty": "5",
@@ -9738,7 +9738,7 @@
     },
     {
       "title": {
-        "Building": "Evaporation pond",
+        "Building": "Evaporation Pond",
         "RecipeId": "BrineMaking",
         "Input1Name": "Seawater",
         "Input1Qty": "32",
@@ -9769,7 +9769,7 @@
     },
     {
       "title": {
-        "Building": "Evaporation pond",
+        "Building": "Evaporation Pond",
         "RecipeId": "SaltMaking",
         "Input1Name": "Seawater",
         "Input1Qty": "32",
@@ -9800,7 +9800,7 @@
     },
     {
       "title": {
-        "Building": "Evaporation pond",
+        "Building": "Evaporation Pond",
         "RecipeId": "SaltMakingFromBrine",
         "Input1Name": "Brine",
         "Input1Qty": "32",
@@ -9831,7 +9831,7 @@
     },
     {
       "title": {
-        "Building": "Evaporation pond (heated)",
+        "Building": "Evaporation Pond (Heated)",
         "RecipeId": "BrineMakingHeated",
         "Input1Name": "Seawater",
         "Input1Qty": "32",
@@ -9862,7 +9862,7 @@
     },
     {
       "title": {
-        "Building": "Evaporation pond (heated)",
+        "Building": "Evaporation Pond (Heated)",
         "RecipeId": "SaltMakingFromBrineHeated",
         "Input1Name": "Brine",
         "Input1Qty": "32",
@@ -9893,7 +9893,7 @@
     },
     {
       "title": {
-        "Building": "Evaporation pond (heated)",
+        "Building": "Evaporation Pond (Heated)",
         "RecipeId": "SaltMakingHeated",
         "Input1Name": "Seawater",
         "Input1Qty": "32",
@@ -9924,7 +9924,7 @@
     },
     {
       "title": {
-        "Building": "Exhaust scrubber",
+        "Building": "Exhaust Scrubber",
         "RecipeId": "ExhaustFiltering",
         "Input1Name": "Exhaust",
         "Input1Qty": "160",
@@ -9955,7 +9955,7 @@
     },
     {
       "title": {
-        "Building": "Exhaust scrubber",
+        "Building": "Exhaust Scrubber",
         "RecipeId": "ExhaustFilteringLime",
         "Input1Name": "Exhaust",
         "Input1Qty": "160",
@@ -10203,7 +10203,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor",
         "Input1Name": "Water",
         "Input1Qty": "384",
@@ -10234,7 +10234,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-Fuel1-PowerLevel2",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -10265,7 +10265,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-Fuel1-PowerLevel3",
         "Input1Name": "Water",
         "Input1Qty": "288",
@@ -10296,7 +10296,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-PowerLevel1-Enrichment3",
         "Input1Name": "Water",
         "Input1Qty": "24",
@@ -10327,7 +10327,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-PowerLevel2-Enrichment2",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -10358,7 +10358,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-PowerLevel2-Enrichment3",
         "Input1Name": "Water",
         "Input1Qty": "48",
@@ -10389,7 +10389,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-PowerLevel3-Enrichment2",
         "Input1Name": "Water",
         "Input1Qty": "288",
@@ -10420,7 +10420,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-PowerLevel3-Enrichment3",
         "Input1Name": "Water",
         "Input1Qty": "72",
@@ -10451,7 +10451,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor-PowerLevel4-Enrichment3",
         "Input1Name": "Water",
         "Input1Qty": "96",
@@ -10482,7 +10482,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor1",
         "Input1Name": "Water",
         "Input1Qty": "384",
@@ -10513,7 +10513,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor2",
         "Input1Name": "Water",
         "Input1Qty": "96",
@@ -10544,7 +10544,7 @@
     },
     {
       "title": {
-        "Building": "Fast breeder reactor",
+        "Building": "Fast Breeder Reactor",
         "RecipeId": "FastBreederReactor3",
         "Input1Name": "Water",
         "Input1Qty": "96",
@@ -10575,7 +10575,7 @@
     },
     {
       "title": {
-        "Building": "Fermentation tank",
+        "Building": "Fermentation Tank",
         "RecipeId": "AntibioticsFermentation",
         "Input1Name": "Sugar",
         "Input1Qty": "4",
@@ -10606,7 +10606,7 @@
     },
     {
       "title": {
-        "Building": "Fermentation tank",
+        "Building": "Fermentation Tank",
         "RecipeId": "CornToEthanolFermentation",
         "Input1Name": "Corn Mash",
         "Input1Qty": "6",
@@ -10637,7 +10637,7 @@
     },
     {
       "title": {
-        "Building": "Fermentation tank",
+        "Building": "Fermentation Tank",
         "RecipeId": "SugarToEthanolFermentation",
         "Input1Name": "Sugar",
         "Input1Qty": "8",
@@ -10916,7 +10916,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "MeatProcessing",
         "Input1Name": "Chicken Carcass",
         "Input1Qty": "10",
@@ -10947,7 +10947,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "MeatProcessingTrimmings",
         "Input1Name": "Chicken Carcass",
         "Input1Qty": "10",
@@ -10978,7 +10978,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "SausageProduction",
         "Input1Name": "Meat Trimmings",
         "Input1Qty": "8",
@@ -11009,7 +11009,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "SnackProductionCorn",
         "Input1Name": "Corn",
         "Input1Qty": "8",
@@ -11040,7 +11040,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "SnackProductionPotato",
         "Input1Name": "Potato",
         "Input1Qty": "8",
@@ -11071,7 +11071,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "SugarRefiningCane",
         "Input1Name": "Sugar Cane",
         "Input1Qty": "10",
@@ -11102,7 +11102,7 @@
     },
     {
       "title": {
-        "Building": "Food processor",
+        "Building": "Food Processor",
         "RecipeId": "TofuProduction",
         "Input1Name": "Soybean",
         "Input1Qty": "6",
@@ -11133,7 +11133,7 @@
     },
     {
       "title": {
-        "Building": "Gas injection pump",
+        "Building": "Gas Injection Pump",
         "RecipeId": "CarbonDioxideInjection",
         "Input1Name": "Carbon Dioxide",
         "Input1Qty": "12",
@@ -11164,7 +11164,7 @@
     },
     {
       "title": {
-        "Building": "Glass maker",
+        "Building": "Glass Maker",
         "RecipeId": "GlassCastingT1",
         "Input1Name": "Molten Glass",
         "Input1Qty": "8",
@@ -11195,7 +11195,7 @@
     },
     {
       "title": {
-        "Building": "Glass maker II",
+        "Building": "Glass Maker II",
         "RecipeId": "GlassCastingT2",
         "Input1Name": "Molten Glass",
         "Input1Qty": "8",
@@ -11226,7 +11226,7 @@
     },
     {
       "title": {
-        "Building": "Gold furnace",
+        "Building": "Gold Furnace",
         "RecipeId": "GoldScrapSmelting",
         "Input1Name": "Gold Scrap",
         "Input1Qty": "3",
@@ -11257,7 +11257,7 @@
     },
     {
       "title": {
-        "Building": "Gold furnace",
+        "Building": "Gold Furnace",
         "RecipeId": "GoldSmelting",
         "Input1Name": "Gold Ore Concentrate",
         "Input1Qty": "6",
@@ -13334,7 +13334,7 @@
     },
     {
       "title": {
-        "Building": "Groundwater pump",
+        "Building": "Groundwater Pump",
         "RecipeId": "LandWaterPumping",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -13365,7 +13365,7 @@
     },
     {
       "title": {
-        "Building": "High-pressure turbine",
+        "Building": "High-Pressure Turbine",
         "RecipeId": "TurbineHighPress",
         "Input1Name": "Steam (High)",
         "Input1Qty": "4",
@@ -13396,7 +13396,7 @@
     },
     {
       "title": {
-        "Building": "High-pressure turbine II",
+        "Building": "High-Pressure Turbine II",
         "RecipeId": "TurbineHighPressT2",
         "Input1Name": "Steam (High)",
         "Input1Qty": "8",
@@ -13427,7 +13427,7 @@
     },
     {
       "title": {
-        "Building": "Hydrogen reformer",
+        "Building": "Hydrogen Reformer",
         "RecipeId": "HydrogenProductionFromSteamSp",
         "Input1Name": "Water",
         "Input1Qty": "4",
@@ -13458,7 +13458,7 @@
     },
     {
       "title": {
-        "Building": "Hydrogen reformer",
+        "Building": "Hydrogen Reformer",
         "RecipeId": "HydrogenReforming",
         "Input1Name": "Fuel Gas",
         "Input1Qty": "12",
@@ -13489,7 +13489,7 @@
     },
     {
       "title": {
-        "Building": "Incineration plant",
+        "Building": "Incineration Plant",
         "RecipeId": "IncinerationOfWaste",
         "Input1Name": "Waste",
         "Input1Qty": "48",
@@ -13520,7 +13520,7 @@
     },
     {
       "title": {
-        "Building": "Incineration plant",
+        "Building": "Incineration Plant",
         "RecipeId": "IncinerationOfWasteHydrogen",
         "Input1Name": "Waste",
         "Input1Qty": "48",
@@ -13551,7 +13551,7 @@
     },
     {
       "title": {
-        "Building": "Incineration plant",
+        "Building": "Incineration Plant",
         "RecipeId": "IncinerationOfWastePressed",
         "Input1Name": "Waste Pressed",
         "Input1Qty": "16",
@@ -13582,7 +13582,7 @@
     },
     {
       "title": {
-        "Building": "Incineration plant",
+        "Building": "Incineration Plant",
         "RecipeId": "IncinerationOfWastePressedHydrogen",
         "Input1Name": "Waste Pressed",
         "Input1Qty": "16",
@@ -14295,7 +14295,7 @@
     },
     {
       "title": {
-        "Building": "Lens polisher",
+        "Building": "Lens Polisher",
         "RecipeId": "LensMaking",
         "Input1Name": "Sapphire Wafer",
         "Input1Qty": "1",
@@ -14326,7 +14326,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "BrineDumping",
         "Input1Name": "Brine",
         "Input1Qty": "10",
@@ -14357,7 +14357,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "FertilizerChem1Dumping",
         "Input1Name": "Fertilizer I",
         "Input1Qty": "10",
@@ -14388,7 +14388,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "FertilizerChem2Dumping",
         "Input1Name": "Fertilizer II",
         "Input1Qty": "10",
@@ -14419,7 +14419,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "FertilizerOrganicDumping",
         "Input1Name": "Fertilizer (Organic)",
         "Input1Qty": "10",
@@ -14450,7 +14450,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "OceanWasteWaterPumping",
         "Input1Name": "Waste Water",
         "Input1Qty": "10",
@@ -14481,7 +14481,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "OceanWaterDumping",
         "Input1Name": "Water",
         "Input1Qty": "10",
@@ -14512,7 +14512,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "RedMudDumping",
         "Input1Name": "Red Mud",
         "Input1Qty": "10",
@@ -14543,7 +14543,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "SeaWaterDumping",
         "Input1Name": "Seawater",
         "Input1Qty": "10",
@@ -14574,7 +14574,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "SourWaterDumping",
         "Input1Name": "Sour Water",
         "Input1Qty": "10",
@@ -14605,7 +14605,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "ToxicSlurryDumping",
         "Input1Name": "Toxic Slurry",
         "Input1Qty": "10",
@@ -14636,7 +14636,7 @@
     },
     {
       "title": {
-        "Building": "Liquid dump",
+        "Building": "Liquid Dump",
         "RecipeId": "WasteAcidDumping",
         "Input1Name": "Acid",
         "Input1Qty": "10",
@@ -14667,7 +14667,7 @@
     },
     {
       "title": {
-        "Building": "Low-pressure turbine",
+        "Building": "Low-Pressure Turbine",
         "RecipeId": "TurbineLowPress",
         "Input1Name": "Steam (Low)",
         "Input1Qty": "4",
@@ -14698,7 +14698,7 @@
     },
     {
       "title": {
-        "Building": "Low-pressure turbine II",
+        "Building": "Low-Pressure Turbine II",
         "RecipeId": "TurbineLowPressT2",
         "Input1Name": "Steam (Low)",
         "Input1Qty": "8",
@@ -14729,7 +14729,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance depot",
+        "Building": "Maintenance Depot",
         "RecipeId": "MaintenanceT1Recipe",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "8",
@@ -14760,7 +14760,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance depot",
+        "Building": "Maintenance Depot",
         "RecipeId": "MaintenanceT1Recycling",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "8",
@@ -14791,7 +14791,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance depot (basic)",
+        "Building": "Maintenance Depot (Basic)",
         "RecipeId": "MaintenanceT0Recipe",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "6",
@@ -14822,7 +14822,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance II depot",
+        "Building": "Maintenance II Depot",
         "RecipeId": "MaintenanceT2Recipe",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "6",
@@ -14853,7 +14853,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance II depot",
+        "Building": "Maintenance II Depot",
         "RecipeId": "MaintenanceT2Recycling",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "6",
@@ -14884,7 +14884,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance III depot",
+        "Building": "Maintenance III Depot",
         "RecipeId": "MaintenanceT3Recipe",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "3",
@@ -14915,7 +14915,7 @@
     },
     {
       "title": {
-        "Building": "Maintenance III depot",
+        "Building": "Maintenance III Depot",
         "RecipeId": "MaintenanceT3Recycling",
         "Input1Name": "Mechanical Parts",
         "Input1Qty": "3",
@@ -14946,7 +14946,7 @@
     },
     {
       "title": {
-        "Building": "Metal caster",
+        "Building": "Metal Caster",
         "RecipeId": "AluminumCasting",
         "Input1Name": "Molten Aluminum",
         "Input1Qty": "8",
@@ -14977,7 +14977,7 @@
     },
     {
       "title": {
-        "Building": "Metal caster",
+        "Building": "Metal Caster",
         "RecipeId": "CopperCasting",
         "Input1Name": "Molten Copper",
         "Input1Qty": "8",
@@ -15008,7 +15008,7 @@
     },
     {
       "title": {
-        "Building": "Metal caster",
+        "Building": "Metal Caster",
         "RecipeId": "IronCasting",
         "Input1Name": "Molten Iron",
         "Input1Qty": "8",
@@ -15039,7 +15039,7 @@
     },
     {
       "title": {
-        "Building": "Metal caster II",
+        "Building": "Metal Caster II",
         "RecipeId": "AluminumCastingT2",
         "Input1Name": "Molten Aluminum",
         "Input1Qty": "8",
@@ -15070,7 +15070,7 @@
     },
     {
       "title": {
-        "Building": "Metal caster II",
+        "Building": "Metal Caster II",
         "RecipeId": "CopperCastingCooled",
         "Input1Name": "Molten Copper",
         "Input1Qty": "8",
@@ -15101,7 +15101,7 @@
     },
     {
       "title": {
-        "Building": "Metal caster II",
+        "Building": "Metal Caster II",
         "RecipeId": "IronCastingCooled",
         "Input1Name": "Molten Iron",
         "Input1Qty": "8",
@@ -15132,7 +15132,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdFinalStage",
         "Input1Name": "Microchips Stage 4 B",
         "Input1Qty": "3",
@@ -15163,7 +15163,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage1A",
         "Input1Name": "Silicon Wafer",
         "Input1Qty": "3",
@@ -15194,7 +15194,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage1B",
         "Input1Name": "Microchips Stage 1 C",
         "Input1Qty": "3",
@@ -15225,7 +15225,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage1C",
         "Input1Name": "Microchips Stage 2 C",
         "Input1Qty": "3",
@@ -15256,7 +15256,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage1D",
         "Input1Name": "Microchips Stage 3 C",
         "Input1Qty": "3",
@@ -15287,7 +15287,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage2A",
         "Input1Name": "Microchips Stage 1 A",
         "Input1Qty": "3",
@@ -15318,7 +15318,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage2B",
         "Input1Name": "Microchips Stage 2 A",
         "Input1Qty": "3",
@@ -15349,7 +15349,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage2C",
         "Input1Name": "Microchips Stage 3 A",
         "Input1Qty": "3",
@@ -15380,7 +15380,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage2D",
         "Input1Name": "Microchips Stage 4 A",
         "Input1Qty": "3",
@@ -15411,7 +15411,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage3A",
         "Input1Name": "Microchips Stage 1 B",
         "Input1Qty": "3",
@@ -15442,7 +15442,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage3B",
         "Input1Name": "Microchips Stage 2 B",
         "Input1Qty": "3",
@@ -15473,7 +15473,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine",
+        "Building": "Microchip Machine",
         "RecipeId": "MicrochipMachine_MicrochipProdStage3C",
         "Input1Name": "Microchips Stage 3 B",
         "Input1Qty": "3",
@@ -15504,7 +15504,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdFinalStage",
         "Input1Name": "Microchips Stage 4 B",
         "Input1Qty": "6",
@@ -15535,7 +15535,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage1A",
         "Input1Name": "Silicon Wafer",
         "Input1Qty": "6",
@@ -15566,7 +15566,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage1B",
         "Input1Name": "Microchips Stage 1 C",
         "Input1Qty": "6",
@@ -15597,7 +15597,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage1C",
         "Input1Name": "Microchips Stage 2 C",
         "Input1Qty": "6",
@@ -15628,7 +15628,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage1D",
         "Input1Name": "Microchips Stage 3 C",
         "Input1Qty": "6",
@@ -15659,7 +15659,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage2A",
         "Input1Name": "Microchips Stage 1 A",
         "Input1Qty": "6",
@@ -15690,7 +15690,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage2B",
         "Input1Name": "Microchips Stage 2 A",
         "Input1Qty": "6",
@@ -15721,7 +15721,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage2C",
         "Input1Name": "Microchips Stage 3 A",
         "Input1Qty": "6",
@@ -15752,7 +15752,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage2D",
         "Input1Name": "Microchips Stage 4 A",
         "Input1Qty": "6",
@@ -15783,7 +15783,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage3A",
         "Input1Name": "Microchips Stage 1 B",
         "Input1Qty": "6",
@@ -15814,7 +15814,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage3B",
         "Input1Name": "Microchips Stage 2 B",
         "Input1Qty": "6",
@@ -15845,7 +15845,7 @@
     },
     {
       "title": {
-        "Building": "Microchip machine II",
+        "Building": "Microchip Machine II",
         "RecipeId": "MicrochipMachineT2_MicrochipProdStage3C",
         "Input1Name": "Microchips Stage 3 B",
         "Input1Qty": "6",
@@ -17116,7 +17116,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor",
+        "Building": "Nuclear Reactor",
         "RecipeId": "NuclearReactor",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17147,7 +17147,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor",
+        "Building": "Nuclear Reactor",
         "RecipeId": "NuclearReactor-Fuel1-PowerLevel2",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17178,7 +17178,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor",
+        "Building": "Nuclear Reactor",
         "RecipeId": "NuclearReactor1",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17209,7 +17209,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT2",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17240,7 +17240,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT2-Fuel1-PowerLevel2",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17271,7 +17271,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT2-Fuel1-PowerLevel3",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17302,7 +17302,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT2-Fuel2-PowerLevel2",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17333,7 +17333,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT2-Fuel2-PowerLevel3",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17364,7 +17364,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT21",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17395,7 +17395,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT22",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17426,7 +17426,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reactor II",
+        "Building": "Nuclear Reactor II",
         "RecipeId": "NuclearReactorT23",
         "Input1Name": "Water",
         "Input1Qty": "192",
@@ -17457,7 +17457,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reprocessing plant",
+        "Building": "Nuclear Reprocessing Plant",
         "RecipeId": "CoreFuelReprocessing",
         "Input1Name": "Core Fuel (Spent)",
         "Input1Qty": "16",
@@ -17488,7 +17488,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reprocessing plant",
+        "Building": "Nuclear Reprocessing Plant",
         "RecipeId": "SpentFuelReprocessing",
         "Input1Name": "Spent Fuel",
         "Input1Qty": "8",
@@ -17519,7 +17519,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reprocessing plant",
+        "Building": "Nuclear Reprocessing Plant",
         "RecipeId": "SpentFuelToBlanket",
         "Input1Name": "Spent Fuel",
         "Input1Qty": "1",
@@ -17550,7 +17550,7 @@
     },
     {
       "title": {
-        "Building": "Nuclear reprocessing plant",
+        "Building": "Nuclear Reprocessing Plant",
         "RecipeId": "SpentMoxToBlanket",
         "Input1Name": "Spent MOX",
         "Input1Qty": "1",
@@ -17581,7 +17581,7 @@
     },
     {
       "title": {
-        "Building": "Oil pump",
+        "Building": "Oil Pump",
         "RecipeId": "OilGroundPumping",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -17612,7 +17612,7 @@
     },
     {
       "title": {
-        "Building": "Oxygen furnace",
+        "Building": "Oxygen Furnace",
         "RecipeId": "SteelSmelting",
         "Input1Name": "Molten Iron",
         "Input1Qty": "16",
@@ -17643,7 +17643,7 @@
     },
     {
       "title": {
-        "Building": "Oxygen furnace II",
+        "Building": "Oxygen Furnace II",
         "RecipeId": "SteelSmeltingT2",
         "Input1Name": "Molten Iron",
         "Input1Qty": "32",
@@ -17674,7 +17674,7 @@
     },
     {
       "title": {
-        "Building": "Polymerization plant",
+        "Building": "Polymerization Plant",
         "RecipeId": "PlasticMaking",
         "Input1Name": "Naphtha",
         "Input1Qty": "6",
@@ -17705,7 +17705,7 @@
     },
     {
       "title": {
-        "Building": "Polymerization plant",
+        "Building": "Polymerization Plant",
         "RecipeId": "PlasticMakingEthanol",
         "Input1Name": "Ethanol",
         "Input1Qty": "6",
@@ -17736,7 +17736,7 @@
     },
     {
       "title": {
-        "Building": "Power generator",
+        "Building": "Power Generator",
         "RecipeId": "PowerGeneratorT1",
         "Input1Name": "Mechanical Power",
         "Input1Qty": "3000",
@@ -17767,7 +17767,7 @@
     },
     {
       "title": {
-        "Building": "Power generator (large)",
+        "Building": "Power Generator (Large)",
         "RecipeId": "PowerGeneratorT2",
         "Input1Name": "Mechanical Power",
         "Input1Qty": "18000",
@@ -17798,7 +17798,7 @@
     },
     {
       "title": {
-        "Building": "Rainwater harvester",
+        "Building": "Rainwater Harvester",
         "RecipeId": "RainwaterHarvester",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -17829,7 +17829,7 @@
     },
     {
       "title": {
-        "Building": "Research lab I",
+        "Building": "Research Lab I",
         "RecipeId": "ResearchLab2",
         "Input1Name": "Lab Equipment",
         "Input1Qty": "1",
@@ -17860,7 +17860,7 @@
     },
     {
       "title": {
-        "Building": "Research lab I",
+        "Building": "Research Lab I",
         "RecipeId": "ResearchLab21",
         "Input1Name": "Lab Equipment",
         "Input1Qty": "1",
@@ -17891,7 +17891,7 @@
     },
     {
       "title": {
-        "Building": "Research lab II",
+        "Building": "Research Lab II",
         "RecipeId": "ResearchLab3",
         "Input1Name": "Lab Equipment II",
         "Input1Qty": "1",
@@ -17922,7 +17922,7 @@
     },
     {
       "title": {
-        "Building": "Research lab II",
+        "Building": "Research Lab II",
         "RecipeId": "ResearchLab31",
         "Input1Name": "Lab Equipment II",
         "Input1Qty": "1",
@@ -17953,7 +17953,7 @@
     },
     {
       "title": {
-        "Building": "Research lab III",
+        "Building": "Research Lab III",
         "RecipeId": "ResearchLab4",
         "Input1Name": "Lab Equipment III",
         "Input1Qty": "2",
@@ -17984,7 +17984,7 @@
     },
     {
       "title": {
-        "Building": "Research lab III",
+        "Building": "Research Lab III",
         "RecipeId": "ResearchLab41",
         "Input1Name": "Lab Equipment III",
         "Input1Qty": "2",
@@ -18015,7 +18015,7 @@
     },
     {
       "title": {
-        "Building": "Research lab IV",
+        "Building": "Research Lab IV",
         "RecipeId": "ResearchLab5",
         "Input1Name": "Lab Equipment IV",
         "Input1Qty": "4",
@@ -18046,7 +18046,7 @@
     },
     {
       "title": {
-        "Building": "Research lab IV",
+        "Building": "Research Lab IV",
         "RecipeId": "ResearchLab51",
         "Input1Name": "Lab Equipment IV",
         "Input1Qty": "4",
@@ -18108,7 +18108,7 @@
     },
     {
       "title": {
-        "Building": "Rotary Kiln (gas)",
+        "Building": "Rotary Kiln (Gas)",
         "RecipeId": "AluminaCalcificationGas",
         "Input1Name": "Hydrated Alumina",
         "Input1Qty": "18",
@@ -18139,7 +18139,7 @@
     },
     {
       "title": {
-        "Building": "Rotary Kiln (gas)",
+        "Building": "Rotary Kiln (Gas)",
         "RecipeId": "AluminaCalcificationHydrogen",
         "Input1Name": "Hydrated Alumina",
         "Input1Qty": "18",
@@ -18170,7 +18170,7 @@
     },
     {
       "title": {
-        "Building": "Rotary Kiln (gas)",
+        "Building": "Rotary Kiln (Gas)",
         "RecipeId": "CementProductionGas",
         "Input1Name": "Limestone",
         "Input1Qty": "12",
@@ -18201,7 +18201,7 @@
     },
     {
       "title": {
-        "Building": "Rotary Kiln (gas)",
+        "Building": "Rotary Kiln (Gas)",
         "RecipeId": "CementProductionHydrogen",
         "Input1Name": "Limestone",
         "Input1Qty": "12",
@@ -18232,7 +18232,7 @@
     },
     {
       "title": {
-        "Building": "Rubber maker",
+        "Building": "Rubber Maker",
         "RecipeId": "RubberProductionDiesel",
         "Input1Name": "Diesel",
         "Input1Qty": "4",
@@ -18263,7 +18263,7 @@
     },
     {
       "title": {
-        "Building": "Rubber maker",
+        "Building": "Rubber Maker",
         "RecipeId": "RubberProductionDieselWithCoal",
         "Input1Name": "Diesel",
         "Input1Qty": "4",
@@ -18294,7 +18294,7 @@
     },
     {
       "title": {
-        "Building": "Rubber maker",
+        "Building": "Rubber Maker",
         "RecipeId": "RubberProductionEthanol",
         "Input1Name": "Ethanol",
         "Input1Qty": "4",
@@ -18325,7 +18325,7 @@
     },
     {
       "title": {
-        "Building": "Rubber maker",
+        "Building": "Rubber Maker",
         "RecipeId": "RubberProductionNaphtha",
         "Input1Name": "Naphtha",
         "Input1Qty": "4",
@@ -18356,7 +18356,7 @@
     },
     {
       "title": {
-        "Building": "Rubber maker",
+        "Building": "Rubber Maker",
         "RecipeId": "RubberProductionNaphthaAlt",
         "Input1Name": "Naphtha",
         "Input1Qty": "4",
@@ -18387,7 +18387,7 @@
     },
     {
       "title": {
-        "Building": "Seawater pump",
+        "Building": "Seawater Pump",
         "RecipeId": "OceanWaterPumping",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -18418,7 +18418,7 @@
     },
     {
       "title": {
-        "Building": "Seawater pump",
+        "Building": "Seawater Pump",
         "RecipeId": "OceanWaterPumping2x",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -18449,7 +18449,7 @@
     },
     {
       "title": {
-        "Building": "Seawater pump (tall)",
+        "Building": "Seawater Pump (Tall)",
         "RecipeId": "OceanWaterPumping2xT2",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -18480,7 +18480,7 @@
     },
     {
       "title": {
-        "Building": "Seawater pump (tall)",
+        "Building": "Seawater Pump (Tall)",
         "RecipeId": "OceanWaterPumpingT2",
         "Input1Name": null,
         "Input1Qty": "0",
@@ -18511,7 +18511,7 @@
     },
     {
       "title": {
-        "Building": "Settling tank",
+        "Building": "Settling Tank",
         "RecipeId": "FluorideLeaching",
         "Input1Name": "Rock",
         "Input1Qty": "8",
@@ -18542,7 +18542,7 @@
     },
     {
       "title": {
-        "Building": "Settling tank",
+        "Building": "Settling Tank",
         "RecipeId": "GoldSettling",
         "Input1Name": "Gold Ore Powder",
         "Input1Qty": "12",
@@ -18573,7 +18573,7 @@
     },
     {
       "title": {
-        "Building": "Settling tank",
+        "Building": "Settling Tank",
         "RecipeId": "RedMudSettling",
         "Input1Name": "Red Mud",
         "Input1Qty": "9",
@@ -18604,7 +18604,7 @@
     },
     {
       "title": {
-        "Building": "Settling tank",
+        "Building": "Settling Tank",
         "RecipeId": "RedMudSettlingAcid",
         "Input1Name": "Red Mud",
         "Input1Qty": "9",
@@ -18635,7 +18635,7 @@
     },
     {
       "title": {
-        "Building": "Settling tank",
+        "Building": "Settling Tank",
         "RecipeId": "UraniumLeaching",
         "Input1Name": "Uranium Ore Powder",
         "Input1Qty": "36",
@@ -18945,7 +18945,7 @@
     },
     {
       "title": {
-        "Building": "Silicon reactor",
+        "Building": "Silicon Reactor",
         "RecipeId": "SiliconTreatment",
         "Input1Name": "Molten Silicon",
         "Input1Qty": "3",
@@ -18976,7 +18976,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackCarbonDioxide",
         "Input1Name": "Carbon Dioxide",
         "Input1Qty": "20",
@@ -19007,7 +19007,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackDepletedSteam",
         "Input1Name": "Steam (Depleted)",
         "Input1Qty": "20",
@@ -19038,7 +19038,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackExhaust",
         "Input1Name": "Exhaust",
         "Input1Qty": "20",
@@ -19069,7 +19069,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackHpSteam",
         "Input1Name": "Steam (High)",
         "Input1Qty": "20",
@@ -19100,7 +19100,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackLpSteam",
         "Input1Name": "Steam (Low)",
         "Input1Qty": "20",
@@ -19131,7 +19131,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackNitrogen",
         "Input1Name": "Nitrogen",
         "Input1Qty": "20",
@@ -19162,7 +19162,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackOxygen",
         "Input1Name": "Oxygen",
         "Input1Qty": "20",
@@ -19193,7 +19193,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack",
+        "Building": "Smoke Stack",
         "RecipeId": "SmokeStackSpSteam",
         "Input1Name": "Steam (Super)",
         "Input1Qty": "20",
@@ -19224,7 +19224,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeCarbonDioxide",
         "Input1Name": "Carbon Dioxide",
         "Input1Qty": "300",
@@ -19255,7 +19255,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeDepletedSteam",
         "Input1Name": "Steam (Depleted)",
         "Input1Qty": "300",
@@ -19286,7 +19286,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeExhaust",
         "Input1Name": "Exhaust",
         "Input1Qty": "300",
@@ -19317,7 +19317,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeHpSteam",
         "Input1Name": "Steam (High)",
         "Input1Qty": "300",
@@ -19348,7 +19348,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeLpSteam",
         "Input1Name": "Steam (Low)",
         "Input1Qty": "300",
@@ -19379,7 +19379,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeNitrogen",
         "Input1Name": "Nitrogen",
         "Input1Qty": "300",
@@ -19410,7 +19410,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeOxygen",
         "Input1Name": "Oxygen",
         "Input1Qty": "300",
@@ -19441,7 +19441,7 @@
     },
     {
       "title": {
-        "Building": "Smoke stack (large)",
+        "Building": "Smoke Stack (Large)",
         "RecipeId": "SmokeStackLargeSpSteam",
         "Input1Name": "Steam (Super)",
         "Input1Qty": "300",
@@ -19472,7 +19472,7 @@
     },
     {
       "title": {
-        "Building": "Sour water stripper",
+        "Building": "Sour Water Stripper",
         "RecipeId": "SourWaterStripping",
         "Input1Name": "Sour Water",
         "Input1Qty": "12",
@@ -19503,7 +19503,7 @@
     },
     {
       "title": {
-        "Building": "Super-pressure turbine",
+        "Building": "Super-Pressure Turbine",
         "RecipeId": "TurbineSuperPress",
         "Input1Name": "Steam (Super)",
         "Input1Qty": "8",
@@ -19534,7 +19534,7 @@
     },
     {
       "title": {
-        "Building": "Thermal desalinator",
+        "Building": "Thermal Desalinator",
         "RecipeId": "DesalinationFromDepleted",
         "Input1Name": "Seawater",
         "Input1Qty": "5",
@@ -19565,7 +19565,7 @@
     },
     {
       "title": {
-        "Building": "Thermal desalinator",
+        "Building": "Thermal Desalinator",
         "RecipeId": "DesalinationFromHP",
         "Input1Name": "Seawater",
         "Input1Qty": "18",
@@ -19596,7 +19596,7 @@
     },
     {
       "title": {
-        "Building": "Thermal desalinator",
+        "Building": "Thermal Desalinator",
         "RecipeId": "DesalinationFromLP",
         "Input1Name": "Seawater",
         "Input1Qty": "12",
@@ -19627,7 +19627,7 @@
     },
     {
       "title": {
-        "Building": "Thermal desalinator",
+        "Building": "Thermal Desalinator",
         "RecipeId": "DesalinationFromSP",
         "Input1Name": "Seawater",
         "Input1Qty": "18",
@@ -19658,7 +19658,7 @@
     },
     {
       "title": {
-        "Building": "Waste sorting plant",
+        "Building": "Waste Sorting Plant",
         "RecipeId": "WasteSortingPlant",
         "Input1Name": "Recyclables",
         "Input1Qty": "48",
@@ -19689,7 +19689,7 @@
     },
     {
       "title": {
-        "Building": "Waste sorting plant",
+        "Building": "Waste Sorting Plant",
         "RecipeId": "WasteSortingPlant1",
         "Input1Name": "Recyclables Pressed",
         "Input1Qty": "16",
@@ -19720,7 +19720,7 @@
     },
     {
       "title": {
-        "Building": "Wastewater treatment",
+        "Building": "Wastewater Treatment",
         "RecipeId": "ToxicSlurryTreatment",
         "Input1Name": "Toxic Slurry",
         "Input1Qty": "36",
@@ -19751,7 +19751,7 @@
     },
     {
       "title": {
-        "Building": "Wastewater treatment",
+        "Building": "Wastewater Treatment",
         "RecipeId": "WaterTreatment",
         "Input1Name": "Waste Water",
         "Input1Qty": "80",
@@ -19782,7 +19782,7 @@
     },
     {
       "title": {
-        "Building": "Wastewater treatment",
+        "Building": "Wastewater Treatment",
         "RecipeId": "WaterTreatmentT2",
         "Input1Name": "Waste Water",
         "Input1Qty": "80",
@@ -19813,7 +19813,7 @@
     },
     {
       "title": {
-        "Building": "Water chiller",
+        "Building": "Water Chiller",
         "RecipeId": "WaterChilling",
         "Input1Name": "Water",
         "Input1Qty": "10",

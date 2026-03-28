@@ -1,6 +1,9 @@
+import { initGoogleAnalytics } from './analytics';
 import { initState, getTargetRate } from './app/state';
 import { renderResourceOptions, updateResults } from './ui/controller';
 import { bindEvents, syncResetSavedDataButtonDisabled } from './ui/events';
+
+initGoogleAnalytics();
 
 document.addEventListener("DOMContentLoaded", () => {
   initState();
@@ -13,6 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
     resourceSearchResults: document.getElementById(
       "resource-search-results",
     ) as HTMLUListElement,
+    resourcePickerTrigger: document.getElementById(
+      "resource-picker-trigger",
+    ) as HTMLButtonElement,
+    resourcePickerPanel: document.getElementById(
+      "resource-picker-panel",
+    ) as HTMLElement,
+    resourceWikiLinkWrap: document.getElementById("resource-wiki-link-wrap"),
     targetRateInput: document.getElementById("target-rate") as HTMLInputElement,
     productionFields: document.getElementById("production-fields")!,
     productionAddSelect: document.getElementById(
@@ -50,13 +60,23 @@ document.addEventListener("DOMContentLoaded", () => {
     ) as HTMLButtonElement,
     totalsBody: document.getElementById("totals-body")!,
     treeList: document.getElementById("tree-list")!,
+    treeExpandAll: document.getElementById("tree-expand-all") as HTMLButtonElement,
+    treeCollapseAll: document.getElementById(
+      "tree-collapse-all",
+    ) as HTMLButtonElement,
     netBody: document.getElementById("net-body")!,
+    targetRecipeSection: document.getElementById(
+      "target-recipe-section",
+    ) as HTMLDetailsElement | null,
   };
 
   renderResourceOptions(
     els.resourceSelect,
     els.resourceSearchInput,
     els.resourceSearchResults,
+    els.resourceWikiLinkWrap,
+    els.resourcePickerTrigger,
+    els.resourcePickerPanel,
   );
   els.targetRateInput.value = String(getTargetRate());
 
@@ -71,5 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
     productionFields: els.productionFields,
     productionAddSelect: els.productionAddSelect,
     productionPresetSelect: els.productionPresetSelect,
+    targetRecipeSection: els.targetRecipeSection,
   });
 });

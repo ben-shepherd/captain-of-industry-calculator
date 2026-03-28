@@ -13,5 +13,10 @@
     "noEmit": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
-  "include": ["assets/js/**/*.ts", "tests/**/*.ts", "vite.config.ts"]
+  "include": [
+    "assets/js/**/*.ts",
+    "tests/**/*.ts",
+    "vite.config.ts",
+    "vite-env.d.ts"
+  ]
 }

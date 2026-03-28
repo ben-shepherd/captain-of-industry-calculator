@@ -66,18 +66,36 @@
       <details class="results-section" id="config-section-target" open>
         <summary class="results-section-summary">Target resource &amp; rate</summary>
         <div class="results-section-body">
+          <details
+            class="results-section recipe-diagram-section"
+            id="target-recipe-section"
+            hidden
+            open
+          >
+            <summary class="results-section-summary">Production recipes</summary>
+            <div class="results-section-body recipe-diagram-section-body">
+              <div
+                id="target-recipe-diagram"
+                class="target-recipe-diagram"
+                aria-live="polite"
+              ></div>
+            </div>
+          </details>
+
           <div class="field field-resource-target">
-            <label for="resource-select">Target Resource</label>
+            <label for="resource-picker-trigger">Target Resource</label>
             <div class="resource-search-wrap">
               <input
                 type="search"
                 id="resource-search"
                 placeholder="Search resources…"
                 autocomplete="off"
+                role="combobox"
                 aria-label="Search target resources"
                 aria-expanded="false"
                 aria-controls="resource-search-results"
                 aria-autocomplete="list"
+                aria-haspopup="listbox"
               />
               <ul
                 id="resource-search-results"
@@ -87,7 +105,36 @@
                 hidden
               ></ul>
             </div>
-            <select id="resource-select"></select>
+            <div class="resource-picker-wrap">
+              <button
+                type="button"
+                id="resource-picker-trigger"
+                class="resource-picker-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="resource-picker-panel"
+              >
+                Choose a resource
+              </button>
+              <div
+                id="resource-picker-panel"
+                class="resource-picker-panel"
+                role="listbox"
+                aria-label="Browse resources by category"
+                hidden
+              ></div>
+              <select
+                id="resource-select"
+                class="resource-select-sr"
+                aria-hidden="true"
+                tabindex="-1"
+              ></select>
+            </div>
+            <p
+              class="resource-wiki-link-wrap"
+              id="resource-wiki-link-wrap"
+              hidden
+            ></p>
           </div>
 
           <div class="field">
@@ -174,6 +221,10 @@
       <details class="results-section" id="results-section-tree">
         <summary class="results-section-summary">Dependency Tree</summary>
         <div class="results-section-body">
+          <div class="tree-toolbar" role="toolbar" aria-label="Dependency tree view">
+            <button type="button" id="tree-expand-all" class="btn btn-secondary tree-bulk-btn">Expand all</button>
+            <button type="button" id="tree-collapse-all" class="btn btn-secondary tree-bulk-btn">Collapse all</button>
+          </div>
           <div id="tree-list" class="tree-container"></div>
         </div>
       </details>

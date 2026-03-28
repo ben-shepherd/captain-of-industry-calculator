@@ -33,8 +33,11 @@ import {
   matchResourcesForSearch,
   refreshResourceSearchResults,
   renderResourceOptions,
+  setDependencyTreeBranchesExpanded,
+  TARGET_RESOURCE_PLACEHOLDER,
   updateResults,
 } from "./controller";
+import { setResourcePickerTrigger, setResourceWikiLink } from "./resourceIcon";
 import type { ResultElements } from "./controller";
 import { isIdRequiredByCurrentTarget } from "./productionView";
 
@@ -46,6 +49,9 @@ export interface AppElements extends ResultElements {
   resourceSelect: HTMLSelectElement;
   resourceSearchInput: HTMLInputElement;
   resourceSearchResults: HTMLUListElement;
+  resourcePickerTrigger: HTMLButtonElement;
+  resourcePickerPanel: HTMLElement;
+  resourceWikiLinkWrap: HTMLElement | null;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
   productionAddSelect: HTMLSelectElement;
@@ -59,6 +65,8 @@ export interface AppElements extends ResultElements {
   importSavedDataButton: HTMLButtonElement;
   importSavedDataInput: HTMLInputElement;
   resetSavedDataButton: HTMLButtonElement;
+  treeExpandAll: HTMLButtonElement;
+  treeCollapseAll: HTMLButtonElement;
 }
 
 const RESULTS_SECTION_IDS: Record<string, ResultsSectionKey> = {
@@ -114,6 +122,9 @@ export function bindEvents(els: AppElements): void {
     resourceSelect,
     resourceSearchInput,
     resourceSearchResults,
+    resourcePickerTrigger,
+    resourcePickerPanel,
+    resourceWikiLinkWrap,
     targetRateInput,
     productionFields,
     productionAddSelect,
@@ -129,6 +140,8 @@ export function bindEvents(els: AppElements): void {
     resetSavedDataButton,
     totalsBody,
     treeList,
+    treeExpandAll,
+    treeCollapseAll,
     netBody,
   } = els;
   const resultEls: ResultElements = {
@@ -138,17 +151,73 @@ export function bindEvents(els: AppElements): void {
     productionFields: els.productionFields,
     productionAddSelect: els.productionAddSelect,
     productionPresetSelect: els.productionPresetSelect,
+    targetRecipeSection: els.targetRecipeSection,
   };
 
   const resourceSearchWrap = resourceSearchInput.closest(
     ".resource-search-wrap",
   ) as HTMLElement;
 
+  const resourcePickerWrap = resourcePickerTrigger.closest(
+    ".resource-picker-wrap",
+  ) as HTMLElement;
+
+  function closeResourcePicker(): void {
+    resourcePickerPanel.hidden = true;
+    resourcePickerTrigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openResourcePicker(): void {
+    resourcePickerPanel.hidden = false;
+    resourcePickerTrigger.setAttribute("aria-expanded", "true");
+  }
+
+  const RESOURCE_SEARCH_HIT_ACTIVE = "resource-search-hit-active";
+
+  let resourceSearchHighlightIndex = -1;
+
+  function getResourceSearchHitElements(): HTMLLIElement[] {
+    return Array.from(
+      resourceSearchResults.querySelectorAll<HTMLLIElement>(
+        "li[data-resource-id]",
+      ),
+    );
+  }
+
+  function syncResourceSearchHighlight(): void {
+    const hits = getResourceSearchHitElements();
+    for (const li of hits) {
+      li.classList.remove(RESOURCE_SEARCH_HIT_ACTIVE);
+      li.removeAttribute("aria-selected");
+    }
+    resourceSearchInput.removeAttribute("aria-activedescendant");
+    if (
+      resourceSearchHighlightIndex < 0 ||
+      resourceSearchHighlightIndex >= hits.length
+    ) {
+      return;
+    }
+    const li = hits[resourceSearchHighlightIndex];
+    if (!li) return;
+    li.classList.add(RESOURCE_SEARCH_HIT_ACTIVE);
+    li.setAttribute("aria-selected", "true");
+    resourceSearchInput.setAttribute("aria-activedescendant", li.id);
+    li.scrollIntoView({ block: "nearest" });
+  }
+
+  function resetResourceSearchHighlight(): void {
+    resourceSearchHighlightIndex = -1;
+    syncResourceSearchHighlight();
+  }
+
   function refreshAfterStateRestore(): void {
     renderResourceOptions(
       resourceSelect,
       resourceSearchInput,
       resourceSearchResults,
+      resourceWikiLinkWrap,
+      resourcePickerTrigger,
+      resourcePickerPanel,
     );
     targetRateInput.value = String(getTargetRate());
     targetRateInput.classList.remove("input-invalid");
@@ -158,14 +227,24 @@ export function bindEvents(els: AppElements): void {
     applyInputsSectionOpenStateFromStore();
     updateResults(resultEls);
     syncResetSavedDataButtonDisabled(resetSavedDataButton);
+    resetResourceSearchHighlight();
   }
 
   function applyTargetResource(id: string): void {
+    resourceSearchHighlightIndex = -1;
     resourceSelect.value = id;
     resourceSearchInput.value = "";
     refreshResourceSearchResults(resourceSearchResults, "");
+    syncResourceSearchHighlight();
     setSearchListExpanded(resourceSearchInput, false);
+    closeResourcePicker();
     setResourceId(id);
+    setResourcePickerTrigger(
+      resourcePickerTrigger,
+      id,
+      TARGET_RESOURCE_PLACEHOLDER,
+    );
+    setResourceWikiLink(resourceWikiLinkWrap, id);
     updateResults(resultEls);
   }
 
@@ -178,13 +257,38 @@ export function bindEvents(els: AppElements): void {
   }
 
   totalsBody.addEventListener("click", handleResultPanelTargetClick);
-  treeList.addEventListener("click", handleResultPanelTargetClick);
+  treeList.addEventListener("click", (e: MouseEvent) => {
+    const toggle = (e.target as HTMLElement).closest("button.tree-toggle");
+    if (toggle) {
+      e.stopPropagation();
+      const branch = toggle.closest(".tree-branch");
+      const children = branch?.querySelector(
+        ":scope > .tree-children",
+      ) as HTMLElement | null;
+      if (!branch || !children) return;
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      const nextExpanded = !isExpanded;
+      toggle.setAttribute("aria-expanded", String(nextExpanded));
+      children.hidden = !nextExpanded;
+      branch.classList.toggle("tree-collapsed", !nextExpanded);
+      return;
+    }
+    handleResultPanelTargetClick(e);
+  });
+  treeExpandAll.addEventListener("click", () => {
+    setDependencyTreeBranchesExpanded(treeList, true);
+  });
+  treeCollapseAll.addEventListener("click", () => {
+    setDependencyTreeBranchesExpanded(treeList, false);
+  });
   netBody.addEventListener("click", handleResultPanelTargetClick);
 
   resourceSearchInput.addEventListener("input", () => {
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
     const q = resourceSearchInput.value.trim();
     setSearchListExpanded(resourceSearchInput, q !== "");
+    resetResourceSearchHighlight();
+    if (q !== "") closeResourcePicker();
   });
 
   resourceSearchInput.addEventListener("focus", () => {
@@ -192,6 +296,7 @@ export function bindEvents(els: AppElements): void {
     if (!q) return;
     refreshResourceSearchResults(resourceSearchResults, resourceSearchInput.value);
     setSearchListExpanded(resourceSearchInput, true);
+    resetResourceSearchHighlight();
   });
 
   resourceSearchInput.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -199,15 +304,57 @@ export function bindEvents(els: AppElements): void {
       resourceSearchInput.value = "";
       refreshResourceSearchResults(resourceSearchResults, "");
       setSearchListExpanded(resourceSearchInput, false);
+      resetResourceSearchHighlight();
       return;
     }
-    if (e.key !== "Enter") return;
-    const q = resourceSearchInput.value.trim();
-    if (!q) return;
-    const first = matchResourcesForSearch(q)[0];
-    if (!first) return;
-    e.preventDefault();
-    applyTargetResource(first.id);
+
+    const hits = getResourceSearchHitElements();
+    const listOpen = !resourceSearchResults.hidden && hits.length > 0;
+
+    if (listOpen && e.key === "ArrowDown") {
+      e.preventDefault();
+      resourceSearchHighlightIndex = Math.min(
+        resourceSearchHighlightIndex + 1,
+        hits.length - 1,
+      );
+      if (resourceSearchHighlightIndex < 0) {
+        resourceSearchHighlightIndex = 0;
+      }
+      syncResourceSearchHighlight();
+      return;
+    }
+
+    if (listOpen && e.key === "ArrowUp") {
+      e.preventDefault();
+      resourceSearchHighlightIndex = Math.max(
+        resourceSearchHighlightIndex - 1,
+        -1,
+      );
+      syncResourceSearchHighlight();
+      return;
+    }
+
+    if (e.key === "Enter") {
+      const q = resourceSearchInput.value.trim();
+      if (!q) return;
+      if (
+        resourceSearchHighlightIndex >= 0 &&
+        resourceSearchHighlightIndex < hits.length
+      ) {
+        const hitLi = hits[resourceSearchHighlightIndex];
+        const id = hitLi?.dataset.resourceId;
+        if (id) {
+          e.preventDefault();
+          applyTargetResource(id);
+        }
+        return;
+      }
+      const first = matchResourcesForSearch(q)[0];
+      if (!first) return;
+      e.preventDefault();
+      applyTargetResource(first.id);
+      return;
+    }
   });
 
   resourceSearchResults.addEventListener("mousedown", (e: MouseEvent) => {
@@ -224,10 +371,44 @@ export function bindEvents(els: AppElements): void {
     if (resourceSearchResults.hidden) return;
     resourceSearchResults.hidden = true;
     setSearchListExpanded(resourceSearchInput, false);
+    resetResourceSearchHighlight();
   });
 
-  resourceSelect.addEventListener("change", () => {
-    applyTargetResource(resourceSelect.value);
+  document.addEventListener("click", (e: MouseEvent) => {
+    if (resourcePickerWrap.contains(e.target as Node)) return;
+    if (resourcePickerPanel.hidden) return;
+    closeResourcePicker();
+  });
+
+  resourcePickerTrigger.addEventListener("click", (e: MouseEvent) => {
+    e.stopPropagation();
+    if (!resourcePickerPanel.hidden) {
+      closeResourcePicker();
+      return;
+    }
+    if (!resourceSearchResults.hidden) {
+      resourceSearchResults.hidden = true;
+      setSearchListExpanded(resourceSearchInput, false);
+      resetResourceSearchHighlight();
+    }
+    openResourcePicker();
+  });
+
+  resourcePickerPanel.addEventListener("mousedown", (e: MouseEvent) => {
+    const li = (e.target as HTMLElement).closest(
+      "li.resource-picker-option",
+    ) as HTMLLIElement | null;
+    if (!li?.dataset.resourceId) return;
+    e.preventDefault();
+    applyTargetResource(li.dataset.resourceId);
+  });
+
+  document.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key !== "Escape") return;
+    if (resourcePickerPanel.hidden) return;
+    e.preventDefault();
+    closeResourcePicker();
+    resourcePickerTrigger.focus();
   });
 
   targetRateInput.addEventListener("input", () => {

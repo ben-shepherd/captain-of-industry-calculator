@@ -5,10 +5,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Anesthetics",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Anesthetics",
+    imageUrl: "https://wiki.coigame.com/images/2/23/Anesthetics.png",
     recipes: [
       {
-        name: "Chemical plant II: AnestheticsProduction",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: AnestheticsProduction",
+        building: "Chemical Plant II",
         durationSec: 20,
         inputs: {"ammonia":2,"hydrogenFluoride":4,"steel":1},
         outputs: {"anesthetics":8},
@@ -19,10 +20,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Animal Feed",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Animal_Feed",
+    imageUrl: "https://wiki.coigame.com/images/9/9b/Animal_Feed.png",
     recipes: [
       {
-        name: "Food processor: TofuProduction",
-        building: "Food processor",
+        name: "Food Processor: TofuProduction",
+        building: "Food Processor",
         durationSec: 40,
         inputs: {"soybean":6,"water":4,"sulfur":1,"limestone":1},
         outputs: {"tofu":8,"animalFeed":3},
@@ -117,10 +119,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Antibiotics",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Antibiotics",
+    imageUrl: "https://wiki.coigame.com/images/0/00/Antibiotics.png",
     recipes: [
       {
-        name: "Fermentation tank: AntibioticsFermentation",
-        building: "Fermentation tank",
+        name: "Fermentation Tank: AntibioticsFermentation",
+        building: "Fermentation Tank",
         durationSec: 60,
         inputs: {"sugar":4,"ammonia":1,"oxygen":8},
         outputs: {"antibiotics":8,"carbonDioxide":4},
@@ -131,10 +134,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Bread",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Bread",
+    imageUrl: "https://wiki.coigame.com/images/e/e1/Bread.png",
     recipes: [
       {
-        name: "Baking unit: BreadProduction",
-        building: "Baking unit",
+        name: "Baking Unit: BreadProduction",
+        building: "Baking Unit",
         durationSec: 30,
         inputs: {"flour":8,"water":4},
         outputs: {"bread":12},
@@ -145,10 +149,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Cake",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Cake",
+    imageUrl: "https://wiki.coigame.com/images/f/f0/Cake.png",
     recipes: [
       {
-        name: "Baking unit: CakeProduction",
-        building: "Baking unit",
+        name: "Baking Unit: CakeProduction",
+        building: "Baking Unit",
         durationSec: 30,
         inputs: {"flour":5,"sugar":2,"cookingOil":1,"eggs":1,"fruit":1},
         outputs: {"cake":7},
@@ -159,6 +164,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Canola",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Canola",
+    imageUrl: "https://wiki.coigame.com/images/7/79/Canola.png",
     recipes: [
       {
         name: "Farm: Crop_Canola",
@@ -236,10 +242,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Chicken Carcass",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Chicken_Carcass",
+    imageUrl: "https://wiki.coigame.com/images/9/9d/Chicken_Carcass.png",
     recipes: [
       {
-        name: "Chicken farm: ChickenFarm",
-        building: "Chicken farm",
+        name: "Chicken Farm: ChickenFarm",
+        building: "Chicken Farm",
         durationSec: 60,
         inputs: {"animalFeed":15,"water":18},
         outputs: {"eggs":7,"chickenCarcass":10},
@@ -250,80 +257,81 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Compost",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Compost",
+    imageUrl: "https://wiki.coigame.com/images/3/35/Compost.png",
     recipes: [
       {
-        name: "Anaerobic digester: CornDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: CornDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"corn":14},
         outputs: {"fuelGas":14,"compost":1},
       },
       {
-        name: "Anaerobic digester: EggsDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: EggsDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"eggs":12},
         outputs: {"fuelGas":12,"compost":1},
       },
       {
-        name: "Anaerobic digester: FruitDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: FruitDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"fruit":12},
         outputs: {"fuelGas":12,"compost":1},
       },
       {
-        name: "Anaerobic digester: MeatTrimmingsDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: MeatTrimmingsDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"meatTrimmings":8},
         outputs: {"fuelGas":4,"compost":2},
       },
       {
-        name: "Anaerobic digester: PoppyDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: PoppyDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"poppy":14},
         outputs: {"fuelGas":8,"compost":1},
       },
       {
-        name: "Anaerobic digester: PotatoDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: PotatoDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"potato":14},
         outputs: {"fuelGas":8,"compost":1},
       },
       {
-        name: "Anaerobic digester: SludgeDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: SludgeDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"sludge":18},
         outputs: {"fuelGas":8,"compost":3},
       },
       {
-        name: "Anaerobic digester: SoybeanDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: SoybeanDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"soybean":14},
         outputs: {"fuelGas":12,"compost":1},
       },
       {
-        name: "Anaerobic digester: SugarCaneDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: SugarCaneDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"sugarCane":12},
         outputs: {"fuelGas":8,"compost":1},
       },
       {
-        name: "Anaerobic digester: VegetablesDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: VegetablesDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"vegetables":14},
         outputs: {"fuelGas":8,"compost":1},
       },
       {
-        name: "Anaerobic digester: WheatDigestion",
-        building: "Anaerobic digester",
+        name: "Anaerobic Digester: WheatDigestion",
+        building: "Anaerobic Digester",
         durationSec: 60,
         inputs: {"wheat":12},
         outputs: {"fuelGas":12,"compost":1},
@@ -376,6 +384,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Cooking Oil",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Cooking_Oil",
+    imageUrl: "https://wiki.coigame.com/images/4/45/Cooking_Oil.png",
     recipes: [
       {
         name: "Mill: CanolaMilling",
@@ -397,6 +406,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Corn",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Corn",
+    imageUrl: "https://wiki.coigame.com/images/f/f8/Corn.png",
     recipes: [
       {
         name: "Farm: Crop_Corn",
@@ -474,6 +484,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Corn Mash",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Corn_Mash",
+    imageUrl: "https://wiki.coigame.com/images/3/3a/Corn_Mash.png",
     recipes: [
       {
         name: "Mill: CornMilling",
@@ -488,17 +499,18 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Disinfectant",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Disinfectant",
+    imageUrl: "https://wiki.coigame.com/images/6/6b/Disinfectant.png",
     recipes: [
       {
-        name: "Chemical plant: DisinfectantProduction",
-        building: "Chemical plant",
+        name: "Chemical Plant: DisinfectantProduction",
+        building: "Chemical Plant",
         durationSec: 40,
         inputs: {"ethanol":3,"plastic":2},
         outputs: {"disinfectant":8},
       },
       {
-        name: "Chemical plant II: DisinfectantProductionT2",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: DisinfectantProductionT2",
+        building: "Chemical Plant II",
         durationSec: 20,
         inputs: {"ethanol":3,"plastic":2},
         outputs: {"disinfectant":8},
@@ -509,10 +521,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Eggs",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Eggs",
+    imageUrl: "https://wiki.coigame.com/images/a/a3/Eggs.png",
     recipes: [
       {
-        name: "Chicken farm: ChickenFarm",
-        building: "Chicken farm",
+        name: "Chicken Farm: ChickenFarm",
+        building: "Chicken Farm",
         durationSec: 60,
         inputs: {"animalFeed":15,"water":18},
         outputs: {"eggs":7,"chickenCarcass":10},
@@ -523,24 +536,25 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Ethanol",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Ethanol",
+    imageUrl: "https://wiki.coigame.com/images/9/95/Ethanol.png",
     recipes: [
       {
-        name: "Chemical plant II: CarbonToEthanolProduction",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: CarbonToEthanolProduction",
+        building: "Chemical Plant II",
         durationSec: 20,
         inputs: {"hydrogen":12,"carbonDioxide":9},
         outputs: {"ethanol":6,"water":3},
       },
       {
-        name: "Fermentation tank: CornToEthanolFermentation",
-        building: "Fermentation tank",
+        name: "Fermentation Tank: CornToEthanolFermentation",
+        building: "Fermentation Tank",
         durationSec: 30,
         inputs: {"cornMash":6,"oxygen":8},
         outputs: {"ethanol":4,"carbonDioxide":6},
       },
       {
-        name: "Fermentation tank: SugarToEthanolFermentation",
-        building: "Fermentation tank",
+        name: "Fermentation Tank: SugarToEthanolFermentation",
+        building: "Fermentation Tank",
         durationSec: 30,
         inputs: {"sugar":8,"oxygen":8},
         outputs: {"ethanol":6,"carbonDioxide":8},
@@ -551,31 +565,32 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Fertilizer I",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Fertilizer_I",
+    imageUrl: "https://wiki.coigame.com/images/3/39/Fertilizer_I.png",
     recipes: [
       {
-        name: "Chemical plant: FertilizerProduction",
-        building: "Chemical plant",
+        name: "Chemical Plant: FertilizerProduction",
+        building: "Chemical Plant",
         durationSec: 20,
         inputs: {"ammonia":4,"oxygen":6},
         outputs: {"fertilizerI":10},
       },
       {
-        name: "Chemical plant: FertilizerProductionFromOrganic",
-        building: "Chemical plant",
+        name: "Chemical Plant: FertilizerProductionFromOrganic",
+        building: "Chemical Plant",
         durationSec: 20,
         inputs: {"fertilizerOrganic":10,"ammonia":4,"oxygen":6},
         outputs: {"fertilizerI":15},
       },
       {
-        name: "Chemical plant II: FertilizerProductionFromOrganicT2",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: FertilizerProductionFromOrganicT2",
+        building: "Chemical Plant II",
         durationSec: 10,
         inputs: {"fertilizerOrganic":10,"ammonia":4,"oxygen":6},
         outputs: {"fertilizerI":15},
       },
       {
-        name: "Chemical plant II: FertilizerProductionT2",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: FertilizerProductionT2",
+        building: "Chemical Plant II",
         durationSec: 10,
         inputs: {"ammonia":4,"oxygen":6},
         outputs: {"fertilizerI":10},
@@ -586,6 +601,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Fertilizer II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Fertilizer_II",
+    imageUrl: "https://wiki.coigame.com/images/1/1c/Fertilizer_II.png",
     recipes: [
       {
         name: "Mixer: Fertilizer2Production",
@@ -607,6 +623,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Fertilizer (Organic)",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Fertilizer_%2528Organic%2529",
+    imageUrl: "https://wiki.coigame.com/images/6/62/Fertilizer_%28Organic%29.png",
     recipes: [
       {
         name: "Mixer: OrganicFertilizerProduction",
@@ -642,6 +659,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Flour",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Flour",
+    imageUrl: "https://wiki.coigame.com/images/e/e8/Flour.png",
     recipes: [
       {
         name: "Mill: WheatMilling",
@@ -656,6 +674,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Food Pack",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Food_Pack",
+    imageUrl: "https://wiki.coigame.com/images/5/56/Food_Pack.png",
     recipes: [
       {
         name: "Assembly III: FoodPackAssemblyEggs",
@@ -726,6 +745,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Fruit",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Fruit",
+    imageUrl: "https://wiki.coigame.com/images/a/a0/Fruit.png",
     recipes: [
       {
         name: "Greenhouse: Crop_Fruits_Product_Fertilizer",
@@ -775,10 +795,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Meat",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Meat",
+    imageUrl: "https://wiki.coigame.com/images/5/58/Meat.png",
     recipes: [
       {
-        name: "Food processor: MeatProcessing",
-        building: "Food processor",
+        name: "Food Processor: MeatProcessing",
+        building: "Food Processor",
         durationSec: 20,
         inputs: {"chickenCarcass":10,"water":3,"salt":1},
         outputs: {"meat":5,"meatTrimmings":2},
@@ -789,17 +810,18 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Meat Trimmings",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Meat_Trimmings",
+    imageUrl: "https://wiki.coigame.com/images/1/18/Meat_Trimmings.png",
     recipes: [
       {
-        name: "Food processor: MeatProcessing",
-        building: "Food processor",
+        name: "Food Processor: MeatProcessing",
+        building: "Food Processor",
         durationSec: 20,
         inputs: {"chickenCarcass":10,"water":3,"salt":1},
         outputs: {"meat":5,"meatTrimmings":2},
       },
       {
-        name: "Food processor: MeatProcessingTrimmings",
-        building: "Food processor",
+        name: "Food Processor: MeatProcessingTrimmings",
+        building: "Food Processor",
         durationSec: 20,
         inputs: {"chickenCarcass":10},
         outputs: {"meatTrimmings":9},
@@ -810,6 +832,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Medical Equipment",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Medical_Equipment",
+    imageUrl: "https://wiki.coigame.com/images/b/b9/Medical_Equipment.png",
     recipes: [
       {
         name: "Assembly III: MedicalEquipmentAssemblyT1",
@@ -838,6 +861,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Medical Supplies",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Medical_Supplies",
+    imageUrl: "https://wiki.coigame.com/images/c/cc/Medical_Supplies.png",
     recipes: [
       {
         name: "Assembly III: MedicalSuppliesAssemblyT1",
@@ -866,6 +890,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Medical Supplies II",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Medical_Supplies_II",
+    imageUrl: "https://wiki.coigame.com/images/d/da/Medical_Supplies_II.png",
     recipes: [
       {
         name: "Assembly III: MedicalSupplies2AssemblyT1",
@@ -894,6 +919,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Medical Supplies III",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Medical_Supplies_III",
+    imageUrl: "https://wiki.coigame.com/images/9/94/Medical_Supplies_III.png",
     recipes: [
       {
         name: "Assembly III: MedicalSupplies3AssemblyT1",
@@ -922,10 +948,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Morphine",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Morphine",
+    imageUrl: "https://wiki.coigame.com/images/c/ce/Morphine.png",
     recipes: [
       {
-        name: "Chemical plant II: MorphineProduction",
-        building: "Chemical plant II",
+        name: "Chemical Plant II: MorphineProduction",
+        building: "Chemical Plant II",
         durationSec: 20,
         inputs: {"poppy":4,"acid":2,"glass":2},
         outputs: {"morphine":8},
@@ -936,6 +963,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Poppy",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Poppy",
+    imageUrl: "https://wiki.coigame.com/images/3/37/Poppy.png",
     recipes: [
       {
         name: "Greenhouse: Crop_Poppy_Product_Fertilizer",
@@ -985,6 +1013,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Potato",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Potato",
+    imageUrl: "https://wiki.coigame.com/images/c/c2/Potato.png",
     recipes: [
       {
         name: "Farm: Crop_Potato",
@@ -1062,10 +1091,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Sausage",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Sausage",
+    imageUrl: "https://wiki.coigame.com/images/3/3a/Sausage.png",
     recipes: [
       {
-        name: "Food processor: SausageProduction",
-        building: "Food processor",
+        name: "Food Processor: SausageProduction",
+        building: "Food Processor",
         durationSec: 20,
         inputs: {"meatTrimmings":8,"flour":2,"salt":3},
         outputs: {"sausage":8},
@@ -1076,17 +1106,18 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Snack",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Snack",
+    imageUrl: "https://wiki.coigame.com/images/8/85/Snack.png",
     recipes: [
       {
-        name: "Food processor: SnackProductionCorn",
-        building: "Food processor",
+        name: "Food Processor: SnackProductionCorn",
+        building: "Food Processor",
         durationSec: 20,
         inputs: {"corn":8,"salt":2,"cookingOil":1,"plastic":1},
         outputs: {"snack":8,"biomass":1},
       },
       {
-        name: "Food processor: SnackProductionPotato",
-        building: "Food processor",
+        name: "Food Processor: SnackProductionPotato",
+        building: "Food Processor",
         durationSec: 20,
         inputs: {"potato":8,"salt":2,"cookingOil":1,"plastic":1},
         outputs: {"snack":6,"biomass":1},
@@ -1097,6 +1128,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Soybean",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Soybean",
+    imageUrl: "https://wiki.coigame.com/images/9/9e/Soybean.png",
     recipes: [
       {
         name: "Farm: Crop_Soybeans",
@@ -1174,10 +1206,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Sugar",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Sugar",
+    imageUrl: "https://wiki.coigame.com/images/a/a9/Sugar.png",
     recipes: [
       {
-        name: "Food processor: SugarRefiningCane",
-        building: "Food processor",
+        name: "Food Processor: SugarRefiningCane",
+        building: "Food Processor",
         durationSec: 40,
         inputs: {"sugarCane":10,"water":2},
         outputs: {"sugar":8,"biomass":4},
@@ -1188,6 +1221,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Sugar Cane",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Sugar_Cane",
+    imageUrl: "https://wiki.coigame.com/images/6/67/Sugar_Cane.png",
     recipes: [
       {
         name: "Greenhouse: Crop_SugarCane_Product_Fertilizer",
@@ -1237,10 +1271,11 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Tofu",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Tofu",
+    imageUrl: "https://wiki.coigame.com/images/c/c3/Tofu.png",
     recipes: [
       {
-        name: "Food processor: TofuProduction",
-        building: "Food processor",
+        name: "Food Processor: TofuProduction",
+        building: "Food Processor",
         durationSec: 40,
         inputs: {"soybean":6,"water":4,"sulfur":1,"limestone":1},
         outputs: {"tofu":8,"animalFeed":3},
@@ -1251,6 +1286,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Tree Sapling",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Tree_Sapling",
+    imageUrl: "https://wiki.coigame.com/images/thumb/2/24/TreeSapling.png/48px-TreeSapling.png",
     recipes: [
       {
         name: "Farm: Crop_TreeSapling",
@@ -1328,6 +1364,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Vegetables",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Vegetables",
+    imageUrl: "https://wiki.coigame.com/images/c/cb/Vegetables.png",
     recipes: [
       {
         name: "Farm: Crop_Vegetables",
@@ -1405,6 +1442,7 @@ export const foodMedicalResources: ResourcesMap = {
     label: "Wheat",
     unit: "t/m",
     wikiUrl: "https://wiki.coigame.com/Wheat",
+    imageUrl: "https://wiki.coigame.com/images/e/e2/Wheat.png",
     recipes: [
       {
         name: "Farm: Crop_Wheat",

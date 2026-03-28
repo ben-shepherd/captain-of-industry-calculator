@@ -1,4 +1,5 @@
 import { resources, getResourceEntriesInPickerOrder } from "../data/resources";
+import { resourceLabelWithIconHtml } from "./resourceIcon";
 import {
   getProduction,
   getProductionExtraIds,
@@ -108,11 +109,12 @@ function buildRowsHtml(ids: string[]): string {
       const val = production[id] ?? "";
       const strVal = val === "" ? "" : String(val);
       const pressed = id === currentTarget ? "true" : "false";
+      const btnInner = resourceLabelWithIconHtml(id, label);
       return (
         `<div class="production-row">`
         + `<button type="button" class="production-row-target" `
         + `data-production-target="${id}" aria-pressed="${pressed}" `
-        + `aria-label="Set ${label} as target resource">${label}</button>`
+        + `aria-label="Set ${label} as target resource">${btnInner}</button>`
         + `<input id="prod-${id}" type="number" min="0" step="any" `
         + `data-resource-id="${id}" value="${strVal}" `
         + `placeholder="0" `

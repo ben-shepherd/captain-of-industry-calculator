@@ -1,12 +1,12 @@
 import {
   getResourcePickerGroups,
   getResourceEntriesInPickerOrder,
+  resources,
 } from '../data/resources';
 import { calculate } from '../calculator/service';
 import { calculateNet } from '../calculator/net';
 import { formatTotals, formatNetTotals } from '../formatters/flatFormatter';
-import { flattenTree } from '../formatters/treeFormatter';
-import type { ProductionPreset } from '../contracts';
+import type { DependencyNode, ProductionPreset } from '../contracts';
 import {
   getResourceId,
   getTargetRate,
@@ -20,6 +20,12 @@ import {
   refreshProductionFields,
   updateProductionAddSelect,
 } from './productionView';
+import {
+  resourceLabelWithIconHtml,
+  setResourcePickerTrigger,
+  setResourceWikiLink,
+} from './resourceIcon';
+import { renderTargetRecipeDiagram } from './recipeDiagram';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
@@ -28,6 +34,7 @@ export interface ResultElements {
   productionFields?: HTMLElement;
   productionAddSelect?: HTMLSelectElement;
   productionPresetSelect?: HTMLSelectElement;
+  targetRecipeSection?: HTMLDetailsElement | null;
 }
 
 /**
@@ -70,7 +77,24 @@ export function refreshResourceSearchResults(
     const li = document.createElement("li");
     li.role = "option";
     li.dataset.resourceId = id;
-    li.textContent = label;
+    li.id = `resource-search-hit-${id}`;
+    li.className = "resource-search-hit";
+    const url = resources[id]?.imageUrl;
+    if (url) {
+      const img = document.createElement("img");
+      img.className = "resource-icon";
+      img.src = url;
+      img.alt = "";
+      img.width = 20;
+      img.height = 20;
+      img.loading = "lazy";
+      img.decoding = "async";
+      li.appendChild(img);
+    }
+    const span = document.createElement("span");
+    span.className = "resource-search-hit-label";
+    span.textContent = label;
+    li.appendChild(span);
     listEl.appendChild(li);
   }
 }
@@ -79,12 +103,45 @@ export function refreshResourceSearchResults(
  * Populate the resource <select> dropdown with all known resources
  * (grouped by level, sorted A–Z within each group).
  */
-const TARGET_RESOURCE_PLACEHOLDER = "Choose a resource";
+export const TARGET_RESOURCE_PLACEHOLDER = "Choose a resource";
+
+/**
+ * Fills the custom grouped picker panel (icons + labels).
+ */
+export function renderTargetResourcePickerPanel(panelEl: HTMLElement | null): void {
+  if (!panelEl) return;
+  panelEl.replaceChildren();
+  for (const group of getResourcePickerGroups()) {
+    const section = document.createElement("div");
+    section.className = "resource-picker-group";
+    const heading = document.createElement("div");
+    heading.className = "resource-picker-group-label";
+    heading.textContent = group.label;
+    section.appendChild(heading);
+    const ul = document.createElement("ul");
+    ul.className = "resource-picker-group-list";
+    ul.setAttribute("role", "presentation");
+    for (const { id, label } of group.entries) {
+      const li = document.createElement("li");
+      li.className = "resource-picker-option";
+      li.role = "option";
+      li.dataset.resourceId = id;
+      li.id = `resource-picker-option-${id}`;
+      li.innerHTML = resourceLabelWithIconHtml(id, label);
+      ul.appendChild(li);
+    }
+    section.appendChild(ul);
+    panelEl.appendChild(section);
+  }
+}
 
 export function renderResourceOptions(
   selectEl: HTMLSelectElement,
   searchInput?: HTMLInputElement,
   searchResultsList?: HTMLUListElement,
+  targetWikiWrap?: HTMLElement | null,
+  pickerTrigger?: HTMLButtonElement | null,
+  pickerPanel?: HTMLElement | null,
 ): void {
   selectEl.innerHTML = "";
   const placeholder = document.createElement("option");
@@ -103,6 +160,13 @@ export function renderResourceOptions(
     selectEl.appendChild(og);
   }
   selectEl.value = getResourceId();
+  renderTargetResourcePickerPanel(pickerPanel ?? null);
+  setResourcePickerTrigger(
+    pickerTrigger ?? null,
+    getResourceId(),
+    TARGET_RESOURCE_PLACEHOLDER,
+  );
+  setResourceWikiLink(targetWikiWrap ?? null, getResourceId());
   if (searchInput) {
     searchInput.value = "";
     searchInput.setAttribute("aria-expanded", "false");
@@ -132,6 +196,7 @@ export function updateResults(els: ResultElements): void {
       ["Choose a target resource above to see net flow"],
       5,
     );
+    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, "");
     syncProductionPanel(els, {});
     return;
   }
@@ -143,6 +208,7 @@ export function updateResults(els: ResultElements): void {
     totalsBody.innerHTML = row(["Error running calculation"], 1);
     treeList.innerHTML = "";
     netBody.innerHTML = "";
+    renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
     syncProductionPanel(els, {});
     return;
   }
@@ -150,6 +216,7 @@ export function updateResults(els: ResultElements): void {
   renderTotals(totalsBody, result.totals);
   renderTree(treeList, result.tree);
   renderNet(netBody, result.totals, production);
+  renderTargetRecipeDiagram(els.targetRecipeSection ?? null, resourceId);
   syncProductionPanel(els, result.totals);
 }
 
@@ -253,10 +320,11 @@ function resourceTargetButton(
   const cls = extraClass
     ? `production-row-target ${extraClass}`
     : "production-row-target";
+  const inner = resourceLabelWithIconHtml(id, label);
   return (
     `<button type="button" class="${cls}" `
     + `data-production-target="${id}" aria-pressed="${pressed}" `
-    + `aria-label="Set ${label} as target resource">${label}</button>`
+    + `aria-label="Set ${label} as target resource">${inner}</button>`
   );
 }
 
@@ -277,21 +345,54 @@ function renderTotals(tbody: HTMLElement, totals: Record<string, number>): void 
     .join("");
 }
 
-function renderTree(
-  container: HTMLElement,
-  tree: import('../contracts').DependencyNode,
-): void {
-  const nodes = flattenTree(tree);
-  container.innerHTML = nodes
-    .map(
-      (n) =>
-        `<div class="tree-node tree-depth-${n.depth}" style="margin-left:${n.depth * 1.25}rem">`
-        + (n.depth > 0 ? `<span class="tree-arrow">&#x2514;</span>` : "")
-        + `${resourceTargetButton(n.id, n.label, "tree-label")} `
-        + `<span class="tree-amount">${n.amount.toFixed(2)} ${n.unit}</span>`
-        + `</div>`,
+function renderTreeBranch(node: DependencyNode, depth: number): string {
+  const hasChildren = node.children.length > 0;
+  const unit = resources[node.id]?.unit ?? "";
+  const toggleOrSpacer = hasChildren
+    ? (
+      `<button type="button" class="tree-toggle" aria-expanded="true" `
+      + `aria-label="Toggle child dependencies">`
+      + `<span class="tree-toggle-chevron" aria-hidden="true"></span></button>`
     )
-    .join("");
+    : `<span class="tree-toggle-spacer" aria-hidden="true"></span>`;
+  const arrow =
+    depth > 0 ? `<span class="tree-arrow">&#x2514;</span>` : "";
+  const row =
+    `<div class="tree-node tree-depth-${depth}" style="margin-left:${depth * 1.25}rem">`
+    + toggleOrSpacer
+    + arrow
+    + `${resourceTargetButton(node.id, node.label, "tree-label")} `
+    + `<span class="tree-amount">${node.amount.toFixed(2)} ${unit}</span>`
+    + `</div>`;
+  const childrenHtml = hasChildren
+    ? `<div class="tree-children">${node.children
+      .map((c) => renderTreeBranch(c, depth + 1))
+      .join("")}</div>`
+    : "";
+  return `<div class="tree-branch">${row}${childrenHtml}</div>`;
+}
+
+function renderTree(container: HTMLElement, tree: DependencyNode): void {
+  container.innerHTML = renderTreeBranch(tree, 0);
+}
+
+/** Set every collapsible branch in the dependency tree to expanded or collapsed. */
+export function setDependencyTreeBranchesExpanded(
+  treeList: HTMLElement,
+  expanded: boolean,
+): void {
+  for (const toggle of treeList.querySelectorAll<HTMLButtonElement>(
+    "button.tree-toggle",
+  )) {
+    const branch = toggle.closest(".tree-branch");
+    const children = branch?.querySelector(
+      ":scope > .tree-children",
+    ) as HTMLElement | null;
+    if (!branch || !children) continue;
+    toggle.setAttribute("aria-expanded", String(expanded));
+    children.hidden = !expanded;
+    branch.classList.toggle("tree-collapsed", !expanded);
+  }
 }
 
 function renderNet(
