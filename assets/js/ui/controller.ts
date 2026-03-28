@@ -21,7 +21,11 @@ import {
   refreshProductionFields,
   updateProductionAddSelect,
 } from './productionView';
-import { resourceLabelWithIconHtml, setResourceIconSlot } from './resourceIcon';
+import {
+  resourceLabelWithIconHtml,
+  setResourceIconSlot,
+  setResourceWikiLink,
+} from './resourceIcon';
 
 export interface ResultElements {
   totalsBody: HTMLElement;
@@ -104,6 +108,7 @@ export function renderResourceOptions(
   searchInput?: HTMLInputElement,
   searchResultsList?: HTMLUListElement,
   targetIconSlot?: HTMLElement | null,
+  targetWikiWrap?: HTMLElement | null,
 ): void {
   selectEl.innerHTML = "";
   const placeholder = document.createElement("option");
@@ -123,6 +128,7 @@ export function renderResourceOptions(
   }
   selectEl.value = getResourceId();
   setResourceIconSlot(targetIconSlot ?? null, getResourceId());
+  setResourceWikiLink(targetWikiWrap ?? null, getResourceId());
   if (searchInput) {
     searchInput.value = "";
     searchInput.setAttribute("aria-expanded", "false");

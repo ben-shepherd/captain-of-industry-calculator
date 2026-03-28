@@ -381,6 +381,27 @@ body {
   image-rendering: auto;
 }
 
+.resource-wiki-link-wrap {
+  margin: 0.15rem 0 0;
+  min-height: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.resource-wiki-link-wrap:empty {
+  display: none;
+}
+
+.resource-wiki-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resource-wiki-link:hover {
+  color: color-mix(in srgb, var(--color-accent) 75%, #fff);
+}
+
 .resource-label-with-icon {
   display: inline-flex;
   align-items: center;

@@ -42,3 +42,17 @@ export function setResourceIconSlot(slot: HTMLElement | null, resourceId: string
     `<img class="resource-icon" src="${escapeHtml(url)}" alt="" width="24" height="24" `
     + `loading="lazy" decoding="async" />`;
 }
+
+/** Wiki link under the target resource selector; hidden when no resource or no URL. */
+export function setResourceWikiLink(wrap: HTMLElement | null, resourceId: string): void {
+  if (!wrap) return;
+  const url = resourceId && resources[resourceId]?.wikiUrl;
+  if (!url) {
+    wrap.innerHTML = "";
+    wrap.hidden = true;
+    return;
+  }
+  wrap.hidden = false;
+  wrap.innerHTML =
+    `<a class="resource-wiki-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">View on wiki</a>`;
+}

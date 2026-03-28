@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "resource-search-results",
     ) as HTMLUListElement,
     resourceSelectIconSlot: document.getElementById("resource-select-icon"),
+    resourceWikiLinkWrap: document.getElementById("resource-wiki-link-wrap"),
     targetRateInput: document.getElementById("target-rate") as HTMLInputElement,
     productionFields: document.getElementById("production-fields")!,
     productionAddSelect: document.getElementById(
@@ -59,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     els.resourceSearchInput,
     els.resourceSearchResults,
     els.resourceSelectIconSlot,
+    els.resourceWikiLinkWrap,
   );
   els.targetRateInput.value = String(getTargetRate());
 
