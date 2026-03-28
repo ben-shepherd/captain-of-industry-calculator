@@ -3,6 +3,11 @@ import type { DependencyNode, ResolveResult } from '../contracts';
 
 const cache = new Map<string, ResolveResult>();
 
+/**
+ * Resolves the selected target recipe to **direct inputs only** (scaled to the
+ * target output rate). No nested recipe expansion — each input appears once in
+ * `totals` at the rate required to run the chosen recipe at `amount` t/m output.
+ */
 export function resolve(
   resourceId: string,
   amount: number,
@@ -12,10 +17,7 @@ export function resolve(
   const cached = cache.get(key);
   if (cached) return cached;
 
-  const totals: Record<string, number> = {};
-  const tree = buildTree(resourceId, amount, recipeIdx, totals, new Set());
-  const result: ResolveResult = { totals, tree };
-
+  const result = buildDirect(resourceId, amount, recipeIdx);
   cache.set(key, result);
   return result;
 }
@@ -25,30 +27,28 @@ export function clearResolveCache(): void {
   cache.clear();
 }
 
-function buildTree(
+function buildDirect(
   id: string,
   amount: number,
   recipeIdx: number,
-  totals: Record<string, number>,
-  stack: Set<string>,
-): DependencyNode {
+): ResolveResult {
   const resource = resources[id];
 
   if (!resource) {
     throw new Error(`Unknown resource: "${id}"`);
   }
 
-  /** Break recipe cycles (game graph has feedback loops) by treating as a leaf. */
-  if (stack.has(id)) {
-    totals[id] = (totals[id] ?? 0) + amount;
-    return { id, label: resource.label, amount, children: [] };
-  }
-
   const recipe = resource.recipes[recipeIdx];
 
   if (!recipe) {
-    totals[id] = (totals[id] ?? 0) + amount;
-    return { id, label: resource.label, amount, children: [] };
+    const totals: Record<string, number> = { [id]: amount };
+    const tree: DependencyNode = {
+      id,
+      label: resource.label,
+      amount,
+      children: [],
+    };
+    return { totals, tree };
   }
 
   const produced = recipe.outputs[id] ?? 0;
@@ -58,27 +58,41 @@ function buildTree(
     );
   }
 
-  stack.add(id);
-  try {
-    const inputEntries = Object.entries(recipe.inputs);
-    /** Oil pump, groundwater, etc.: no upstream inputs — count as base requirement. */
-    if (inputEntries.length === 0) {
-      totals[id] = (totals[id] ?? 0) + amount;
-      return { id, label: resource.label, amount, children: [] };
-    }
+  const inputEntries = Object.entries(recipe.inputs);
 
-    /** Per-cycle ratios: inputRate = inputQty * targetRate / producedQty */
-    const children = inputEntries.map(([inputId, inputAmount]) =>
-      buildTree(
-        inputId,
-        (inputAmount * amount) / produced,
-        0,
-        totals,
-        stack,
-      ),
-    );
-    return { id, label: resource.label, amount, children };
-  } finally {
-    stack.delete(id);
+  /** Extractors / pumps: no upstream inputs — count output as the “base” line. */
+  if (inputEntries.length === 0) {
+    const totals: Record<string, number> = { [id]: amount };
+    const tree: DependencyNode = {
+      id,
+      label: resource.label,
+      amount,
+      children: [],
+    };
+    return { totals, tree };
   }
+
+  const totals: Record<string, number> = {};
+  const children: DependencyNode[] = [];
+
+  for (const [inputId, inputAmount] of inputEntries) {
+    const rate = (inputAmount * amount) / produced;
+    totals[inputId] = (totals[inputId] ?? 0) + rate;
+    const inputRes = resources[inputId];
+    children.push({
+      id: inputId,
+      label: inputRes?.label ?? inputId,
+      amount: rate,
+      children: [],
+    });
+  }
+
+  const tree: DependencyNode = {
+    id,
+    label: resource.label,
+    amount,
+    children,
+  };
+
+  return { totals, tree };
 }

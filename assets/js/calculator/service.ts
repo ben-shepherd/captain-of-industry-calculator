@@ -5,8 +5,8 @@ import type { CalculationResult } from '../contracts';
 /**
  * Public entry point for the calculator.
  *
- * Validates inputs, delegates to the resolver, and returns
- * a result object ready for formatting or rendering.
+ * Validates inputs, delegates to the resolver (direct recipe inputs only),
+ * and returns a result object ready for formatting or rendering.
  */
 export function calculate(
   resourceId: string,

@@ -31,12 +31,19 @@ describe("calculate", () => {
     expect(tofuInputs.has("eggs")).toBe(false);
   });
 
-  it("includes extractor bases (e.g. crude oil) in totals for Electricity", () => {
+  it("uses direct recipe inputs for Electricity (diesel generator recipe 0)", () => {
     const { totals } = calculate("electricity", 100);
-    expect(totals.crudeOil).toBeDefined();
-    expect(totals.crudeOil).toBeGreaterThan(0);
-    expect(totals.wood).toBeDefined();
-    expect(totals.wood).toBeGreaterThan(0);
+    /** Diesel generator: 1 diesel → 800 electricity per cycle; no nested expansion. */
+    expect(totals).toEqual({ diesel: 100 / 800 });
+  });
+
+  it("Construction Parts Assembly I lists only iron, wood, and concrete slab", () => {
+    const { totals } = calculate("constructionParts", 6, 0);
+    expect(totals).toEqual({
+      iron: 4.5,
+      wood: 4.5,
+      concreteSlab: 6,
+    });
   });
 
   it("returns a dependency tree from the resolver", () => {

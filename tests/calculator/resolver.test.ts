@@ -36,18 +36,18 @@ describe("resolve", () => {
     });
   });
 
-  describe("multi-depth chain (iron)", () => {
-    it("resolves iron through moltenIron to base materials", () => {
+  describe("direct inputs only (iron)", () => {
+    it("lists molten iron only — no nested smelting chain", () => {
       const { totals } = resolve("iron", 8);
-      /** First molten iron recipe uses iron scrap (wiki order). */
-      expect(totals.ironScrap).toBeDefined();
-      expect(totals.ironScrap).toBeGreaterThan(0);
+      expect(totals).toEqual({ moltenIron: 8 });
     });
 
-    it("builds a nested tree", () => {
+    it("builds a one-level tree", () => {
       const { tree } = resolve("iron", 8);
       expect(tree.id).toBe("iron");
-      expect(tree.children.length).toBeGreaterThan(0);
+      expect(tree.children).toHaveLength(1);
+      expect(tree.children[0]!.id).toBe("moltenIron");
+      expect(tree.children[0]!.children).toHaveLength(0);
     });
   });
 

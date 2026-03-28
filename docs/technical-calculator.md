@@ -5,39 +5,35 @@
 ## Public API
 
 - **[`calculate(resourceId, targetRate)`](../assets/js/calculator/service.ts)** — validates inputs, calls **`resolve`**, returns `{ resourceId, targetRate, totals, tree }` ([`CalculationResult`](../assets/js/contracts/index.ts)).
-- **`totals`** — aggregated **per-minute** amounts for each resource visited while expanding the chain (see below).
-- **`tree`** — nested [`DependencyNode`](../assets/js/contracts/index.ts) for the dependency tree panel.
+- **`totals`** — **per-minute** amounts for each **direct input** of the selected target recipe (scaled to `targetRate` output). No nested expansion into upstream recipes.
+- **`tree`** — [`DependencyNode`](../assets/js/contracts/index.ts) for the dependency tree panel: root = target resource, children = those direct inputs (each child has no further children).
 
 ## Resolver
 
-[`resolve` in `resolver.ts`](../assets/js/calculator/resolver.ts) walks the recipe graph:
+[`resolve` in `resolver.ts`](../assets/js/calculator/resolver.ts) applies **one** recipe step:
 
-1. Loads [`resources[id]`](../assets/js/data/resources/index.ts) and picks **`resource.recipes[recipeIdx]`** (top-level call uses `recipeIdx = 0`).
-2. If there is **no recipe** at that index, the node is a **leaf**: add `amount` to `totals[id]` and return a node with no children.
-3. If a recipe exists but **output quantity for `id` is missing or ≤ 0**, **`buildTree` throws** (the recipe does not list a positive output for the resource being resolved).
-4. Otherwise, for each recipe **input** `(inputId, inputAmount)` it recurses with  
-   `childAmount = inputAmount * amount / produced`, **`recipeIdx` fixed to `0`** for nested calls (nested inputs always use each resource’s **first** recipe).
+1. Loads [`resources[id]`](../assets/js/data/resources/index.ts) and picks **`resource.recipes[recipeIdx]`** (from the user’s **target recipe** index).
+2. If there is **no recipe** for that resource (raw goods like ore), the node is a **leaf**: `totals` is `{ [id]: amount }` and the tree has no children.
+3. If a recipe exists but **output quantity for `id` is missing or ≤ 0**, **`resolve` throws**.
+4. If the recipe has **no inputs** (extractors, pumps), `totals` is `{ [id]: amount }` — the resource is counted as its own “requirement” line at the target rate.
+5. Otherwise, for each recipe **input** `(inputId, inputAmount)`:
+   - `rate = inputAmount * amount / produced` (same ratio as a single production step),
+   - accumulate **`totals[inputId]`**,
+   - add a **child** node `(inputId, rate)` with **no grandchildren**.
 
 ```mermaid
 flowchart TD
-  subgraph resolverFlow ["resolve(resourceId, amount)"]
-    R[Read resource recipes idx]
+  subgraph resolveFlow ["resolve(resourceId, amount, recipeIdx)"]
+    R[Read resource.recipes at recipeIdx]
     R --> HasRecipe{recipe at idx?}
-    HasRecipe -->|no| Leaf[Add to totals leaf node]
+    HasRecipe -->|no| LeafRaw[totals id only leaf tree]
     HasRecipe -->|yes| OutputOk{positive output for id?}
     OutputOk -->|no| Err[Throw error]
-    OutputOk -->|yes| Cycle{stack has id?}
-    Cycle -->|yes| LeafCycle[Add to totals leaf breaks cycle]
-    Cycle -->|no| Push[stack add id]
-    Push --> Children[For each input recurse with recipeIdx 0]
-    Children --> Pop[stack remove id]
-    Pop --> Node[Return node with children]
+    OutputOk -->|yes| NoInputs{inputs empty?}
+    NoInputs -->|yes| LeafExt[totals id only extractor]
+    NoInputs -->|no| Direct[Scale each input to totals and child nodes]
   end
 ```
-
-## Cycles in the game graph
-
-The production graph can contain **feedback loops**. The resolver keeps a **`stack: Set<string>`** of resources currently being expanded. If **`stack` already contains `id`**, recursion stops: **`amount` is added to `totals[id]`** and a **leaf** node is returned (no children). This matches the comment in code: break cycles by treating revisits as leaves.
 
 ## Memoization
 

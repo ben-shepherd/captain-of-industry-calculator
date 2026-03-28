@@ -7,8 +7,8 @@
 [`updateResults` in `controller.ts`](../assets/js/ui/controller.ts) is the main render pipeline:
 
 1. If **no target resource** is selected, show placeholder rows and clear tree; sync production panel with empty totals.
-2. Otherwise call **`calculate(resourceId, targetRate)`** ([`service.ts`](../assets/js/calculator/service.ts)). On error, show an error row.
-3. **`renderTotals`** — [`formatTotals`](../assets/js/formatters/flatFormatter.ts) over `result.totals` for **Base resources required**.
+2. Otherwise call **`calculate(resourceId, targetRate, targetRecipeIdx)`** ([`service.ts`](../assets/js/calculator/service.ts)). On error, show an error row.
+3. **`renderTotals`** — [`formatTotals`](../assets/js/formatters/flatFormatter.ts) over `result.totals` for **Base resources required** (direct inputs of the selected recipe only; see [Calculator](technical-calculator.md)).
 4. **`renderTree`** — [`flattenTree`](../assets/js/formatters/treeFormatter.ts) for **Dependency tree** (indented lines with amounts).
 5. **`renderNet`** — [`calculateNet(result.totals, production)`](../assets/js/calculator/net.ts) then **`formatNetTotals`** for **Net flow** (required vs your production vs net vs status).
 6. **`syncProductionPanel`** — refreshes **Your production** rows and the preset `<select>`.
@@ -19,9 +19,9 @@
 
 ## Net flow math
 
-[`calculateNet`](../assets/js/calculator/net.ts) builds the union of keys from **required** (chain totals) and **user production**. For each id:
+[`calculateNet`](../assets/js/calculator/net.ts) builds the union of keys from **required** (direct recipe input totals) and **user production**. For each id:
 
-- `required` — from chain totals (0 if absent).
+- `required` — from `calculate`’s totals (0 if absent).
 - `production` — user-entered rate (0 if absent).
 - `net = production - required`.
 - **Status:** `surplus` if net > 0, `deficit` if net < 0, else `balanced`.
