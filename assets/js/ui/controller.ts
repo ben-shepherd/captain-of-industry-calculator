@@ -20,7 +20,7 @@ import {
 import {
   getRelevantProductionResourceIds,
   refreshProductionFields,
-  updateProductionAddSelect,
+  renderProductionAddPicker,
 } from './productionView';
 import {
   resourceLabelWithIconHtml,
@@ -34,7 +34,8 @@ export interface ResultElements {
   treeList: HTMLElement;
   netBody: HTMLElement;
   productionFields?: HTMLElement;
-  productionAddSelect?: HTMLSelectElement;
+  productionAddTrigger?: HTMLButtonElement;
+  productionAddPanel?: HTMLElement;
   productionPresetSelect?: HTMLSelectElement;
   targetRecipeSection?: HTMLDetailsElement | null;
 }
@@ -315,7 +316,7 @@ function syncProductionPanel(
 ): void {
   if (els.productionFields) {
     const rebuilt = refreshProductionFields(els.productionFields, totals);
-    if (rebuilt && els.productionAddSelect) {
+    if (rebuilt && els.productionAddTrigger && els.productionAddPanel) {
       const ids = new Set(
         getRelevantProductionResourceIds(
           totals,
@@ -324,7 +325,7 @@ function syncProductionPanel(
           getProductionDismissedIds(),
         ),
       );
-      updateProductionAddSelect(els.productionAddSelect, ids);
+      renderProductionAddPicker(els.productionAddPanel, els.productionAddTrigger, ids);
     }
   }
   if (els.productionPresetSelect) {

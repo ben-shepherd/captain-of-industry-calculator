@@ -231,10 +231,11 @@ body {
   padding: var(--gap);
 }
 
-.panel.panel-inputs,
 .panel.panel-results {
   overflow-x: auto;
   overflow-y: visible;
+  position: relative;
+  z-index: 0;
 }
 
 /* Must not mix overflow-x: auto with visible on the other axis (spec forces y to auto and clips
@@ -243,8 +244,13 @@ body {
   overflow: visible;
 }
 
+/* Same as target panel: inputs column has resource pickers that must extend below the panel.
+   Stack above `.panel-results` so open dropdowns paint over the adjacent column. */
 .panel.panel-inputs {
+  overflow: visible;
   padding-bottom: calc(var(--gap) + 0.5rem);
+  position: relative;
+  z-index: 1;
 }
 
 .panel h2:first-of-type {
@@ -636,6 +642,17 @@ input.input-invalid {
 
 .production-add-field {
   margin-top: 0.75rem;
+}
+
+.resource-picker-empty {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--color-balanced);
+}
+
+.production-add-picker-wrap .resource-picker-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .production-row {

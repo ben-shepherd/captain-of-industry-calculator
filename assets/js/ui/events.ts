@@ -58,7 +58,8 @@ export interface AppElements extends ResultElements {
   resourceWikiLinkWrap: HTMLElement | null;
   targetRateInput: HTMLInputElement;
   productionFields: HTMLElement;
-  productionAddSelect: HTMLSelectElement;
+  productionAddTrigger: HTMLButtonElement;
+  productionAddPanel: HTMLElement;
   productionPresetSelect: HTMLSelectElement;
   productionPresetLoadMerge: HTMLButtonElement;
   productionPresetLoadReplace: HTMLButtonElement;
@@ -132,7 +133,8 @@ export function bindEvents(els: AppElements): void {
     resourceWikiLinkWrap,
     targetRateInput,
     productionFields,
-    productionAddSelect,
+    productionAddTrigger,
+    productionAddPanel,
     productionPresetSelect,
     productionPresetLoadMerge,
     productionPresetLoadReplace,
@@ -157,7 +159,8 @@ export function bindEvents(els: AppElements): void {
     treeList: els.treeList,
     netBody: els.netBody,
     productionFields: els.productionFields,
-    productionAddSelect: els.productionAddSelect,
+    productionAddTrigger: els.productionAddTrigger,
+    productionAddPanel: els.productionAddPanel,
     productionPresetSelect: els.productionPresetSelect,
     targetRecipeSection: els.targetRecipeSection,
   };
@@ -195,6 +198,10 @@ export function bindEvents(els: AppElements): void {
     ".resource-picker-wrap",
   ) as HTMLElement;
 
+  const productionAddWrap = productionAddTrigger.closest(
+    ".production-add-picker-wrap",
+  ) as HTMLElement;
+
   function closeResourcePicker(): void {
     resourcePickerPanel.hidden = true;
     resourcePickerTrigger.setAttribute("aria-expanded", "false");
@@ -203,6 +210,16 @@ export function bindEvents(els: AppElements): void {
   function openResourcePicker(): void {
     resourcePickerPanel.hidden = false;
     resourcePickerTrigger.setAttribute("aria-expanded", "true");
+  }
+
+  function closeProductionAddPicker(): void {
+    productionAddPanel.hidden = true;
+    productionAddTrigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openProductionAddPicker(): void {
+    productionAddPanel.hidden = false;
+    productionAddTrigger.setAttribute("aria-expanded", "true");
   }
 
   const RESOURCE_SEARCH_HIT_ACTIVE = "resource-search-hit-active";
@@ -336,7 +353,10 @@ export function bindEvents(els: AppElements): void {
     const q = resourceSearchInput.value.trim();
     setSearchListExpanded(resourceSearchInput, q !== "");
     resetResourceSearchHighlight();
-    if (q !== "") closeResourcePicker();
+    if (q !== "") {
+      closeResourcePicker();
+      closeProductionAddPicker();
+    }
   });
 
   resourceSearchInput.addEventListener("focus", () => {
@@ -428,6 +448,12 @@ export function bindEvents(els: AppElements): void {
     closeResourcePicker();
   });
 
+  document.addEventListener("click", (e: MouseEvent) => {
+    if (productionAddWrap.contains(e.target as Node)) return;
+    if (productionAddPanel.hidden) return;
+    closeProductionAddPicker();
+  });
+
   resourcePickerTrigger.addEventListener("click", (e: MouseEvent) => {
     e.stopPropagation();
     if (!resourcePickerPanel.hidden) {
@@ -439,6 +465,7 @@ export function bindEvents(els: AppElements): void {
       setSearchListExpanded(resourceSearchInput, false);
       resetResourceSearchHighlight();
     }
+    closeProductionAddPicker();
     openResourcePicker();
   });
 
@@ -451,12 +478,46 @@ export function bindEvents(els: AppElements): void {
     applyTargetResource(li.dataset.resourceId);
   });
 
+  productionAddTrigger.addEventListener("click", (e: MouseEvent) => {
+    e.stopPropagation();
+    if (productionAddTrigger.disabled) return;
+    if (!productionAddPanel.hidden) {
+      closeProductionAddPicker();
+      return;
+    }
+    if (!resourceSearchResults.hidden) {
+      resourceSearchResults.hidden = true;
+      setSearchListExpanded(resourceSearchInput, false);
+      resetResourceSearchHighlight();
+    }
+    closeResourcePicker();
+    openProductionAddPicker();
+  });
+
+  productionAddPanel.addEventListener("mousedown", (e: MouseEvent) => {
+    const li = (e.target as HTMLElement).closest(
+      "li.resource-picker-option",
+    ) as HTMLLIElement | null;
+    if (!li?.dataset.resourceId) return;
+    e.preventDefault();
+    addProductionExtraId(li.dataset.resourceId);
+    closeProductionAddPicker();
+    updateResults(resultEls);
+  });
+
   document.addEventListener("keydown", (e: KeyboardEvent) => {
     if (e.key !== "Escape") return;
-    if (resourcePickerPanel.hidden) return;
-    e.preventDefault();
-    closeResourcePicker();
-    resourcePickerTrigger.focus();
+    if (!resourcePickerPanel.hidden) {
+      e.preventDefault();
+      closeResourcePicker();
+      resourcePickerTrigger.focus();
+      return;
+    }
+    if (!productionAddPanel.hidden) {
+      e.preventDefault();
+      closeProductionAddPicker();
+      productionAddTrigger.focus();
+    }
   });
 
   targetRateInput.addEventListener("input", () => {
@@ -521,14 +582,6 @@ export function bindEvents(els: AppElements): void {
     if (isIdRequiredByCurrentTarget(id)) {
       dismissProductionRow(id);
     }
-    updateResults(resultEls);
-  });
-
-  productionAddSelect.addEventListener("change", () => {
-    const v = productionAddSelect.value;
-    if (!v) return;
-    addProductionExtraId(v);
-    productionAddSelect.value = "";
     updateResults(resultEls);
   });
 

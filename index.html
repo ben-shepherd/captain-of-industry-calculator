@@ -156,8 +156,26 @@
           <p class="production-hint">Shows your dependency chain, saved rates, and added resources. × clears the row; chain resources stay hidden until you change target or add them again.</p>
           <div id="production-fields"></div>
           <div class="field production-add-field">
-            <label for="production-add-select">Add resource</label>
-            <select id="production-add-select" aria-label="Add production for another resource"></select>
+            <label for="production-add-trigger">Add resource</label>
+            <div class="resource-picker-wrap production-add-picker-wrap">
+              <button
+                type="button"
+                id="production-add-trigger"
+                class="resource-picker-trigger production-add-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="production-add-panel"
+              >
+                Add a resource…
+              </button>
+              <div
+                id="production-add-panel"
+                class="resource-picker-panel"
+                role="listbox"
+                aria-label="Add production for a resource by category"
+                hidden
+              ></div>
+            </div>
           </div>
         </div>
       </details>
