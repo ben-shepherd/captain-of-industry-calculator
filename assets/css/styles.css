@@ -198,6 +198,34 @@ body {
   padding-bottom: 0.25rem;
 }
 
+.app-target-fields-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.app-target-fields-row .field {
+  margin-bottom: 0;
+}
+
+.app-target-panel .field label {
+  margin-bottom: 0.85rem;
+}
+
+@media (min-width: 36rem) {
+  .app-target-fields-row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .app-target-field-col {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
 .app-footer {
   margin-top: var(--gap);
 }
@@ -512,7 +540,12 @@ button.recent-resource-chip .resource-icon {
 .field-resource-target {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0;
+}
+
+/* Space only between search and browse control; label spacing matches .field label + other column */
+.field-resource-target .resource-picker-wrap {
+  margin-top: 0.35rem;
 }
 
 .resource-search-wrap {
@@ -669,7 +702,7 @@ select.resource-select-sr {
 }
 
 .resource-wiki-link-wrap {
-  margin: 0.15rem 0 0;
+  margin: 0.75rem 0;
   min-height: 0;
   font-size: 0.85rem;
   line-height: 1.4;
@@ -1241,7 +1274,7 @@ input.input-invalid {
 ========================= */
 .panel-inputs .recipe-diagram-section.results-section,
 .app-target-panel .recipe-diagram-section.results-section {
-  margin-top: 0;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
