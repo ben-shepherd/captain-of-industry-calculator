@@ -89,6 +89,7 @@ export function refreshResourceSearchResults(
     span.className = "resource-search-hit-label";
     span.textContent = label;
     li.appendChild(span);
+    listEl.appendChild(li);
   }
 }
 
