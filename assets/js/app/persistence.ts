@@ -132,6 +132,7 @@ export function migrateEnvelopeToAppState(
       resourceId: d.resourceId,
       targetRate: d.targetRate,
       targetRecipeIdx: 0,
+      baseRequirementsMode: "direct",
       production: d.production ?? {},
       productionExtraIds: Array.isArray(d.productionExtraIds)
         ? d.productionExtraIds

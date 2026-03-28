@@ -41,7 +41,6 @@ const defaultInputsSections: AppState["inputsSections"] = {
 };
 
 const emptyV4 = {
-  targetRecipeIdx: 0,
   recentTargetResourceIds: [] as string[],
   productionDismissedIds: [] as string[],
   productionPresets: [] as AppState["productionPresets"],
@@ -379,6 +378,10 @@ describe("migration", () => {
         productionPresets: [],
         resultsSections: { ...defaultResultsSections },
         inputsSections: { ...defaultInputsSections },
+        netFlowChartStyle: "line",
+        userGuideExpanded: true,
+        userGuideVisible: true,
+        recentTargetResourceIds: [],
       },
     };
     expect(migrateEnvelopeToAppState(envelope)).toEqual({

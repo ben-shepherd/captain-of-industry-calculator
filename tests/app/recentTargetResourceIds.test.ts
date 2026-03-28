@@ -11,6 +11,7 @@ const minimalState: AppState = {
   resourceId: "",
   targetRate: 12,
   targetRecipeIdx: 0,
+  baseRequirementsMode: "direct",
   recentTargetResourceIds: [],
   production: {},
   productionExtraIds: [],
