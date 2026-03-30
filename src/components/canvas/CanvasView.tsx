@@ -158,8 +158,12 @@ export function CanvasView() {
   ) {
     if (nodesToPlace.length === 0) return;
     const el = workspaceRef.current;
-    const raw = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style);
     const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+    const wrapW =
+      el && el.clientWidth > 0
+        ? Math.max(CANVAS_CARD_WIDTH_PX, el.clientWidth - pad * 2)
+        : undefined;
+    const raw = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style, wrapW);
     let maxR = 0;
     let maxB = 0;
     for (const n of placedNodesRef.current) {
@@ -505,6 +509,18 @@ export function CanvasView() {
             role="radiogroup"
             aria-labelledby="canvas-placement-style-label"
           >
+            <button
+              type="button"
+              role="radio"
+              className="canvas-placement-style-option"
+              aria-checked={placementStyle === 'auto'}
+              onClick={() => {
+                setPlacementStyle('auto');
+                saveCanvasPlacementStyle('auto');
+              }}
+            >
+              Auto
+            </button>
             <button
               type="button"
               role="radio"

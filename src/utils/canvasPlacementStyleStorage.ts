@@ -5,11 +5,11 @@ const STORAGE_KEY = 'coi-canvas-placement-style';
 export function loadCanvasPlacementStyle(): CanvasPlacementStyle {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === 'horizontal' || raw === 'vertical') return raw;
+    if (raw === 'horizontal' || raw === 'vertical' || raw === 'auto') return raw;
   } catch {
     // ignore
   }
-  return 'horizontal';
+  return 'auto';
 }
 
 export function saveCanvasPlacementStyle(style: CanvasPlacementStyle): void {

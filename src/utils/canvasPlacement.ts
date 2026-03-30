@@ -7,7 +7,7 @@ export type CanvasDependencyEdge = { fromKey: string; toKey: string };
 export const CANVAS_PLACE_DEFAULT_RATE = 12;
 
 /** How multiple cards are arranged relative to the click anchor. */
-export type CanvasPlacementStyle = 'horizontal' | 'vertical';
+export type CanvasPlacementStyle = 'horizontal' | 'vertical' | 'auto';
 
 /** Layout dimensions — keep in sync with `.canvas-placed-card` in CSS. */
 export const CANVAS_CARD_WIDTH_PX = 140;
@@ -151,14 +151,41 @@ export function collectDependencyEdges(
 /**
  * Center a block on the anchor so the click point sits in the middle of the group.
  * Horizontal: one row, left to right. Vertical: one column, top to bottom.
+ * Auto: grid that wraps to `wrapContentWidth` (typically the visible canvas width).
  */
 export function layoutPlacedNodes(
   anchorX: number,
   anchorY: number,
   count: number,
-  style: CanvasPlacementStyle = 'horizontal',
+  style: CanvasPlacementStyle = 'auto',
+  wrapContentWidth?: number,
 ): Array<{ x: number; y: number }> {
   if (count <= 0) return [];
+
+  if (style === 'auto') {
+    const cellW = CANVAS_CARD_WIDTH_PX + GAP_PX;
+    const minUsable =
+      wrapContentWidth != null && wrapContentWidth > 0
+        ? Math.max(CANVAS_CARD_WIDTH_PX, wrapContentWidth)
+        : CANVAS_CARD_WIDTH_PX * 3 + GAP_PX * 2;
+    const cols = Math.max(1, Math.floor((minUsable + GAP_PX) / cellW));
+    const rows = Math.ceil(count / cols);
+    const totalW = cols * CANVAS_CARD_WIDTH_PX + (cols - 1) * GAP_PX;
+    const totalH = rows * CANVAS_CARD_HEIGHT_PX + (rows - 1) * GAP_PX;
+    const startX = anchorX - totalW / 2;
+    const startY = anchorY - totalH / 2;
+    const out: Array<{ x: number; y: number }> = [];
+    for (let i = 0; i < count; i++) {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      out.push({
+        x: startX + col * cellW,
+        y: startY + row * (CANVAS_CARD_HEIGHT_PX + GAP_PX),
+      });
+    }
+    return out;
+  }
+
   const cols = style === 'horizontal' ? count : 1;
   const rows = style === 'horizontal' ? 1 : count;
   const totalW = cols * CANVAS_CARD_WIDTH_PX + (cols - 1) * GAP_PX;
