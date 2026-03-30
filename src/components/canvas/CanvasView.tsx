@@ -11,7 +11,12 @@ import {
   CANVAS_PLACE_DEFAULT_RATE,
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
+  type CanvasPlacementStyle,
 } from '../../utils/canvasPlacement';
+import {
+  loadCanvasPlacementStyle,
+  saveCanvasPlacementStyle,
+} from '../../utils/canvasPlacementStyleStorage';
 import {
   createExpandedMapAll,
   loadCanvasSidebarExpanded,
@@ -48,6 +53,7 @@ export function CanvasView() {
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [pendingPlacement, setPendingPlacement] = useState<PendingPlacement | null>(null);
   const [dependentPick, setDependentPick] = useState<Record<string, boolean>>({});
+  const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
 
@@ -113,9 +119,14 @@ export function CanvasView() {
     setExpandedByLevel(next);
   }
 
-  function commitPlacementAtAnchor(anchorX: number, anchorY: number, nodesToPlace: DependencyNode[]) {
+  function commitPlacementAtAnchor(
+    anchorX: number,
+    anchorY: number,
+    nodesToPlace: DependencyNode[],
+    style: CanvasPlacementStyle,
+  ) {
     if (nodesToPlace.length === 0) return;
-    const positions = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length);
+    const positions = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style);
     const batch = placementSeq;
     setPlacementSeq((s) => s + 1);
 
@@ -153,7 +164,7 @@ export function CanvasView() {
       const dependents = unique.slice(1);
 
       if (dependents.length === 0) {
-        commitPlacementAtAnchor(anchorX, anchorY, unique);
+        commitPlacementAtAnchor(anchorX, anchorY, unique, placementStyle);
         setSelectedResourceId(null);
       } else {
         setPendingPlacement({
@@ -174,7 +185,7 @@ export function CanvasView() {
     if (!pendingPlacement) return;
     const { anchorX, anchorY, uniqueNodes } = pendingPlacement;
     const toPlace = uniqueNodes.filter((node, i) => i === 0 || dependentPick[node.id] === true);
-    commitPlacementAtAnchor(anchorX, anchorY, toPlace);
+    commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle);
     setPendingPlacement(null);
     setDependentPick({});
   }
@@ -209,6 +220,45 @@ export function CanvasView() {
             onChange={(e) => setSearch(e.target.value)}
             autoComplete="off"
           />
+        </div>
+        <div
+          className="canvas-placement-style field"
+          role="group"
+          aria-label="Resource placement layout on canvas"
+        >
+          <span id="canvas-placement-style-label" className="canvas-placement-style-label">
+            Placement
+          </span>
+          <div
+            className="canvas-placement-style-toggle"
+            role="radiogroup"
+            aria-labelledby="canvas-placement-style-label"
+          >
+            <button
+              type="button"
+              role="radio"
+              className="canvas-placement-style-option"
+              aria-checked={placementStyle === 'horizontal'}
+              onClick={() => {
+                setPlacementStyle('horizontal');
+                saveCanvasPlacementStyle('horizontal');
+              }}
+            >
+              Horizontal
+            </button>
+            <button
+              type="button"
+              role="radio"
+              className="canvas-placement-style-option"
+              aria-checked={placementStyle === 'vertical'}
+              onClick={() => {
+                setPlacementStyle('vertical');
+                saveCanvasPlacementStyle('vertical');
+              }}
+            >
+              Vertical
+            </button>
+          </div>
         </div>
         {categories.length > 0 ? (
           <div
