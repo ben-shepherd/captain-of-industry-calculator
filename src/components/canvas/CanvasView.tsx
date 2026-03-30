@@ -12,7 +12,10 @@ import {
   CANVAS_PLACE_DEFAULT_RATE,
   CANVAS_CARD_HEIGHT_PX,
   CANVAS_CARD_WIDTH_PX,
+  CANVAS_SURFACE_PAD_PX,
+  CANVAS_WORKSPACE_EDGE_PAD_PX,
   collectDependencyEdges,
+  computeCanvasContentExtent,
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
   type CanvasDependencyEdge,
@@ -75,7 +78,7 @@ export function CanvasView() {
   const [placedBlockLabels, setPlacedBlockLabels] = useState<Record<number, string>>({});
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
   const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>([]);
-  const [linkLayerSize, setLinkLayerSize] = useState({ w: 0, h: 0 });
+  const [workspaceViewport, setWorkspaceViewport] = useState({ w: 0, h: 0 });
   const dragStateRef = useRef<{ batchId: number; lastX: number; lastY: number } | null>(null);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
@@ -156,10 +159,27 @@ export function CanvasView() {
     if (nodesToPlace.length === 0) return;
     const el = workspaceRef.current;
     const raw = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style);
+    const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+    let maxR = 0;
+    let maxB = 0;
+    for (const n of placedNodesRef.current) {
+      maxR = Math.max(maxR, n.x + CANVAS_CARD_WIDTH_PX);
+      maxB = Math.max(maxB, n.y + CANVAS_CARD_HEIGHT_PX);
+    }
+    for (const p of raw) {
+      maxR = Math.max(maxR, p.x + CANVAS_CARD_WIDTH_PX);
+      maxB = Math.max(maxB, p.y + CANVAS_CARD_HEIGHT_PX);
+    }
+    const boundsW =
+      el && el.clientWidth > 0
+        ? Math.max(el.clientWidth, el.scrollWidth, maxR + pad)
+        : maxR + pad;
+    const boundsH =
+      el && el.clientHeight > 0
+        ? Math.max(el.clientHeight, el.scrollHeight, maxB + pad)
+        : maxB + pad;
     const positions =
-      el && el.clientWidth > 0 && el.clientHeight > 0
-        ? clampPlacedPositions(raw, el.clientWidth, el.clientHeight)
-        : raw;
+      boundsW > 0 && boundsH > 0 ? clampPlacedPositions(raw, boundsW, boundsH) : raw;
     const batch = placementSeq;
     setPlacementSeq((s) => s + 1);
 
@@ -223,9 +243,10 @@ export function CanvasView() {
     if (target.closest('.canvas-block-label')) return;
     if (target.closest('.canvas-placed-card')) return;
 
-    const rect = workspaceRef.current.getBoundingClientRect();
-    const anchorX = e.clientX - rect.left;
-    const anchorY = e.clientY - rect.top;
+    const wel = workspaceRef.current;
+    const rect = wel.getBoundingClientRect();
+    const anchorX = e.clientX - rect.left + wel.scrollLeft;
+    const anchorY = e.clientY - rect.top + wel.scrollTop;
 
     try {
       const recipeIdx = firstProducingRecipeIndex(selectedResourceId);
@@ -316,6 +337,31 @@ export function CanvasView() {
     return out;
   }, [placedNodes, placedBlockLabels]);
 
+  const canvasContentExtent = useMemo(
+    () =>
+      computeCanvasContentExtent(
+        placedNodes,
+        blockLabelOverlays.map((bl) => ({ left: bl.left, top: bl.top })),
+        CANVAS_CARD_WIDTH_PX,
+        CANVAS_CARD_HEIGHT_PX,
+        CANVAS_SURFACE_PAD_PX,
+      ),
+    [placedNodes, blockLabelOverlays],
+  );
+
+  const canvasSurfaceSize = useMemo(() => {
+    const vw = Math.max(1, workspaceViewport.w);
+    const vh = Math.max(1, workspaceViewport.h);
+    const { width: cw, height: ch } = canvasContentExtent;
+    if (cw === 0 && ch === 0) {
+      return { w: vw, h: vh };
+    }
+    return {
+      w: Math.max(vw, cw),
+      h: Math.max(vh, ch),
+    };
+  }, [workspaceViewport, canvasContentExtent]);
+
   function removePlacedBlock(batchId: number) {
     const prev = placedNodesRef.current;
     const keySet = new Set(
@@ -348,13 +394,13 @@ export function CanvasView() {
     const el = workspaceRef.current;
     if (!el) return;
     const measure = () => {
-      setLinkLayerSize({ w: el.scrollWidth, h: el.scrollHeight });
+      setWorkspaceViewport({ w: el.clientWidth, h: el.clientHeight });
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [placedNodes]);
+  }, []);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -381,7 +427,20 @@ export function CanvasView() {
         const wel = workspaceRef.current;
         if (!wel || batch.length === 0) return prev;
         const positions = batch.map((n) => ({ x: n.x, y: n.y }));
-        const clamped = clampPlacedPositions(positions, wel.clientWidth, wel.clientHeight);
+        const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+        let maxR = 0;
+        let maxB = 0;
+        for (const n of rest) {
+          maxR = Math.max(maxR, n.x + CANVAS_CARD_WIDTH_PX);
+          maxB = Math.max(maxB, n.y + CANVAS_CARD_HEIGHT_PX);
+        }
+        for (const n of batch) {
+          maxR = Math.max(maxR, n.x + CANVAS_CARD_WIDTH_PX);
+          maxB = Math.max(maxB, n.y + CANVAS_CARD_HEIGHT_PX);
+        }
+        const boundsW = Math.max(wel.clientWidth, wel.scrollWidth, maxR + pad);
+        const boundsH = Math.max(wel.clientHeight, wel.scrollHeight, maxB + pad);
+        const clamped = clampPlacedPositions(positions, boundsW, boundsH);
         const merged = batch.map((n, i) => ({
           ...n,
           x: clamped[i]!.x,
@@ -555,111 +614,123 @@ export function CanvasView() {
           setPointer(null);
         }}
         onMouseMove={(e) => {
-          if (!workspaceRef.current) return;
-          const r = workspaceRef.current.getBoundingClientRect();
-          setPointer({ x: e.clientX - r.left, y: e.clientY - r.top });
+          const wel = workspaceRef.current;
+          if (!wel) return;
+          const r = wel.getBoundingClientRect();
+          setPointer({
+            x: e.clientX - r.left + wel.scrollLeft,
+            y: e.clientY - r.top + wel.scrollTop,
+          });
         }}
         onClick={handleWorkspaceClick}
       >
-        {placedNodes.length === 0 && !selectedResourceId ? (
-          <p className="canvas-workspace-hint">Canvas</p>
-        ) : null}
+        <div
+          className="canvas-workspace-surface"
+          style={{
+            width: canvasSurfaceSize.w,
+            height: canvasSurfaceSize.h,
+          }}
+        >
+          {placedNodes.length === 0 && !selectedResourceId ? (
+            <p className="canvas-workspace-hint">Canvas</p>
+          ) : null}
 
-        {selectedResourceId && pointerInWorkspace && pointer && selectedDef ? (
-          <>
-            <div className="canvas-workspace-place-hint" aria-live="polite">
-              Click to place {selectedDef.label}
-            </div>
-            <CanvasPlacementGhost
-              left={pointer.x}
-              top={pointer.y}
-              label={selectedDef.label}
-              imageUrl={selectedDef.imageUrl || undefined}
-            />
-          </>
-        ) : null}
+          {selectedResourceId && pointerInWorkspace && pointer && selectedDef ? (
+            <>
+              <div className="canvas-workspace-place-hint" aria-live="polite">
+                Click to place {selectedDef.label}
+              </div>
+              <CanvasPlacementGhost
+                left={pointer.x}
+                top={pointer.y}
+                label={selectedDef.label}
+                imageUrl={selectedDef.imageUrl || undefined}
+              />
+            </>
+          ) : null}
 
-        {placeError ? (
-          <p className="canvas-workspace-error" role="alert">
-            {placeError}
-          </p>
-        ) : null}
+          {placeError ? (
+            <p className="canvas-workspace-error" role="alert">
+              {placeError}
+            </p>
+          ) : null}
 
-        {blockLabelOverlays.map((bl) => (
-          <div
-            key={`block-label-${bl.batchId}`}
-            className="canvas-block-label"
-            style={{
-              position: 'absolute',
-              left: bl.left,
-              top: bl.top,
-              transform: 'translate(-50%, -100%)',
-              zIndex: 3,
-            }}
-          >
-            <span className="canvas-block-label-text">{bl.title}</span>
-            <button
-              type="button"
-              className="canvas-block-label-remove"
-              aria-label={`Remove block ${bl.title}`}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                requestRemoveBlock(bl.batchId, bl.title);
+          {blockLabelOverlays.map((bl) => (
+            <div
+              key={`block-label-${bl.batchId}`}
+              className="canvas-block-label"
+              style={{
+                position: 'absolute',
+                left: bl.left,
+                top: bl.top,
+                transform: 'translate(-50%, -100%)',
+                zIndex: 3,
               }}
-              onPointerDown={(e) => e.stopPropagation()}
             >
-              ×
-            </button>
-          </div>
-        ))}
+              <span className="canvas-block-label-text">{bl.title}</span>
+              <button
+                type="button"
+                className="canvas-block-label-remove"
+                aria-label={`Remove block ${bl.title}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  requestRemoveBlock(bl.batchId, bl.title);
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                ×
+              </button>
+            </div>
+          ))}
 
-        {placedEdges.length > 0 && linkLayerSize.w > 0 && linkLayerSize.h > 0 ? (
-          <div
-            className="canvas-workspace-links-wrap"
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              width: linkLayerSize.w,
-              height: linkLayerSize.h,
-              pointerEvents: 'none',
-              zIndex: 1,
-            }}
-            aria-hidden
-          >
-            <CanvasDependencyLinks
-              width={linkLayerSize.w}
-              height={linkLayerSize.h}
-              edges={placedEdges}
-              nodePositions={nodePositions}
+          {placedEdges.length > 0 && canvasSurfaceSize.w > 0 && canvasSurfaceSize.h > 0 ? (
+            <div
+              className="canvas-workspace-links-wrap"
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: canvasSurfaceSize.w,
+                height: canvasSurfaceSize.h,
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+              aria-hidden
+            >
+              <CanvasDependencyLinks
+                width={canvasSurfaceSize.w}
+                height={canvasSurfaceSize.h}
+                edges={placedEdges}
+                nodePositions={nodePositions}
+              />
+            </div>
+          ) : null}
+
+          {placedNodes.map((node) => (
+            <CanvasPlacedCard
+              key={node.key}
+              canvasNodeKey={node.key}
+              resourceId={node.resourceId}
+              def={resources[node.resourceId]}
+              label={node.label}
+              batchId={node.batchId}
+              productionPerMin={node.productionPerMin}
+              consumptionPerMin={node.consumptionPerMin}
+              onProductionChange={updatePlacedNodeProduction}
+              onConsumptionChange={updatePlacedNodeConsumption}
+              onAddUpstreamChain={() =>
+                beginExpandUpstreamFromCard(node.resourceId, node.x, node.y)
+              }
+              onBatchPointerDown={handleBatchPointerDown}
+              style={{
+                position: 'absolute',
+                left: node.x,
+                top: node.y,
+              }}
             />
-          </div>
-        ) : null}
-
-        {placedNodes.map((node) => (
-          <CanvasPlacedCard
-            key={node.key}
-            canvasNodeKey={node.key}
-            resourceId={node.resourceId}
-            def={resources[node.resourceId]}
-            label={node.label}
-            batchId={node.batchId}
-            productionPerMin={node.productionPerMin}
-            consumptionPerMin={node.consumptionPerMin}
-            onProductionChange={updatePlacedNodeProduction}
-            onConsumptionChange={updatePlacedNodeConsumption}
-            onAddUpstreamChain={() =>
-              beginExpandUpstreamFromCard(node.resourceId, node.x, node.y)
-            }
-            onBatchPointerDown={handleBatchPointerDown}
-            style={{
-              position: 'absolute',
-              left: node.x,
-              top: node.y,
-            }}
-          />
-        ))}
+          ))}
+        </div>
       </div>
 
       {pendingPlacement && pendingRootDef ? (

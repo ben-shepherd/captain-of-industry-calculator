@@ -378,12 +378,17 @@ img.canvas-resource-icon {
   min-height: 12rem;
   overflow: auto;
   background-color: #ffffff;
+}
+
+.canvas-workspace-surface {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 100%;
+  min-height: 100%;
+  background-color: #ffffff;
   background-image: linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
   background-size: 24px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .canvas-workspace--placing {
@@ -395,6 +400,10 @@ img.canvas-resource-icon {
 }
 
 .canvas-workspace-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   margin: 0;
   font-size: 1rem;
   font-weight: 600;

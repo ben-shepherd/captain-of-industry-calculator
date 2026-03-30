@@ -18,6 +18,44 @@ const GAP_PX = 12;
 /** Minimum inset from the workspace edges when clamping placed cards. */
 export const CANVAS_WORKSPACE_EDGE_PAD_PX = 8;
 
+/** Extra space around the furthest content when sizing the scrollable canvas surface. */
+export const CANVAS_SURFACE_PAD_PX = 80;
+
+const BLOCK_LABEL_HALF_WIDTH_PX = 120;
+const BLOCK_LABEL_ABOVE_PX = 36;
+
+/**
+ * Minimum width/height for the inner canvas surface so absolutely positioned content
+ * can scroll. Uses card bounds and approximate block-label bounds.
+ */
+export function computeCanvasContentExtent(
+  nodes: Array<{ x: number; y: number }>,
+  blockLabels: Array<{ left: number; top: number }>,
+  cardW: number,
+  cardH: number,
+  pad: number,
+): { width: number; height: number } {
+  if (nodes.length === 0 && blockLabels.length === 0) {
+    return { width: 0, height: 0 };
+  }
+  let maxR = pad;
+  let maxB = pad;
+  let minY = 0;
+  for (const n of nodes) {
+    maxR = Math.max(maxR, n.x + cardW);
+    maxB = Math.max(maxB, n.y + cardH);
+    minY = Math.min(minY, n.y);
+  }
+  for (const bl of blockLabels) {
+    maxR = Math.max(maxR, bl.left + BLOCK_LABEL_HALF_WIDTH_PX);
+    maxB = Math.max(maxB, bl.top + 12);
+    minY = Math.min(minY, bl.top - BLOCK_LABEL_ABOVE_PX);
+  }
+  const width = Math.max(pad * 2, maxR + pad);
+  const height = Math.max(pad * 2, maxB - Math.min(0, minY) + pad);
+  return { width, height };
+}
+
 /**
  * Shift a group of card positions so the bounding box stays inside the workspace rectangle.
  * Uses a few iterations so fixing one edge (e.g. left) can be followed by the opposite (right).
