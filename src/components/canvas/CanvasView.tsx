@@ -3,6 +3,7 @@ import {
   getResourceIdsConsumedInRecipes,
   RESOURCE_SEGMENTS,
 } from '../../../assets/js/data/resources';
+import { CanvasResourceThumb } from './CanvasResourceThumb';
 import {
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
@@ -89,29 +90,14 @@ export function CanvasView() {
                       role="list"
                       aria-label={seg.groupLabel}
                     >
-                      {seg.entries.map(([id, def]) => {
-                        const url = def.imageUrl;
-                        return (
-                          <div
-                            key={id}
-                            className="canvas-resource-thumb"
-                            role="listitem"
-                            title={def.label}
-                          >
-                            {url ? (
-                              <img
-                                className="resource-icon canvas-resource-icon"
-                                src={url}
-                                alt={def.label}
-                              />
-                            ) : (
-                              <span className="canvas-resource-fallback" aria-hidden>
-                                {def.label.slice(0, 1)}
-                              </span>
-                            )}
-                          </div>
-                        );
-                      })}
+                      {seg.entries.map(([id, def]) => (
+                        <CanvasResourceThumb
+                          key={id}
+                          resourceId={id}
+                          def={def}
+                          category={{ level: seg.level, groupLabel: seg.groupLabel }}
+                        />
+                      ))}
                     </div>
                   ) : null}
                 </section>
