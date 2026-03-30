@@ -33,7 +33,7 @@ import {
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
 } from '../../utils/canvasSidebarStorage';
-import { CanvasDependencyLinks } from './CanvasDependencyLinks';
+import { CanvasWorkspaceLayer } from './CanvasWorkspaceLayer';
 import { CanvasPlacedCard } from './CanvasPlacedCard';
 import { CanvasPlacementGhost } from './CanvasPlacementGhost';
 import { CanvasPlacementPicker } from './CanvasPlacementPicker';
@@ -806,6 +806,15 @@ export function CanvasView() {
             height: canvasSurfaceSize.h,
           }}
         >
+          {placedEdges.length > 0 && canvasSurfaceSize.w > 0 && canvasSurfaceSize.h > 0 ? (
+            <CanvasWorkspaceLayer
+              width={canvasSurfaceSize.w}
+              height={canvasSurfaceSize.h}
+              edges={placedEdges}
+              nodePositions={nodePositions}
+            />
+          ) : null}
+
           {placedNodes.length === 0 && !selectedResourceId ? (
             <p className="canvas-workspace-hint">Canvas</p>
           ) : null}
@@ -861,29 +870,6 @@ export function CanvasView() {
               </button>
             </div>
           ))}
-
-          {placedEdges.length > 0 && canvasSurfaceSize.w > 0 && canvasSurfaceSize.h > 0 ? (
-            <div
-              className="canvas-workspace-links-wrap"
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                width: canvasSurfaceSize.w,
-                height: canvasSurfaceSize.h,
-                pointerEvents: 'none',
-                zIndex: 1,
-              }}
-              aria-hidden
-            >
-              <CanvasDependencyLinks
-                width={canvasSurfaceSize.w}
-                height={canvasSurfaceSize.h}
-                edges={placedEdges}
-                nodePositions={nodePositions}
-              />
-            </div>
-          ) : null}
 
           {placedNodes.map((node) => (
             <CanvasPlacedCard
