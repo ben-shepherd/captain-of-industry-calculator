@@ -28,6 +28,12 @@ export const CANVAS_WORKSPACE_EDGE_PAD_PX = 8;
 /** Extra space around the furthest content when sizing the scrollable canvas surface. */
 export const CANVAS_SURFACE_PAD_PX = 80;
 
+/**
+ * Default minimum size of the inner canvas surface so users have a large panning area.
+ * The viewport is scrolled to the center on first load (see CanvasView).
+ */
+export const CANVAS_SURFACE_MIN_SIZE_PX = 9999;
+
 const BLOCK_LABEL_HALF_WIDTH_PX = 120;
 const BLOCK_LABEL_ABOVE_PX = 36;
 

@@ -380,6 +380,15 @@ img.canvas-resource-icon {
   background-color: #ffffff;
 }
 
+.canvas-workspace:not(.canvas-workspace--placing) {
+  cursor: grab;
+}
+
+.canvas-workspace--panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .canvas-workspace-surface {
   position: relative;
   box-sizing: border-box;

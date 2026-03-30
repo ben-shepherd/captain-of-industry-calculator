@@ -11,6 +11,7 @@ import {
   CANVAS_PLACE_DEFAULT_RATE,
   CANVAS_CARD_HEIGHT_PX,
   CANVAS_CARD_WIDTH_PX,
+  CANVAS_SURFACE_MIN_SIZE_PX,
   CANVAS_SURFACE_PAD_PX,
   CANVAS_WORKSPACE_EDGE_PAD_PX,
   collectDependencyEdges,
@@ -43,6 +44,24 @@ const DEFAULT_CANVAS_BLOCK_LABEL = 'Unnamed';
 
 /** Horizontal gap from card edge when anchoring an “expand upstream” placement. */
 const EXPAND_UPSTREAM_FROM_CARD_GAP_PX = 28;
+
+/** If the pointer moves farther than this while panning, the following click is ignored (e.g. place). */
+const CANVAS_PAN_SUPPRESS_CLICK_PX = 5;
+
+/** Left-drag on empty canvas, or middle-drag anywhere on the viewport, pans the scroll area. */
+function isCanvasViewportPanTarget(e: React.PointerEvent): boolean {
+  if (e.button === 1) return true;
+  if (e.button !== 0) return false;
+  const t = e.target as HTMLElement;
+  if (t.closest('.canvas-placed-card')) return false;
+  if (t.closest('.canvas-block-label')) return false;
+  if (t.closest('.canvas-placement-ghost')) return false;
+  if (t.closest('.canvas-workspace-place-hint')) return false;
+  if (t.closest('.canvas-workspace-error')) return false;
+  if (t.closest('.canvas-workspace-hint')) return false;
+  if (t.closest('input, textarea, select, button, label')) return false;
+  return true;
+}
 
 type PlacedCanvasNode = {
   key: string;
@@ -81,6 +100,15 @@ export function CanvasView() {
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
   const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>([]);
   const [workspaceViewport, setWorkspaceViewport] = useState({ w: 0, h: 0 });
+  const [canvasPanning, setCanvasPanning] = useState(false);
+  const canvasPanRef = useRef<{
+    pointerId: number;
+    startClientX: number;
+    startClientY: number;
+    startScrollLeft: number;
+    startScrollTop: number;
+  } | null>(null);
+  const suppressCanvasClickRef = useRef(false);
   const dragStateRef = useRef<
     | { kind: 'batch'; batchId: number; lastX: number; lastY: number }
     | { kind: 'card'; canvasKey: string; lastX: number; lastY: number }
@@ -88,6 +116,7 @@ export function CanvasView() {
   >(null);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
+  const hasCenteredInitialCanvasScrollRef = useRef(false);
   const placedNodesRef = useRef(placedNodes);
   placedNodesRef.current = placedNodes;
 
@@ -244,6 +273,10 @@ export function CanvasView() {
   }
 
   function handleWorkspaceClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (suppressCanvasClickRef.current) {
+      e.preventDefault();
+      return;
+    }
     if (pendingPlacement) return;
     if (!selectedResourceId || !workspaceRef.current) return;
     const target = e.target as HTMLElement;
@@ -360,12 +393,13 @@ export function CanvasView() {
     const vw = Math.max(1, workspaceViewport.w);
     const vh = Math.max(1, workspaceViewport.h);
     const { width: cw, height: ch } = canvasContentExtent;
+    const min = CANVAS_SURFACE_MIN_SIZE_PX;
     if (cw === 0 && ch === 0) {
-      return { w: vw, h: vh };
+      return { w: Math.max(min, vw), h: Math.max(min, vh) };
     }
     return {
-      w: Math.max(vw, cw),
-      h: Math.max(vh, ch),
+      w: Math.max(min, vw, cw),
+      h: Math.max(min, vh, ch),
     };
   }, [workspaceViewport, canvasContentExtent]);
 
@@ -408,6 +442,19 @@ export function CanvasView() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  /** Scroll so the large default canvas is centered in the viewport once sizes are known. */
+  useLayoutEffect(() => {
+    const el = workspaceRef.current;
+    if (!el || hasCenteredInitialCanvasScrollRef.current) return;
+    if (el.clientWidth <= 0 || el.clientHeight <= 0) return;
+    const w = canvasSurfaceSize.w;
+    const h = canvasSurfaceSize.h;
+    if (w <= 0 || h <= 0) return;
+    el.scrollLeft = Math.max(0, (w - el.clientWidth) / 2);
+    el.scrollTop = Math.max(0, (h - el.clientHeight) / 2);
+    hasCenteredInitialCanvasScrollRef.current = true;
+  }, [canvasSurfaceSize.w, canvasSurfaceSize.h]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -521,10 +568,70 @@ export function CanvasView() {
     document.body.style.cursor = 'grabbing';
   }
 
+  function handleWorkspacePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if (dragStateRef.current) return;
+    if (!isCanvasViewportPanTarget(e)) return;
+    const wel = workspaceRef.current;
+    if (!wel) return;
+    if (e.button === 1) {
+      e.preventDefault();
+    }
+    canvasPanRef.current = {
+      pointerId: e.pointerId,
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      startScrollLeft: wel.scrollLeft,
+      startScrollTop: wel.scrollTop,
+    };
+    suppressCanvasClickRef.current = false;
+    setCanvasPanning(true);
+    try {
+      wel.setPointerCapture(e.pointerId);
+    } catch {
+      canvasPanRef.current = null;
+      setCanvasPanning(false);
+    }
+  }
+
+  function handleWorkspacePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    const p = canvasPanRef.current;
+    if (!p || e.pointerId !== p.pointerId) return;
+    const wel = workspaceRef.current;
+    if (!wel) return;
+    wel.scrollLeft = p.startScrollLeft - (e.clientX - p.startClientX);
+    wel.scrollTop = p.startScrollTop - (e.clientY - p.startClientY);
+    const moved =
+      Math.abs(e.clientX - p.startClientX) + Math.abs(e.clientY - p.startClientY);
+    if (moved > CANVAS_PAN_SUPPRESS_CLICK_PX) {
+      suppressCanvasClickRef.current = true;
+    }
+  }
+
+  function endCanvasPan(e: React.PointerEvent<HTMLDivElement>) {
+    const p = canvasPanRef.current;
+    if (!p || e.pointerId !== p.pointerId) return;
+    const wel = workspaceRef.current;
+    if (wel) {
+      try {
+        wel.releasePointerCapture(e.pointerId);
+      } catch {
+        /* already released */
+      }
+    }
+    canvasPanRef.current = null;
+    setCanvasPanning(false);
+    if (suppressCanvasClickRef.current) {
+      window.setTimeout(() => {
+        suppressCanvasClickRef.current = false;
+      }, 0);
+    }
+  }
+
   const workspaceClassName = [
     'canvas-workspace',
     selectedResourceId ? 'canvas-workspace--placing' : '',
     selectedResourceId && pointerInWorkspace ? 'canvas-workspace--placing-hover' : '',
+    canvasPanning ? 'canvas-workspace--panning' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -686,6 +793,10 @@ export function CanvasView() {
             y: e.clientY - r.top + wel.scrollTop,
           });
         }}
+        onPointerDown={handleWorkspacePointerDown}
+        onPointerMove={handleWorkspacePointerMove}
+        onPointerUp={endCanvasPan}
+        onPointerCancel={endCanvasPan}
         onClick={handleWorkspaceClick}
       >
         <div
