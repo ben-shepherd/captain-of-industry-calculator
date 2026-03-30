@@ -105,6 +105,8 @@ type PendingPlacement = {
   resourceId: string;
   uniqueNodes: DependencyNode[];
   tree: DependencyNode;
+  /** When set, confirm merges into this block instead of creating a new batch. */
+  mergeIntoBatchId?: number;
 };
 
 export function CanvasView() {
@@ -425,7 +427,100 @@ export function CanvasView() {
     }
   }
 
-  function beginExpandUpstreamFromCard(resourceId: string, cardX: number, cardY: number) {
+  function commitMergeIntoBatch(
+    batchId: number,
+    anchorX: number,
+    anchorY: number,
+    newNodes: DependencyNode[],
+    tree: DependencyNode,
+  ) {
+    if (newNodes.length === 0) return;
+    const el = workspaceRef.current;
+    const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+    const wrapW =
+      el && el.clientWidth > 0
+        ? Math.max(CANVAS_CARD_WIDTH_PX, el.clientWidth - pad * 2)
+        : undefined;
+    const raw = layoutPlacedNodes(anchorX, anchorY, newNodes.length, placementStyle, wrapW);
+    const prev = placedNodesRef.current;
+    const staticRects = prev.map((n) =>
+      nodeToAxisRect(n.x, n.y, CANVAS_CARD_WIDTH_PX, CANVAS_CARD_HEIGHT_PX),
+    );
+    const restNodes = prev.map((n) => ({ x: n.x, y: n.y }));
+    const positions =
+      el && el.clientWidth > 0
+        ? finalizeNewBatchPositions(
+            raw,
+            staticRects,
+            restNodes,
+            CANVAS_CARD_WIDTH_PX,
+            CANVAS_CARD_HEIGHT_PX,
+            pad,
+            el,
+          )
+        : raw;
+
+    const batchInBatch = prev.filter((n) => n.batchId === batchId);
+    const batchOldKeys = new Set(batchInBatch.map((n) => n.key));
+    const startIdx = batchInBatch.length;
+
+    const keyByResourceId = new Map<string, string>();
+    for (const n of batchInBatch) {
+      keyByResourceId.set(n.resourceId, n.key);
+    }
+
+    const newPlaced: PlacedCanvasNode[] = newNodes.map((node, i) => {
+      const key = `p${batchId}-${startIdx + i}-${node.id}`;
+      keyByResourceId.set(node.id, key);
+      return {
+        key,
+        batchId,
+        resourceId: node.id,
+        label: node.label,
+        x: positions[i]?.x ?? anchorX,
+        y: positions[i]?.y ?? anchorY,
+        productionPerMin: '',
+        consumptionPerMin: '',
+      };
+    });
+
+    const placedIds = new Set<string>();
+    for (const n of batchInBatch) {
+      placedIds.add(n.resourceId);
+    }
+    for (const n of newNodes) {
+      placedIds.add(n.id);
+    }
+
+    const newEdges = collectDependencyEdges(tree, placedIds, keyByResourceId);
+
+    setPlacedEdges((prevEdges) => [
+      ...prevEdges.filter((e) => !(batchOldKeys.has(e.fromKey) && batchOldKeys.has(e.toKey))),
+      ...newEdges,
+    ]);
+    setPlacedNodes((p) => [...p, ...newPlaced]);
+    setPlaceError(null);
+    setSelectedBatchId(batchId);
+
+    if (el && el.clientWidth > 0 && positions.length > 0) {
+      const minX = Math.min(...positions.map((p) => p.x));
+      const maxX = Math.max(...positions.map((p) => p.x + CANVAS_CARD_WIDTH_PX));
+      const minY = Math.min(...positions.map((p) => p.y));
+      const maxY = Math.max(...positions.map((p) => p.y + CANVAS_CARD_HEIGHT_PX));
+      scrollWorkspaceToShowRect(
+        el,
+        { left: minX, top: minY, right: maxX, bottom: maxY },
+        32,
+      );
+    }
+  }
+
+  function beginExpandUpstreamFromCard(
+    resourceId: string,
+    cardX: number,
+    cardY: number,
+    batchId: number,
+  ) {
     if (pendingPlacement) {
       setPendingPlacement(null);
       setDependentPick({});
@@ -437,16 +532,19 @@ export function CanvasView() {
       const unique = flattenDependencyTreeUniqueFirst(tree);
       const anchorX = cardX + CANVAS_CARD_WIDTH_PX + EXPAND_UPSTREAM_FROM_CARD_GAP_PX;
       const anchorY = cardY + CANVAS_CARD_HEIGHT_PX / 2;
+      const blockTitle = placedBlockLabels[batchId]?.trim() ?? '';
       setPendingPlacement({
         anchorX,
         anchorY,
         resourceId,
         uniqueNodes: unique,
         tree,
+        mergeIntoBatchId: batchId,
       });
       setDependentPick({});
-      setBlockLabelDraft('');
+      setBlockLabelDraft(blockTitle);
       setSelectedResourceId(null);
+      setSelectedBatchId(batchId);
       setPlaceError(null);
     } catch {
       setPlaceError('Could not resolve this resource chain.');
@@ -455,9 +553,21 @@ export function CanvasView() {
 
   function confirmPendingPlacement() {
     if (!pendingPlacement) return;
-    const { anchorX, anchorY, uniqueNodes, tree } = pendingPlacement;
-    const toPlace = uniqueNodes.filter((node, i) => i === 0 || dependentPick[node.id] === true);
-    commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle, tree, blockLabelDraft);
+    const { anchorX, anchorY, uniqueNodes, tree, mergeIntoBatchId } = pendingPlacement;
+    if (mergeIntoBatchId != null) {
+      const already = new Set(
+        placedNodesRef.current
+          .filter((n) => n.batchId === mergeIntoBatchId)
+          .map((n) => n.resourceId),
+      );
+      const toPlace = uniqueNodes.filter(
+        (node, i) => i > 0 && dependentPick[node.id] === true && !already.has(node.id),
+      );
+      commitMergeIntoBatch(mergeIntoBatchId, anchorX, anchorY, toPlace, tree);
+    } else {
+      const toPlace = uniqueNodes.filter((node, i) => i === 0 || dependentPick[node.id] === true);
+      commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle, tree, blockLabelDraft);
+    }
     setPendingPlacement(null);
     setDependentPick({});
     setBlockLabelDraft('');
@@ -482,7 +592,22 @@ export function CanvasView() {
   }
 
   const pendingRootDef = pendingPlacement ? resources[pendingPlacement.resourceId] : undefined;
-  const pendingDependents = pendingPlacement ? pendingPlacement.uniqueNodes.slice(1) : [];
+  const resourceIdsInMergeTargetBatch = useMemo(() => {
+    const bid = pendingPlacement?.mergeIntoBatchId;
+    if (bid == null) return null;
+    const s = new Set<string>();
+    for (const n of placedNodes) {
+      if (n.batchId === bid) s.add(n.resourceId);
+    }
+    return s;
+  }, [pendingPlacement?.mergeIntoBatchId, placedNodes]);
+
+  const pendingDependents = useMemo(() => {
+    if (!pendingPlacement) return [];
+    const rest = pendingPlacement.uniqueNodes.slice(1);
+    if (!resourceIdsInMergeTargetBatch) return rest;
+    return rest.filter((n) => !resourceIdsInMergeTargetBatch.has(n.id));
+  }, [pendingPlacement, resourceIdsInMergeTargetBatch]);
 
   const nodePositions = useMemo(() => {
     const m = new Map<string, { x: number; y: number }>();
@@ -1402,7 +1527,7 @@ export function CanvasView() {
               onProductionChange={updatePlacedNodeProduction}
               onConsumptionChange={updatePlacedNodeConsumption}
             onAddUpstreamChain={() =>
-              beginExpandUpstreamFromCard(node.resourceId, node.x, node.y)
+              beginExpandUpstreamFromCard(node.resourceId, node.x, node.y, node.batchId)
             }
             onCardPointerDown={handleCardPointerDown}
               style={{
@@ -1479,6 +1604,7 @@ export function CanvasView() {
           rootLabel={pendingRootDef.label}
           dependents={pendingDependents}
           resources={resources}
+          mergeIntoExistingBlock={pendingPlacement.mergeIntoBatchId != null}
           blockLabel={blockLabelDraft}
           onBlockLabelChange={setBlockLabelDraft}
           selected={dependentPick}

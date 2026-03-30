@@ -6,6 +6,8 @@ type Props = {
   rootId: string;
   dependents: DependencyNode[];
   resources: ResourcesMap;
+  /** When true, resources are merged into the current canvas block (hide block name; different copy). */
+  mergeIntoExistingBlock?: boolean;
   selected: Record<string, boolean>;
   blockLabel: string;
   onBlockLabelChange: (value: string) => void;
@@ -21,6 +23,7 @@ export function CanvasPlacementPicker({
   rootId,
   dependents,
   resources: resMap,
+  mergeIntoExistingBlock = false,
   selected,
   blockLabel,
   onBlockLabelChange,
@@ -48,8 +51,17 @@ export function CanvasPlacementPicker({
           Choose resources to add
         </h2>
         <p className="canvas-placement-picker-lead">
-          <strong>{rootLabel}</strong> is always placed. Pick which upstream resources to add now — you can
-          add more later.
+          {mergeIntoExistingBlock ? (
+            <>
+              <strong>{rootLabel}</strong> is already in this block. Pick additional upstream resources to
+              add to the same group.
+            </>
+          ) : (
+            <>
+              <strong>{rootLabel}</strong> is always placed. Pick which upstream resources to add now — you can
+              add more later.
+            </>
+          )}
         </p>
 
         <div className="canvas-placement-picker-primary">
@@ -60,22 +72,24 @@ export function CanvasPlacementPicker({
           </span>
         </div>
 
-        <div className="canvas-placement-picker-block-name field">
-          <label htmlFor="canvas-placement-block-label">Block name</label>
-          <input
-            id="canvas-placement-block-label"
-            type="text"
-            className="canvas-placement-picker-block-input"
-            placeholder="e.g. Basic copper factory"
-            value={blockLabel}
-            onChange={(e) => onBlockLabelChange(e.target.value)}
-            autoComplete="off"
-            maxLength={120}
-          />
-          <p className="canvas-placement-picker-block-hint">
-            Shown above this group on the canvas. Leave blank to use the name &quot;Unnamed&quot;.
-          </p>
-        </div>
+        {!mergeIntoExistingBlock ? (
+          <div className="canvas-placement-picker-block-name field">
+            <label htmlFor="canvas-placement-block-label">Block name</label>
+            <input
+              id="canvas-placement-block-label"
+              type="text"
+              className="canvas-placement-picker-block-input"
+              placeholder="e.g. Basic copper factory"
+              value={blockLabel}
+              onChange={(e) => onBlockLabelChange(e.target.value)}
+              autoComplete="off"
+              maxLength={120}
+            />
+            <p className="canvas-placement-picker-block-hint">
+              Shown above this group on the canvas. Leave blank to use the name &quot;Unnamed&quot;.
+            </p>
+          </div>
+        ) : null}
 
         {dependents.length > 0 ? (
           <>
@@ -122,15 +136,24 @@ export function CanvasPlacementPicker({
             </ul>
           </>
         ) : (
-          <p className="canvas-placement-picker-empty">No upstream resources in the chain for this selection.</p>
+          <p className="canvas-placement-picker-empty">
+            {mergeIntoExistingBlock
+              ? 'All upstream resources in this chain are already in this block.'
+              : 'No upstream resources in the chain for this selection.'}
+          </p>
         )}
 
         <div className="canvas-placement-picker-footer">
           <button type="button" className="btn btn-secondary" onClick={onCancel}>
             Cancel
           </button>
-          <button type="button" className="btn btn-primary" onClick={onConfirm}>
-            Add to canvas
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={onConfirm}
+            disabled={mergeIntoExistingBlock && dependents.length === 0}
+          >
+            {mergeIntoExistingBlock ? 'Add to block' : 'Add to canvas'}
           </button>
         </div>
       </div>
