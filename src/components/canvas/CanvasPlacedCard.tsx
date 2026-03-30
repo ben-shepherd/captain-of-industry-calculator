@@ -41,36 +41,46 @@ function RateBulkRow({
       role="group"
       aria-label={`${label} ${kind} quick steps`}
     >
-      {BULK_STEPS.map((s) => (
-        <button
-          key={`sub-${s}`}
-          type="button"
-          className="canvas-placed-card-flow-bulk-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            applyDelta(-s);
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          aria-label={`Decrease ${label} ${kind} by ${s} per minute`}
-        >
-          −{s}
-        </button>
-      ))}
-      {BULK_STEPS.map((s) => (
-        <button
-          key={`add-${s}`}
-          type="button"
-          className="canvas-placed-card-flow-bulk-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            applyDelta(s);
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          aria-label={`Increase ${label} ${kind} by ${s} per minute`}
-        >
-          +{s}
-        </button>
-      ))}
+      <div
+        className="canvas-placed-card-flow-bulk-row canvas-placed-card-flow-bulk-row--add"
+        role="presentation"
+      >
+        {BULK_STEPS.map((s) => (
+          <button
+            key={`add-${s}`}
+            type="button"
+            className="canvas-placed-card-flow-bulk-btn canvas-placed-card-flow-bulk-btn--add"
+            onClick={(e) => {
+              e.preventDefault();
+              applyDelta(s);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            aria-label={`Increase ${label} ${kind} by ${s} per minute`}
+          >
+            +{s}
+          </button>
+        ))}
+      </div>
+      <div
+        className="canvas-placed-card-flow-bulk-row canvas-placed-card-flow-bulk-row--subtract"
+        role="presentation"
+      >
+        {BULK_STEPS.map((s) => (
+          <button
+            key={`sub-${s}`}
+            type="button"
+            className="canvas-placed-card-flow-bulk-btn canvas-placed-card-flow-bulk-btn--subtract"
+            onClick={(e) => {
+              e.preventDefault();
+              applyDelta(-s);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            aria-label={`Decrease ${label} ${kind} by ${s} per minute`}
+          >
+            −{s}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

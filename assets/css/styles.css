@@ -908,11 +908,18 @@ img.canvas-resource-icon {
 
 .canvas-placed-card-flow-bulk {
   display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  margin-top: 0.28rem;
+  max-width: 100%;
+}
+
+.canvas-placed-card-flow-bulk-row {
+  display: flex;
   flex-wrap: wrap;
   gap: 0.12rem;
   justify-content: center;
-  margin-top: 0.28rem;
-  max-width: 100%;
+  width: 100%;
 }
 
 .canvas-placed-card-flow-bulk-btn {
@@ -923,23 +930,47 @@ img.canvas-resource-icon {
   font-size: 0.55rem;
   font-weight: 700;
   line-height: 1.15;
-  color: #333;
-  background: #f5f5f5;
-  border: 1px solid #bbb;
   border-radius: 3px;
   cursor: pointer;
+  border: 1px solid transparent;
 }
 
-.canvas-placed-card-flow-bulk-btn:hover {
-  background: #eaeaea;
+.canvas-placed-card-flow-bulk-btn--add {
+  color: #fff;
+  background: color-mix(in srgb, var(--color-surplus) 16%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-surplus) 42%, var(--color-border));
 }
 
-.canvas-placed-card-flow-bulk-btn:active {
-  background: #ddd;
+.canvas-placed-card-flow-bulk-btn--add:hover {
+  color: #fff;
+  background: color-mix(in srgb, var(--color-surplus) 28%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-surplus) 58%, var(--color-border));
+}
+
+.canvas-placed-card-flow-bulk-btn--add:active {
+  color: #fff;
+  background: color-mix(in srgb, var(--color-surplus) 38%, var(--color-surface));
+}
+
+.canvas-placed-card-flow-bulk-btn--subtract {
+  color: #fff;
+  background: color-mix(in srgb, var(--color-deficit) 14%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-deficit) 38%, var(--color-border));
+}
+
+.canvas-placed-card-flow-bulk-btn--subtract:hover {
+  color: #fff;
+  background: color-mix(in srgb, var(--color-deficit) 24%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-deficit) 52%, var(--color-border));
+}
+
+.canvas-placed-card-flow-bulk-btn--subtract:active {
+  color: #fff;
+  background: color-mix(in srgb, var(--color-deficit) 34%, var(--color-surface));
 }
 
 .canvas-placed-card-flow-bulk-btn:focus-visible {
-  outline: 2px solid #6200ee;
+  outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }
 
