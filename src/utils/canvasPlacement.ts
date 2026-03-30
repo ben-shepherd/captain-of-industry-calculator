@@ -168,9 +168,59 @@ function groupOverlapsInflatedStatics(
   return false;
 }
 
+/** Overlap between any placed card and any static rect (not internal group overlap). */
+function groupOverlapsStaticsOnly(
+  positions: Array<{ x: number; y: number }>,
+  cardW: number,
+  cardH: number,
+  staticRects: CanvasAxisRect[],
+  gapPx: number,
+): boolean {
+  const half = gapPx / 2;
+  for (const p of positions) {
+    const r = inflateRect(nodeToAxisRect(p.x, p.y, cardW, cardH), half);
+    for (const s of staticRects) {
+      const si = inflateRect(s, half);
+      if (rectsOverlap(r, si)) return true;
+    }
+  }
+  return false;
+}
+
+/** Smallest axis-aligned push to separate two overlapping inflated rects. */
+function minAxisPushBetweenInflated(
+  cardInfl: CanvasAxisRect,
+  staticInfl: CanvasAxisRect,
+): { dx: number; dy: number } | null {
+  if (!rectsOverlap(cardInfl, staticInfl)) return null;
+  const pushLeft = staticInfl.left - cardInfl.right;
+  const pushRight = staticInfl.right - cardInfl.left;
+  const pushUp = staticInfl.top - cardInfl.bottom;
+  const pushDown = staticInfl.bottom - cardInfl.top;
+  const candidates = [
+    { dx: pushLeft, dy: 0 },
+    { dx: pushRight, dy: 0 },
+    { dx: 0, dy: pushUp },
+    { dx: 0, dy: pushDown },
+  ];
+  let best = candidates[0]!;
+  let bestMag = Math.abs(best.dx) + Math.abs(best.dy);
+  for (const c of candidates) {
+    const mag = Math.abs(c.dx) + Math.abs(c.dy);
+    if (mag < bestMag) {
+      bestMag = mag;
+      best = c;
+    }
+  }
+  return best;
+}
+
+const SEPARATE_MAX_ITER = 400;
+
 /**
- * Move a rigid group of cards down (in small steps) until no overlap with `staticRects`
- * and no internal overlap, using at least `gapPx` clearance between card edges.
+ * Move a rigid group of cards until no overlap with `staticRects` (with gap), using the
+ * smallest axis-aligned nudges. Applies the same translation to every card so the group
+ * stays rigid (unlike the old “only move down” rule, which shoved cards to the bottom).
  */
 export function separateGroupedPositionsFromStatics(
   positions: Array<{ x: number; y: number }>,
@@ -180,22 +230,39 @@ export function separateGroupedPositionsFromStatics(
   gapPx: number = GAP_PX,
 ): Array<{ x: number; y: number }> {
   const out = positions.map((p) => ({ x: p.x, y: p.y }));
-  const step = Math.max(4, Math.ceil(gapPx / 3));
-  let guard = 0;
-  while (
-    groupOverlapsInflatedStatics(out, cardW, cardH, staticRects, gapPx) &&
-    guard < 8000
-  ) {
+  const half = gapPx / 2;
+  let iter = 0;
+  while (groupOverlapsStaticsOnly(out, cardW, cardH, staticRects, gapPx) && iter < SEPARATE_MAX_ITER) {
+    iter++;
+    let bestDx = 0;
+    let bestDy = 0;
+    let bestMag = Infinity;
     for (const p of out) {
-      p.y += step;
+      const cardInfl = inflateRect(nodeToAxisRect(p.x, p.y, cardW, cardH), half);
+      for (const s of staticRects) {
+        const si = inflateRect(s, half);
+        const push = minAxisPushBetweenInflated(cardInfl, si);
+        if (!push) continue;
+        const mag = Math.abs(push.dx) + Math.abs(push.dy);
+        if (mag < bestMag) {
+          bestMag = mag;
+          bestDx = push.dx;
+          bestDy = push.dy;
+        }
+      }
     }
-    guard++;
+    if (bestMag === Infinity) break;
+    for (const p of out) {
+      p.x += bestDx;
+      p.y += bestDy;
+    }
   }
   return out;
 }
 
 /**
- * Move one card down until it clears all `staticRects` (with gap), ignoring other instances.
+ * Move one card until it clears all `staticRects` (with gap), using the smallest
+ * axis-aligned nudges (not only downward, which used to push cards to the bottom of the canvas).
  */
 export function separateOnePositionFromStatics(
   pos: { x: number; y: number },
@@ -204,15 +271,32 @@ export function separateOnePositionFromStatics(
   staticRects: CanvasAxisRect[],
   gapPx: number = GAP_PX,
 ): { x: number; y: number } {
-  const out = { ...pos };
-  const step = Math.max(4, Math.ceil(gapPx / 3));
-  let guard = 0;
+  const half = gapPx / 2;
+  let out = { ...pos };
+  let iter = 0;
   while (
     groupOverlapsInflatedStatics([out], cardW, cardH, staticRects, gapPx) &&
-    guard < 8000
+    iter < SEPARATE_MAX_ITER
   ) {
-    out.y += step;
-    guard++;
+    iter++;
+    const cardInfl = inflateRect(nodeToAxisRect(out.x, out.y, cardW, cardH), half);
+    let bestDx = 0;
+    let bestDy = 0;
+    let bestMag = Infinity;
+    for (const s of staticRects) {
+      const si = inflateRect(s, half);
+      const push = minAxisPushBetweenInflated(cardInfl, si);
+      if (!push) continue;
+      const mag = Math.abs(push.dx) + Math.abs(push.dy);
+      if (mag < bestMag) {
+        bestMag = mag;
+        bestDx = push.dx;
+        bestDy = push.dy;
+      }
+    }
+    if (bestMag === Infinity) break;
+    out.x += bestDx;
+    out.y += bestDy;
   }
   return out;
 }
