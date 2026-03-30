@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import {
+  createExpandedMapAll,
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
 } from "../../src/utils/canvasSidebarStorage";
@@ -13,6 +14,17 @@ describe("canvasSidebarStorage", () => {
     const m = loadCanvasSidebarExpanded();
     for (let level = 1; level <= 7; level++) {
       expect(m[level]).toBe(true);
+    }
+  });
+
+  it("createExpandedMapAll sets every level to the same value", () => {
+    const collapsed = createExpandedMapAll(false);
+    for (let level = 1; level <= 7; level++) {
+      expect(collapsed[level]).toBe(false);
+    }
+    const expanded = createExpandedMapAll(true);
+    for (let level = 1; level <= 7; level++) {
+      expect(expanded[level]).toBe(true);
     }
   });
 

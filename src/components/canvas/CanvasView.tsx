@@ -5,6 +5,7 @@ import {
 } from '../../../assets/js/data/resources';
 import { CanvasResourceThumb } from './CanvasResourceThumb';
 import {
+  createExpandedMapAll,
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
 } from '../../utils/canvasSidebarStorage';
@@ -41,6 +42,18 @@ export function CanvasView() {
     });
   }
 
+  function expandAllCategories() {
+    const next = createExpandedMapAll(true);
+    saveCanvasSidebarExpanded(next);
+    setExpandedByLevel(next);
+  }
+
+  function collapseAllCategories() {
+    const next = createExpandedMapAll(false);
+    saveCanvasSidebarExpanded(next);
+    setExpandedByLevel(next);
+  }
+
   return (
     <div className="canvas-view" id="app-canvas-view" aria-label="Blueprint canvas">
       <aside className="canvas-sidebar">
@@ -56,6 +69,28 @@ export function CanvasView() {
             autoComplete="off"
           />
         </div>
+        {categories.length > 0 ? (
+          <div
+            className="canvas-category-actions"
+            role="group"
+            aria-label="Expand or collapse all resource categories"
+          >
+            <button
+              type="button"
+              className="btn btn-secondary canvas-category-action-btn"
+              onClick={expandAllCategories}
+            >
+              Expand all
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary canvas-category-action-btn"
+              onClick={collapseAllCategories}
+            >
+              Collapse all
+            </button>
+          </div>
+        ) : null}
         <div className="canvas-resource-strip">
           {categories.length === 0 ? (
             <p className="canvas-resource-empty">No resources match your filter.</p>

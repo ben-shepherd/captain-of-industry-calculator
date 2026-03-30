@@ -3,8 +3,16 @@ const STORAGE_KEY = 'coi-canvas-sidebar-expanded';
 /** Level indices used in {@link RESOURCE_SEGMENTS} (natural → waste). */
 const LEVELS = [1, 2, 3, 4, 5, 6, 7] as const;
 
+/** Every category level set to the same expanded state (for expand/collapse all). */
+export function createExpandedMapAll(expanded: boolean): Record<number, boolean> {
+  return Object.fromEntries(LEVELS.map((level) => [level, expanded])) as Record<
+    number,
+    boolean
+  >;
+}
+
 function defaultExpandedMap(): Record<number, boolean> {
-  return Object.fromEntries(LEVELS.map((level) => [level, true])) as Record<number, boolean>;
+  return createExpandedMapAll(true);
 }
 
 export function loadCanvasSidebarExpanded(): Record<number, boolean> {

@@ -104,6 +104,22 @@ body {
   width: 100%;
 }
 
+.canvas-category-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 var(--gap) 0.65rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
+}
+
+.canvas-category-action-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
 .canvas-resource-strip {
   flex: 1;
   min-height: 0;
