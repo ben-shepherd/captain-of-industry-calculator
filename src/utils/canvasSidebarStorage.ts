@@ -1,4 +1,14 @@
+import { notifyPersistedChromeChanged } from './persistedChromeNotify';
+
 const STORAGE_KEY = 'coi-canvas-sidebar-expanded';
+
+export function hasCanvasSidebarExpandedPersisted(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
 
 /** Level indices used in {@link RESOURCE_SEGMENTS} (natural → waste). */
 const LEVELS = [1, 2, 3, 4, 5, 6, 7] as const;
@@ -39,7 +49,16 @@ export function saveCanvasSidebarExpanded(map: Record<number, boolean>): void {
       payload[String(level)] = map[level] ?? true;
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    notifyPersistedChromeChanged();
   } catch {
     // ignore quota / private mode
+  }
+}
+
+export function clearCanvasSidebarExpandedStorage(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
   }
 }

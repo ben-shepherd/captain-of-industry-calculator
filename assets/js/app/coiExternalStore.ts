@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import type { AppState } from '../contracts';
+import { COI_PERSISTED_CHROME_EVENT } from './persistedChromeEvent';
 import { getSnapshot, initState } from './state';
 
 let snapshot!: AppState;
@@ -15,7 +16,13 @@ function subscribe(callback: () => void): () => void {
     callback();
   };
   window.addEventListener('coi-state-persisted', handler);
-  return () => window.removeEventListener('coi-state-persisted', handler);
+  window.addEventListener(COI_PERSISTED_CHROME_EVENT, handler);
+  window.addEventListener('storage', handler);
+  return () => {
+    window.removeEventListener('coi-state-persisted', handler);
+    window.removeEventListener(COI_PERSISTED_CHROME_EVENT, handler);
+    window.removeEventListener('storage', handler);
+  };
 }
 
 function getSnapshotForStore(): AppState {

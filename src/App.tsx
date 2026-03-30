@@ -13,6 +13,10 @@ import { ResultsSection } from './components/results/ResultsSection';
 import { TargetResourcePanel } from './components/target/TargetResourcePanel';
 import { useCalculation } from './hooks/useCalculation';
 import { loadAppView, saveAppView, clearAppViewStorage } from './utils/appViewStorage';
+import { clearCanvasPlacementStyleStorage } from './utils/canvasPlacementStyleStorage';
+import { clearCanvasResultsSidebarStorage } from './utils/canvasResultsSidebarStorage';
+import { clearCanvasResultsSidebarWidthStorage } from './utils/canvasResultsSidebarWidthStorage';
+import { clearCanvasSidebarExpandedStorage } from './utils/canvasSidebarStorage';
 import { clearCanvasWorkspaceStorage } from './utils/canvasWorkspaceStorage';
 
 export function App() {
@@ -37,6 +41,10 @@ export function App() {
         onResetPersistedChrome={() => {
           clearAppViewStorage();
           clearCanvasWorkspaceStorage();
+          clearCanvasResultsSidebarWidthStorage();
+          clearCanvasResultsSidebarStorage();
+          clearCanvasPlacementStyleStorage();
+          clearCanvasSidebarExpandedStorage();
           setView('calculator');
         }}
       />

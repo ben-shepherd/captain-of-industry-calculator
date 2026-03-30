@@ -1,4 +1,14 @@
+import { notifyPersistedChromeChanged } from './persistedChromeNotify';
+
 const STORAGE_KEY = 'coi-canvas-results-sidebar-width-px';
+
+export function hasCanvasResultsSidebarWidthPersisted(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
 
 export const CANVAS_RESULTS_SIDEBAR_WIDTH_DEFAULT_PX = 384;
 export const CANVAS_RESULTS_SIDEBAR_WIDTH_MIN_PX = 280;
@@ -43,7 +53,16 @@ export function loadCanvasResultsSidebarWidthPx(): number {
 export function saveCanvasResultsSidebarWidthPx(widthPx: number): void {
   try {
     localStorage.setItem(STORAGE_KEY, String(clampCanvasResultsSidebarWidthPx(widthPx)));
+    notifyPersistedChromeChanged();
   } catch {
     // ignore quota / private mode
+  }
+}
+
+export function clearCanvasResultsSidebarWidthStorage(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
   }
 }

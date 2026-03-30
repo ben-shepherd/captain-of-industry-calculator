@@ -9,9 +9,9 @@ import {
 } from '../../../assets/js/app/state';
 import {
   buildExportJson,
-  hasPersistedStorage,
   parsePersistedEnvelope,
 } from '../../../assets/js/app/persistence';
+import { hasPersistedDataToReset } from '../../utils/hasPersistedDataToReset';
 
 export type AppHeaderProps = {
   activeView: AppView;
@@ -148,12 +148,12 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
             type="button"
             id="reset-saved-data"
             className="btn btn-secondary"
-            disabled={!hasPersistedStorage()}
+            disabled={!hasPersistedDataToReset()}
             aria-label="Reset all saved data for this app"
             onClick={() => {
               if (
                 !window.confirm(
-                  'This will remove all saved data from this browser, including your configuration, production rates, presets, and panel settings. This cannot be undone. Continue?',
+                  'This will remove all saved data from this browser, including your configuration, production rates, presets, panel settings, and canvas workspace layout. This cannot be undone. Continue?',
                 )
               ) {
                 return;

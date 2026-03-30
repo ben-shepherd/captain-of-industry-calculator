@@ -1,8 +1,17 @@
 import { resources } from '../../assets/js/data/resources';
+import { notifyPersistedChromeChanged } from './persistedChromeNotify';
 import type { CanvasDependencyEdge } from './canvasPlacement';
 import { clampCanvasRateString } from './canvasBlockResults';
 
 export const CANVAS_WORKSPACE_STORAGE_KEY = 'coi-canvas-workspace';
+
+export function hasCanvasWorkspacePersisted(): boolean {
+  try {
+    return localStorage.getItem(CANVAS_WORKSPACE_STORAGE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
 const VERSION = 1;
 
 /** Serializable mirror of a placed node in {@link CanvasView}. */
@@ -191,6 +200,7 @@ export function saveCanvasWorkspace(data: {
   };
   try {
     localStorage.setItem(CANVAS_WORKSPACE_STORAGE_KEY, JSON.stringify(payload));
+    notifyPersistedChromeChanged();
   } catch {
     // ignore quota / private mode
   }
