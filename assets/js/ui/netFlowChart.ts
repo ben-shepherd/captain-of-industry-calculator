@@ -42,6 +42,12 @@ function destroyChartIfAny(container: HTMLElement): void {
   }
 }
 
+/** Destroy any Chart.js instance attached to this container (e.g. React unmount). */
+export function destroyNetFlowChart(container: HTMLElement | null): void {
+  if (!container) return;
+  destroyChartIfAny(container);
+}
+
 function legendText(style: NetFlowChartStyle): string {
   switch (style) {
     case "vertical-grouped":

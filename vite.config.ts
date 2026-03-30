@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
 /** GitHub project pages are served under /repo-name/; set VITE_BASE in CI (see deploy workflow). */
@@ -177,5 +178,5 @@ function coiSeoPlugin(): Plugin {
 export default defineConfig({
   root: '.',
   base: appBase(),
-  plugins: [coiSeoPlugin()],
+  plugins: [react(), coiSeoPlugin()],
 })

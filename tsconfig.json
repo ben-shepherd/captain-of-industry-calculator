@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "esModuleInterop": true,
@@ -15,7 +16,11 @@
   },
   "include": [
     "assets/js/**/*.ts",
+    "assets/js/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "tests/**/*.ts",
+    "tests/**/*.tsx",
     "vite.config.ts",
     "vite-env.d.ts"
   ]

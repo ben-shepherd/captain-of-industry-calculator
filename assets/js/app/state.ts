@@ -559,6 +559,11 @@ export function wipeAllPersistedDataAndResetToDefaults(): void {
     resultsSections: { ...DEFAULT_RESULTS_SECTIONS },
     inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
   };
+  queueMicrotask(() => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("coi-state-persisted"));
+    }
+  });
 }
 
 function persist(): void {
