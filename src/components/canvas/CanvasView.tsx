@@ -410,6 +410,7 @@ export function CanvasView() {
     const displayLabel = blockTitle.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
     setPlacedBlockLabels((prev) => ({ ...prev, [batch]: displayLabel }));
     setPlaceError(null);
+    setSelectedBatchId(batch);
 
     if (el && el.clientWidth > 0 && positions.length > 0) {
       const minX = Math.min(...positions.map((p) => p.x));
