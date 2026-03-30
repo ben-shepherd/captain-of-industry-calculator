@@ -28,6 +28,7 @@ import {
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
   nodeToAxisRect,
+  computeBlockSelectionHighlightRect,
   type CanvasDependencyEdge,
   type CanvasPlacementStyle,
 } from '../../utils/canvasPlacement';
@@ -45,6 +46,14 @@ import {
   loadCanvasWorkspace,
   saveCanvasWorkspace,
 } from '../../utils/canvasWorkspaceStorage';
+import {
+  loadCanvasResultsSidebarVisible,
+  saveCanvasResultsSidebarVisible,
+} from '../../utils/canvasResultsSidebarStorage';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
+import { calculate } from '../../../assets/js/calculator/service';
+import type { CalculationOutcome } from '../../hooks/useCalculation';
+import { CanvasResultsSidebar } from './CanvasResultsSidebar';
 import { CanvasWorkspaceLayer } from './CanvasWorkspaceLayer';
 import { CanvasPlacedCard } from './CanvasPlacedCard';
 import { CanvasPlacementGhost } from './CanvasPlacementGhost';
@@ -59,6 +68,9 @@ const EXPAND_UPSTREAM_FROM_CARD_GAP_PX = 28;
 
 /** If the pointer moves farther than this while panning, the following click is ignored (e.g. place). */
 const CANVAS_PAN_SUPPRESS_CLICK_PX = 5;
+
+/** Card pointer movement below this is treated as a click (block selection), not a drag. */
+const CANVAS_CARD_CLICK_MAX_MOVE_PX = 28;
 
 /** Left-drag on empty canvas, or middle-drag anywhere on the viewport, pans the scroll area. */
 function isCanvasViewportPanTarget(e: React.PointerEvent): boolean {
@@ -86,8 +98,13 @@ type PendingPlacement = {
 };
 
 export function CanvasView() {
+  const state = useCoiStore();
   const initialCanvas = useMemo(() => loadCanvasWorkspace(), []);
   const [search, setSearch] = useState(initialCanvas.search);
+  const [resultsSidebarVisible, setResultsSidebarVisible] = useState(
+    loadCanvasResultsSidebarVisible,
+  );
+  const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null);
   const [expandedByLevel, setExpandedByLevel] = useState(loadCanvasSidebarExpanded);
   const [selectedResourceId, setSelectedResourceId] = useState<string | null>(null);
   const [placementSeq, setPlacementSeq] = useState(initialCanvas.placementSeq);
@@ -121,7 +138,14 @@ export function CanvasView() {
   const suppressCanvasClickRef = useRef(false);
   const dragStateRef = useRef<
     | { kind: 'batch'; batchId: number; lastX: number; lastY: number }
-    | { kind: 'card'; canvasKey: string; lastX: number; lastY: number }
+    | {
+        kind: 'card';
+        canvasKey: string;
+        lastX: number;
+        lastY: number;
+        startX: number;
+        startY: number;
+      }
     | null
   >(null);
 
@@ -171,6 +195,10 @@ export function CanvasView() {
     setSelectedResourceId((prev) => (prev === id ? null : id));
     setPlaceError(null);
   }, []);
+
+  useEffect(() => {
+    saveCanvasResultsSidebarVisible(resultsSidebarVisible);
+  }, [resultsSidebarVisible]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -312,47 +340,6 @@ export function CanvasView() {
     }
   }
 
-  function handleWorkspaceClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (suppressCanvasClickRef.current) {
-      e.preventDefault();
-      return;
-    }
-    if (pendingPlacement) return;
-    if (!selectedResourceId || !workspaceRef.current) return;
-    const target = e.target as HTMLElement;
-    if (target.closest('.canvas-block-label')) return;
-    if (target.closest('.canvas-placed-card')) return;
-
-    const wel = workspaceRef.current;
-    const rect = wel.getBoundingClientRect();
-    const anchorX = e.clientX - rect.left + wel.scrollLeft;
-    const anchorY = e.clientY - rect.top + wel.scrollTop;
-
-    try {
-      const recipeIdx = firstProducingRecipeIndex(selectedResourceId);
-      const { tree } = resolve(
-        selectedResourceId,
-        CANVAS_PLACE_DEFAULT_RATE,
-        recipeIdx,
-        'full',
-      );
-      const unique = flattenDependencyTreeUniqueFirst(tree);
-
-      setPendingPlacement({
-        anchorX,
-        anchorY,
-        resourceId: selectedResourceId,
-        uniqueNodes: unique,
-        tree,
-      });
-      setDependentPick({});
-      setBlockLabelDraft('');
-      setSelectedResourceId(null);
-    } catch {
-      setPlaceError('Could not resolve this resource chain. Try another resource.');
-    }
-  }
-
   function confirmPendingPlacement() {
     if (!pendingPlacement) return;
     const { anchorX, anchorY, uniqueNodes, tree } = pendingPlacement;
@@ -417,6 +404,165 @@ export function CanvasView() {
     return out;
   }, [placedNodes, placedBlockLabels]);
 
+  /** Hit-test bounds per block (cards + title), same geometry as the selection ring. */
+  const batchHighlightRectsById = useMemo(() => {
+    const byBatch = new Map<number, PlacedCanvasNode[]>();
+    for (const n of placedNodes) {
+      const list = byBatch.get(n.batchId) ?? [];
+      list.push(n);
+      byBatch.set(n.batchId, list);
+    }
+    const m = new Map<number, { left: number; top: number; width: number; height: number }>();
+    for (const [bid, batchNodes] of byBatch) {
+      if (!batchNodes.length) continue;
+      const label = blockLabelOverlays.find((bl) => bl.batchId === bid);
+      const r = computeBlockSelectionHighlightRect(
+        batchNodes,
+        label ? { left: label.left, top: label.top } : undefined,
+        CANVAS_CARD_WIDTH_PX,
+        CANVAS_CARD_HEIGHT_PX,
+      );
+      if (r) m.set(bid, r);
+    }
+    return m;
+  }, [placedNodes, blockLabelOverlays]);
+
+  const findBatchAtCanvasPoint = useCallback((x: number, y: number): number | null => {
+    let best: { bid: number; area: number } | null = null;
+    for (const [bid, r] of batchHighlightRectsById) {
+      if (x >= r.left && x <= r.left + r.width && y >= r.top && y <= r.top + r.height) {
+        const area = r.width * r.height;
+        if (!best || area < best.area) best = { bid, area };
+      }
+    }
+    return best?.bid ?? null;
+  }, [batchHighlightRectsById]);
+
+  const handleWorkspaceClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (suppressCanvasClickRef.current) {
+        e.preventDefault();
+        return;
+      }
+      if (pendingPlacement) return;
+      const target = e.target as HTMLElement;
+      if (target.closest('.canvas-block-label')) return;
+      if (target.closest('.canvas-placed-card')) return;
+
+      const wel = workspaceRef.current;
+      if (!wel) return;
+
+      const rect = wel.getBoundingClientRect();
+      const anchorX = e.clientX - rect.left + wel.scrollLeft;
+      const anchorY = e.clientY - rect.top + wel.scrollTop;
+
+      const hitBatchId = findBatchAtCanvasPoint(anchorX, anchorY);
+
+      if (!selectedResourceId) {
+        setSelectedBatchId(hitBatchId != null ? hitBatchId : null);
+        return;
+      }
+
+      try {
+        const recipeIdx = firstProducingRecipeIndex(selectedResourceId);
+        const { tree } = resolve(
+          selectedResourceId,
+          CANVAS_PLACE_DEFAULT_RATE,
+          recipeIdx,
+          'full',
+        );
+        const unique = flattenDependencyTreeUniqueFirst(tree);
+
+        setPendingPlacement({
+          anchorX,
+          anchorY,
+          resourceId: selectedResourceId,
+          uniqueNodes: unique,
+          tree,
+        });
+        setDependentPick({});
+        setBlockLabelDraft('');
+        setSelectedResourceId(null);
+      } catch {
+        setPlaceError('Could not resolve this resource chain. Try another resource.');
+      }
+    },
+    [pendingPlacement, selectedResourceId, findBatchAtCanvasPoint],
+  );
+
+  /** Unique resource ids in first-seen (placement) order within the selected block. */
+  const selectedBlockResourceIdsOrdered = useMemo(() => {
+    if (selectedBatchId == null) return null;
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const n of placedNodes) {
+      if (n.batchId !== selectedBatchId) continue;
+      if (seen.has(n.resourceId)) continue;
+      seen.add(n.resourceId);
+      out.push(n.resourceId);
+    }
+    return out;
+  }, [placedNodes, selectedBatchId]);
+
+  /** First placed card in the selected block — used as calculation target when Calculator has no target. */
+  const blockAnchorResourceId = useMemo(() => {
+    if (selectedBatchId == null) return null;
+    const node = placedNodes.find((n) => n.batchId === selectedBatchId);
+    return node?.resourceId ?? null;
+  }, [placedNodes, selectedBatchId]);
+
+  /** While a block is selected on the canvas, sidebar math uses that block only (not the Calculator target). */
+  const effectiveTargetResourceId =
+    selectedBatchId != null ? blockAnchorResourceId : state.resourceId ?? null;
+
+  const canvasOutcome = useMemo((): CalculationOutcome => {
+    if (!effectiveTargetResourceId) {
+      return { ok: true, result: null };
+    }
+    try {
+      const result = calculate(
+        effectiveTargetResourceId,
+        state.targetRate,
+        state.targetRecipeIdx,
+        state.baseRequirementsMode,
+      );
+      return { ok: true, result };
+    } catch {
+      return { ok: false, result: null };
+    }
+  }, [
+    effectiveTargetResourceId,
+    state.targetRate,
+    state.targetRecipeIdx,
+    state.baseRequirementsMode,
+  ]);
+
+  const selectedBlockTitle = useMemo(() => {
+    if (selectedBatchId == null) return null;
+    const raw = placedBlockLabels[selectedBatchId]?.trim();
+    return raw || DEFAULT_CANVAS_BLOCK_LABEL;
+  }, [placedBlockLabels, selectedBatchId]);
+
+  const blockSelectionHighlightRect = useMemo(() => {
+    if (selectedBatchId == null) return null;
+    const batchNodes = placedNodes.filter((n) => n.batchId === selectedBatchId);
+    if (batchNodes.length === 0) return null;
+    const label = blockLabelOverlays.find((bl) => bl.batchId === selectedBatchId);
+    return computeBlockSelectionHighlightRect(
+      batchNodes,
+      label ? { left: label.left, top: label.top } : undefined,
+      CANVAS_CARD_WIDTH_PX,
+      CANVAS_CARD_HEIGHT_PX,
+    );
+  }, [placedNodes, selectedBatchId, blockLabelOverlays]);
+
+  useEffect(() => {
+    if (selectedBatchId == null) return;
+    if (!placedNodes.some((n) => n.batchId === selectedBatchId)) {
+      setSelectedBatchId(null);
+    }
+  }, [placedNodes, selectedBatchId]);
+
   const canvasContentExtent = useMemo(
     () =>
       computeCanvasContentExtent(
@@ -444,6 +590,7 @@ export function CanvasView() {
   }, [workspaceViewport, canvasContentExtent]);
 
   function removePlacedBlock(batchId: number) {
+    setSelectedBatchId((sel) => (sel === batchId ? null : sel));
     const prev = placedNodesRef.current;
     const keySet = new Set(
       prev.filter((n) => n.batchId === batchId).map((n) => n.key),
@@ -593,6 +740,18 @@ export function CanvasView() {
       dragStateRef.current = null;
       document.body.style.removeProperty('cursor');
       const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+      if (d.kind === 'card') {
+        const moved =
+          Math.abs(d.lastX - d.startX) + Math.abs(d.lastY - d.startY);
+        if (moved < CANVAS_CARD_CLICK_MAX_MOVE_PX) {
+          const node = placedNodesRef.current.find((n) => n.key === d.canvasKey);
+          if (node) {
+            setSelectedBatchId((prev) =>
+              prev === node.batchId ? null : node.batchId,
+            );
+          }
+        }
+      }
       if (d.kind === 'batch') {
         const bid = d.batchId;
         setPlacedNodes((prev) => {
@@ -663,7 +822,14 @@ export function CanvasView() {
     e.stopPropagation();
     const key = e.currentTarget.getAttribute('data-canvas-node-key');
     if (!key) return;
-    dragStateRef.current = { kind: 'card', canvasKey: key, lastX: e.clientX, lastY: e.clientY };
+    dragStateRef.current = {
+      kind: 'card',
+      canvasKey: key,
+      lastX: e.clientX,
+      lastY: e.clientY,
+      startX: e.clientX,
+      startY: e.clientY,
+    };
     document.body.style.cursor = 'grabbing';
   }
 
@@ -697,6 +863,9 @@ export function CanvasView() {
     const onUp = () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
+      if (!started) {
+        setSelectedBatchId((prev) => (prev === batchId ? null : batchId));
+      }
     };
 
     window.addEventListener('pointermove', onMove);
@@ -705,6 +874,8 @@ export function CanvasView() {
 
   function handleWorkspacePointerDown(e: React.PointerEvent<HTMLDivElement>) {
     if (dragStateRef.current) return;
+    /** Placing from the sidebar: left-click must reach `handleWorkspaceClick`, not start a pan + capture. */
+    if (selectedResourceId && e.button === 0) return;
     if (!isCanvasViewportPanTarget(e)) return;
     const wel = workspaceRef.current;
     if (!wel) return;
@@ -772,7 +943,16 @@ export function CanvasView() {
     .join(' ');
 
   return (
-    <div className="canvas-view" id="app-canvas-view" aria-label="Blueprint canvas">
+    <div
+      className={[
+        'canvas-view',
+        resultsSidebarVisible ? '' : 'canvas-view--results-collapsed',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      id="app-canvas-view"
+      aria-label="Blueprint canvas"
+    >
       <aside className="canvas-sidebar">
         <div className="canvas-search field">
           <label htmlFor="canvas-resource-search">Search resources</label>
@@ -1083,8 +1263,43 @@ export function CanvasView() {
               }}
             />
           ))}
+
+          {blockSelectionHighlightRect ? (
+            <div
+              className="canvas-block-selection-highlight"
+              aria-hidden
+              style={{
+                position: 'absolute',
+                left: blockSelectionHighlightRect.left,
+                top: blockSelectionHighlightRect.top,
+                width: blockSelectionHighlightRect.width,
+                height: blockSelectionHighlightRect.height,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      {resultsSidebarVisible ? (
+        <CanvasResultsSidebar
+          outcome={canvasOutcome}
+          onHide={() => setResultsSidebarVisible(false)}
+          blockResourceOrder={
+            selectedBatchId != null ? selectedBlockResourceIdsOrdered ?? [] : undefined
+          }
+          selectedBlockLabel={selectedBatchId != null ? selectedBlockTitle : null}
+          effectiveTargetResourceId={effectiveTargetResourceId}
+        />
+      ) : (
+        <button
+          type="button"
+          className="canvas-results-sidebar-reopen"
+          aria-label="Show results panel"
+          onClick={() => setResultsSidebarVisible(true)}
+        >
+          Results
+        </button>
+      )}
 
       {pendingPlacement && pendingRootDef ? (
         <CanvasPlacementPicker

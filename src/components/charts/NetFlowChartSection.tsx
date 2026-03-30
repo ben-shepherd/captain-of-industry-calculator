@@ -5,33 +5,97 @@ import { calculateNet } from '../../../assets/js/calculator/net';
 import type { FormattedNetTotal, NetFlowChartStyle } from '../../../assets/js/contracts';
 import { formatNetTotals } from '../../../assets/js/formatters/flatFormatter';
 import type { CalculationOutcome } from '../../hooks/useCalculation';
+import { netRowsForBlockResourceOrder } from '../../utils/canvasBlockResults';
 import { NetFlowChartPanel } from './NetFlowChartPanel';
 
-export function NetFlowChartSection({ outcome }: { outcome: CalculationOutcome }) {
+export type NetFlowChartContext = 'calculator' | 'canvas';
+
+const EMPTY_BY_CONTEXT: Record<
+  NetFlowChartContext,
+  { noTarget: string; noResult: string }
+> = {
+  calculator: {
+    noTarget: 'Choose a target resource above to see net flow.',
+    noResult: 'Choose a target resource above to see net flow.',
+  },
+  canvas: {
+    noTarget:
+      'Select a block on the canvas or set a target resource in the Calculator view to see net flow.',
+    noResult:
+      'Select a block on the canvas or set a target resource in the Calculator view to see net flow.',
+  },
+};
+
+export function NetFlowChartSection({
+  outcome,
+  context = 'calculator',
+  filterResourceIds,
+  filteredEmptyMessage = 'No chart data for resources in this block (they may not appear in the current target chain).',
+  targetResourceIdForDisplay,
+  blockResourceOrder,
+}: {
+  outcome: CalculationOutcome;
+  /** Placeholder copy when the user is on Canvas (no target panel on this view). */
+  context?: NetFlowChartContext;
+  /** When set, only series for resources in this set are shown (e.g. canvas block selection). */
+  filterResourceIds?: ReadonlySet<string>;
+  filteredEmptyMessage?: string;
+  /** Effective target for empty checks (canvas: store OR block anchor). */
+  targetResourceIdForDisplay?: string | null;
+  /** Canvas: chart series match every resource in the selected block (placement order). */
+  blockResourceOrder?: string[];
+}) {
   const state = useCoiStore();
   const netChartStyle = state.netFlowChartStyle;
   const production = state.production;
+  const effectiveTargetId = targetResourceIdForDisplay ?? state.resourceId;
 
   const { rows, emptyMessage } = useMemo((): {
     rows: FormattedNetTotal[];
     emptyMessage: string;
   } => {
-    if (!state.resourceId) {
-      return { rows: [], emptyMessage: 'Choose a target resource above to see net flow.' };
+    const emptyText = EMPTY_BY_CONTEXT[context];
+    if (!effectiveTargetId) {
+      return { rows: [], emptyMessage: emptyText.noTarget };
     }
     if (!outcome.ok) {
       return { rows: [], emptyMessage: 'Error running calculation.' };
     }
     if (!outcome.result) {
-      return { rows: [], emptyMessage: 'Choose a target resource above to see net flow.' };
+      return { rows: [], emptyMessage: emptyText.noResult };
     }
-    const net = calculateNet(outcome.result.totals, production);
-    const formatted = formatNetTotals(net);
+    let formatted: FormattedNetTotal[];
+    if (blockResourceOrder && blockResourceOrder.length > 0) {
+      formatted = netRowsForBlockResourceOrder(
+        outcome.result,
+        production,
+        blockResourceOrder,
+      );
+    } else {
+      const net = calculateNet(outcome.result.totals, production);
+      formatted = formatNetTotals(net);
+      if (filterResourceIds) {
+        formatted = formatted.filter((r) => filterResourceIds.has(r.id));
+      }
+    }
     return {
       rows: formatted,
-      emptyMessage: formatted.length === 0 ? 'No net data' : '',
+      emptyMessage:
+        formatted.length === 0
+          ? filterResourceIds && !blockResourceOrder?.length
+            ? filteredEmptyMessage
+            : 'No net data'
+          : '',
     };
-  }, [state.resourceId, outcome, production]);
+  }, [
+    effectiveTargetId,
+    outcome,
+    production,
+    context,
+    filterResourceIds,
+    filteredEmptyMessage,
+    blockResourceOrder,
+  ]);
 
   return (
     <section className="panel net-flow-chart-panel" aria-label="Net flow chart">

@@ -34,8 +34,41 @@ export const CANVAS_SURFACE_PAD_PX = 80;
  */
 export const CANVAS_SURFACE_MIN_SIZE_PX = 9999;
 
-const BLOCK_LABEL_HALF_WIDTH_PX = 120;
-const BLOCK_LABEL_ABOVE_PX = 36;
+/** Horizontal half-width of the floating block title bar (must match CSS). */
+export const BLOCK_LABEL_HALF_WIDTH_PX = 120;
+/** Space reserved above the top card row for the block label. */
+export const BLOCK_LABEL_ABOVE_PX = 36;
+
+const BLOCK_SELECTION_PAD_PX = 6;
+
+/**
+ * Axis-aligned rectangle around a block’s cards and its title bar, for selection chrome.
+ */
+export function computeBlockSelectionHighlightRect(
+  batchNodes: Array<{ x: number; y: number }>,
+  labelCenter: { left: number; top: number } | undefined,
+  cardW: number,
+  cardH: number,
+): { left: number; top: number; width: number; height: number } | null {
+  if (batchNodes.length === 0) return null;
+  let minX = Math.min(...batchNodes.map((n) => n.x));
+  let maxX = Math.max(...batchNodes.map((n) => n.x + cardW));
+  let minY = Math.min(...batchNodes.map((n) => n.y));
+  let maxY = Math.max(...batchNodes.map((n) => n.y + cardH));
+  if (labelCenter) {
+    minX = Math.min(minX, labelCenter.left - BLOCK_LABEL_HALF_WIDTH_PX);
+    maxX = Math.max(maxX, labelCenter.left + BLOCK_LABEL_HALF_WIDTH_PX);
+    minY = Math.min(minY, labelCenter.top - BLOCK_LABEL_ABOVE_PX);
+    maxY = Math.max(maxY, labelCenter.top + 12);
+  }
+  const pad = BLOCK_SELECTION_PAD_PX;
+  return {
+    left: minX - pad,
+    top: minY - pad,
+    width: maxX - minX + pad * 2,
+    height: maxY - minY + pad * 2,
+  };
+}
 
 /**
  * Minimum width/height for the inner canvas surface so absolutely positioned content
