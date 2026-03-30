@@ -1,5 +1,5 @@
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
-import { setUserGuideExpanded, setUserGuideVisible } from '../../assets/js/app/state';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
+import { setUserGuideExpanded, setUserGuideVisible } from '../../../assets/js/app/state';
 
 export function UserGuide() {
   const state = useCoiStore();

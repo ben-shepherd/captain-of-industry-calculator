@@ -1,7 +1,7 @@
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
-import { setResourceId } from '../../assets/js/app/state';
-import { resources } from '../../assets/js/data/resources';
-import { ResourceLabel } from './ResourceLabel';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
+import { setResourceId } from '../../../assets/js/app/state';
+import { resources } from '../../../assets/js/data/resources';
+import { ResourceLabel } from '../shared/ResourceLabel';
 
 export function RecentResources() {
   const state = useCoiStore();

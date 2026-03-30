@@ -1,13 +1,13 @@
 import { useCoiStore } from '../assets/js/app/coiExternalStore';
-import { AppHeader } from './components/AppHeader';
-import { Footer } from './components/Footer';
-import { NetFlowChartSection } from './components/NetFlowChartSection';
-import { PresetsSection } from './components/PresetsSection';
-import { ProductionSection } from './components/ProductionSection';
-import { RecentResources } from './components/RecentResources';
-import { ResultsSection } from './components/ResultsSection';
-import { TargetResourcePanel } from './components/TargetResourcePanel';
-import { UserGuide } from './components/UserGuide';
+import { NetFlowChartSection } from './components/charts/NetFlowChartSection';
+import { ProductionSection } from './components/configuration/ProductionSection';
+import { PresetsSection } from './components/configuration/PresetsSection';
+import { RecentResources } from './components/configuration/RecentResources';
+import { AppHeader } from './components/layout/AppHeader';
+import { Footer } from './components/layout/Footer';
+import { UserGuide } from './components/layout/UserGuide';
+import { ResultsSection } from './components/results/ResultsSection';
+import { TargetResourcePanel } from './components/target/TargetResourcePanel';
 import { useCalculation } from './hooks/useCalculation';
 
 export function App() {

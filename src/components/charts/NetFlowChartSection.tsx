@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
-import { setNetFlowChartStyle } from '../../assets/js/app/state';
-import { calculateNet } from '../../assets/js/calculator/net';
-import type { FormattedNetTotal, NetFlowChartStyle } from '../../assets/js/contracts';
-import { formatNetTotals } from '../../assets/js/formatters/flatFormatter';
-import type { CalculationOutcome } from '../hooks/useCalculation';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
+import { setNetFlowChartStyle } from '../../../assets/js/app/state';
+import { calculateNet } from '../../../assets/js/calculator/net';
+import type { FormattedNetTotal, NetFlowChartStyle } from '../../../assets/js/contracts';
+import { formatNetTotals } from '../../../assets/js/formatters/flatFormatter';
+import type { CalculationOutcome } from '../../hooks/useCalculation';
 import { NetFlowChartPanel } from './NetFlowChartPanel';
 
 export function NetFlowChartSection({ outcome }: { outcome: CalculationOutcome }) {

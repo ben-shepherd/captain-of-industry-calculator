@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { DependencyNode } from '../../assets/js/contracts';
-import { resources } from '../../assets/js/data/resources';
-import { ResourceTargetButton } from './ResourceTargetButton';
+import type { DependencyNode } from '../../../assets/js/contracts';
+import { resources } from '../../../assets/js/data/resources';
+import { ResourceTargetButton } from '../shared/ResourceTargetButton';
 
 function collectCollapsibleKeys(node: DependencyNode, keyPath: string): string[] {
   const selfKey = `${keyPath}/${node.id}`;

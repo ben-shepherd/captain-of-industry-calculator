@@ -1,16 +1,16 @@
 import type { ReactNode } from 'react';
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   setBaseRequirementsMode,
   setResourceId,
   setResultsSectionExpanded,
-} from '../../assets/js/app/state';
-import { calculateNet } from '../../assets/js/calculator/net';
-import type { CalculationResult } from '../../assets/js/contracts';
-import { formatNetTotals, formatTotals } from '../../assets/js/formatters/flatFormatter';
-import type { CalculationOutcome } from '../hooks/useCalculation';
+} from '../../../assets/js/app/state';
+import { calculateNet } from '../../../assets/js/calculator/net';
+import type { CalculationResult } from '../../../assets/js/contracts';
+import { formatNetTotals, formatTotals } from '../../../assets/js/formatters/flatFormatter';
+import type { CalculationOutcome } from '../../hooks/useCalculation';
 import { DependencyTree } from './DependencyTree';
-import { ResourceTargetButton } from './ResourceTargetButton';
+import { ResourceTargetButton } from '../shared/ResourceTargetButton';
 
 function TotalsPlaceholderRow({ colSpan, text }: { colSpan: number; text: string }) {
   return (

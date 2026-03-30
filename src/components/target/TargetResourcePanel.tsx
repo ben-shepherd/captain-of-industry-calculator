@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   setResourceId,
   setTargetRate,
   setTargetRecipeIdx,
-} from '../../assets/js/app/state';
-import { getResourcePickerGroups, resources } from '../../assets/js/data/resources';
-import { matchResourcesForSearch, TARGET_RESOURCE_PLACEHOLDER } from '../../assets/js/ui/resourceSearch';
+} from '../../../assets/js/app/state';
+import { getResourcePickerGroups, resources } from '../../../assets/js/data/resources';
+import { matchResourcesForSearch, TARGET_RESOURCE_PLACEHOLDER } from '../../../assets/js/ui/resourceSearch';
 import { TargetRecipeSection } from './TargetRecipeSection';
 
 const SEARCH_HIT_ACTIVE = 'resource-search-hit-active';

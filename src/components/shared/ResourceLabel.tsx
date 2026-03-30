@@ -1,4 +1,4 @@
-import { resources } from '../../assets/js/data/resources';
+import { resources } from '../../../assets/js/data/resources';
 
 export function ResourceLabel({ id, label }: { id: string; label: string }) {
   const url = resources[id]?.imageUrl;

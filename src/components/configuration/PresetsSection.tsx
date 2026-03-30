@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   applyProductionPresetMerge,
   applyProductionPresetReplace,
@@ -7,8 +7,8 @@ import {
   getProductionPresets,
   saveProductionPreset,
   setInputsSectionExpanded,
-} from '../../assets/js/app/state';
-import { groupProductionPresets } from '../utils/presetGroups';
+} from '../../../assets/js/app/state';
+import { groupProductionPresets } from '../../utils/presetGroups';
 
 export function PresetsSection() {
   const state = useCoiStore();

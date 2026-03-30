@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import type { FormattedNetTotal, NetFlowChartStyle } from '../../assets/js/contracts';
-import { destroyNetFlowChart, renderNetFlowChart } from '../../assets/js/ui/netFlowChart';
+import type { FormattedNetTotal, NetFlowChartStyle } from '../../../assets/js/contracts';
+import { destroyNetFlowChart, renderNetFlowChart } from '../../../assets/js/ui/netFlowChart';
 
 export function NetFlowChartPanel({
   rows,

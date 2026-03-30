@@ -1,6 +1,6 @@
-import type { Recipe } from '../../assets/js/contracts';
-import { resources } from '../../assets/js/data/resources';
-import { perMinute } from '../../assets/js/ui/recipeDiagram';
+import type { Recipe } from '../../../assets/js/contracts';
+import { resources } from '../../../assets/js/data/resources';
+import { perMinute } from '../../../assets/js/ui/recipeDiagram';
 
 function formatRate(n: number): string {
   if (!isFinite(n)) return '0';

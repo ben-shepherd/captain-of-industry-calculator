@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   addProductionExtraId,
   clearAllProductionRates,
@@ -12,11 +12,11 @@ import {
   setInputsSectionExpanded,
   setProduction,
   setResourceId,
-} from '../../assets/js/app/state';
-import { calculate } from '../../assets/js/calculator/service';
-import { resources, getResourcePickerGroups } from '../../assets/js/data/resources';
-import { getRelevantProductionResourceIds } from '../../assets/js/ui/productionView';
-import { ResourceLabel } from './ResourceLabel';
+} from '../../../assets/js/app/state';
+import { calculate } from '../../../assets/js/calculator/service';
+import { resources, getResourcePickerGroups } from '../../../assets/js/data/resources';
+import { getRelevantProductionResourceIds } from '../../../assets/js/ui/productionView';
+import { ResourceLabel } from '../shared/ResourceLabel';
 
 function isChainRequired(id: string, chainTotals: Record<string, number>): boolean {
   return Object.prototype.hasOwnProperty.call(chainTotals, id);

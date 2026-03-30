@@ -1,16 +1,16 @@
 import { useRef } from 'react';
-import { useCoiStore } from '../../assets/js/app/coiExternalStore';
+import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   applyLoadedState,
   getSnapshot,
   setUserGuideVisible,
   wipeAllPersistedDataAndResetToDefaults,
-} from '../../assets/js/app/state';
+} from '../../../assets/js/app/state';
 import {
   buildExportJson,
   hasPersistedStorage,
   parsePersistedEnvelope,
-} from '../../assets/js/app/persistence';
+} from '../../../assets/js/app/persistence';
 
 export function AppHeader() {
   const state = useCoiStore();
