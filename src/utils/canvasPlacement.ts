@@ -11,6 +11,52 @@ export const CANVAS_CARD_WIDTH_PX = 140;
 export const CANVAS_CARD_HEIGHT_PX = 72;
 const GAP_PX = 12;
 
+/** Minimum inset from the workspace edges when clamping placed cards. */
+export const CANVAS_WORKSPACE_EDGE_PAD_PX = 8;
+
+/**
+ * Shift a group of card positions so the bounding box stays inside the workspace rectangle.
+ * Uses a few iterations so fixing one edge (e.g. left) can be followed by the opposite (right).
+ * Does not scale; if the group is wider/taller than the inner area, it stays left/top aligned with padding.
+ */
+export function clampPlacedPositions(
+  positions: Array<{ x: number; y: number }>,
+  workspaceWidth: number,
+  workspaceHeight: number,
+): Array<{ x: number; y: number }> {
+  if (positions.length === 0) return [];
+  if (workspaceWidth <= 0 || workspaceHeight <= 0) return positions;
+  const w = CANVAS_CARD_WIDTH_PX;
+  const h = CANVAS_CARD_HEIGHT_PX;
+  const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+
+  const out = positions.map((p) => ({ x: p.x, y: p.y }));
+
+  for (let iter = 0; iter < 4; iter++) {
+    let minX = Math.min(...out.map((p) => p.x));
+    let maxX = Math.max(...out.map((p) => p.x + w));
+    let dx = 0;
+    if (minX < pad) dx = pad - minX;
+    if (maxX + dx > workspaceWidth - pad) dx = workspaceWidth - pad - maxX;
+    if (dx !== 0) {
+      for (const p of out) p.x += dx;
+    }
+
+    let minY = Math.min(...out.map((p) => p.y));
+    let maxY = Math.max(...out.map((p) => p.y + h));
+    let dy = 0;
+    if (minY < pad) dy = pad - minY;
+    if (maxY + dy > workspaceHeight - pad) dy = workspaceHeight - pad - maxY;
+    if (dy !== 0) {
+      for (const p of out) p.y += dy;
+    }
+
+    if (dx === 0 && dy === 0) break;
+  }
+
+  return out;
+}
+
 /**
  * Walk the dependency tree in pre-order and collect each resource once (first occurrence wins).
  * Order places the root first, then upstream inputs in traversal order.

@@ -376,6 +376,7 @@ img.canvas-resource-icon {
   flex: 1;
   min-width: 0;
   min-height: 12rem;
+  overflow: auto;
   background-color: #ffffff;
   background-image: linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);

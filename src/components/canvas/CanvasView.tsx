@@ -8,6 +8,7 @@ import {
   resources,
 } from '../../../assets/js/data/resources';
 import {
+  clampPlacedPositions,
   CANVAS_PLACE_DEFAULT_RATE,
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
@@ -126,7 +127,12 @@ export function CanvasView() {
     style: CanvasPlacementStyle,
   ) {
     if (nodesToPlace.length === 0) return;
-    const positions = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style);
+    const el = workspaceRef.current;
+    const raw = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style);
+    const positions =
+      el && el.clientWidth > 0 && el.clientHeight > 0
+        ? clampPlacedPositions(raw, el.clientWidth, el.clientHeight)
+        : raw;
     const batch = placementSeq;
     setPlacementSeq((s) => s + 1);
 
