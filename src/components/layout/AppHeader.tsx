@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import type { AppView } from '../../appView';
 import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   applyLoadedState,
@@ -12,10 +13,15 @@ import {
   parsePersistedEnvelope,
 } from '../../../assets/js/app/persistence';
 
-export function AppHeader() {
+export type AppHeaderProps = {
+  activeView: AppView;
+  onViewChange: (view: AppView) => void;
+};
+
+export function AppHeader({ activeView, onViewChange }: AppHeaderProps) {
   const state = useCoiStore();
   const importInputRef = useRef<HTMLInputElement>(null);
-  const showGuide = !state.userGuideVisible;
+  const showGuide = !state.userGuideVisible && activeView === 'calculator';
 
   return (
     <header className="app-header">
@@ -41,10 +47,32 @@ export function AppHeader() {
                 Show guide
               </button>
             </div>
-            <p className="subtitle">Production chains, base resources, and net flow</p>
+            {activeView === 'calculator' ? (
+              <p className="subtitle">Production chains, base resources, and net flow</p>
+            ) : (
+              <p className="subtitle">Blueprint canvas layout</p>
+            )}
           </div>
         </div>
         <nav className="app-toolbar" aria-label="Main toolbar">
+          <div className="app-view-switch" aria-label="Application view">
+            <button
+              type="button"
+              className="btn btn-secondary app-view-tab"
+              aria-pressed={activeView === 'calculator'}
+              onClick={() => onViewChange('calculator')}
+            >
+              Calculator
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary app-view-tab"
+              aria-pressed={activeView === 'canvas'}
+              onClick={() => onViewChange('canvas')}
+            >
+              Canvas
+            </button>
+          </div>
           <button
             type="button"
             id="export-saved-data"
