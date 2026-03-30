@@ -18,19 +18,21 @@ export function App() {
   return (
     <>
       <AppHeader />
-      <UserGuide />
-      <RecentResources />
-      <TargetResourcePanel />
-      <main className="app-main">
-        <section className="panel panel-inputs">
-          <h2>Configuration</h2>
-          <ProductionSection chainTotals={chainTotals} />
-          <PresetsSection />
-        </section>
-        <ResultsSection outcome={outcome} />
-      </main>
-      <NetFlowChartSection outcome={outcome} />
-      <Footer />
+      <div className="app-page">
+        <UserGuide />
+        <RecentResources />
+        <TargetResourcePanel />
+        <main className="app-main">
+          <section className="panel panel-inputs">
+            <h2>Configuration</h2>
+            <ProductionSection chainTotals={chainTotals} />
+            <PresetsSection />
+          </section>
+          <ResultsSection outcome={outcome} />
+        </main>
+        <NetFlowChartSection outcome={outcome} />
+        <Footer />
+      </div>
     </>
   );
 }

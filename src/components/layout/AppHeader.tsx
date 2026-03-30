@@ -44,7 +44,7 @@ export function AppHeader() {
             <p className="subtitle">Production chains, base resources, and net flow</p>
           </div>
         </div>
-        <nav className="app-toolbar" aria-label="App actions">
+        <nav className="app-toolbar" aria-label="Main toolbar">
           <button
             type="button"
             id="export-saved-data"
