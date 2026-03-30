@@ -7,6 +7,9 @@ import type { CalculationOutcome } from '../../hooks/useCalculation';
 const CANVAS_NO_TARGET =
   'Select a block on the canvas or set a target resource in the Calculator view.';
 
+const RESIZE_HELP_TOOLTIP =
+  'Drag the border between the canvas and this panel to change its width.';
+
 export function CanvasResultsSidebar({
   outcome,
   onHide,
@@ -25,6 +28,7 @@ export function CanvasResultsSidebar({
 }) {
   const headingId = useId();
   const regionId = useId();
+  const resizeHintTextId = useId();
 
   return (
     <aside
@@ -53,6 +57,20 @@ export function CanvasResultsSidebar({
           Hide
         </button>
       </div>
+      <p className="canvas-results-sidebar-width-hint">
+        <span className="canvas-results-sidebar-width-hint-text" id={resizeHintTextId}>
+          Drag the left edge to expand or narrow this panel.
+        </span>
+        <button
+          type="button"
+          className="canvas-results-sidebar-help"
+          title={RESIZE_HELP_TOOLTIP}
+          aria-label="More help: how to resize this panel"
+          aria-describedby={resizeHintTextId}
+        >
+          ?
+        </button>
+      </p>
       <div className="canvas-results-sidebar-body">
         <section className="canvas-results-sidebar-section" aria-label="Base resources required">
           <h3 className="canvas-results-sidebar-section-heading">Base resources required</h3>

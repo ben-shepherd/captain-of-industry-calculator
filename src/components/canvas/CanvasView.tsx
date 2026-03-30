@@ -50,6 +50,14 @@ import {
   loadCanvasResultsSidebarVisible,
   saveCanvasResultsSidebarVisible,
 } from '../../utils/canvasResultsSidebarStorage';
+import {
+  CANVAS_RESULTS_SIDEBAR_WIDTH_MAX_PX,
+  CANVAS_RESULTS_SIDEBAR_WIDTH_MIN_PX,
+  clampCanvasResultsSidebarWidthPx,
+  clampCanvasResultsSidebarWidthPxForViewport,
+  loadCanvasResultsSidebarWidthPx,
+  saveCanvasResultsSidebarWidthPx,
+} from '../../utils/canvasResultsSidebarWidthStorage';
 import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import { calculate } from '../../../assets/js/calculator/service';
 import type { CalculationOutcome } from '../../hooks/useCalculation';
@@ -104,6 +112,12 @@ export function CanvasView() {
   const [resultsSidebarVisible, setResultsSidebarVisible] = useState(
     loadCanvasResultsSidebarVisible,
   );
+  const [resultsSidebarWidthPx, setResultsSidebarWidthPx] = useState(
+    loadCanvasResultsSidebarWidthPx,
+  );
+  const [viewportWidthForSidebar, setViewportWidthForSidebar] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1920,
+  );
   const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null);
   const [expandedByLevel, setExpandedByLevel] = useState(loadCanvasSidebarExpanded);
   const [selectedResourceId, setSelectedResourceId] = useState<string | null>(null);
@@ -136,6 +150,11 @@ export function CanvasView() {
     startScrollTop: number;
   } | null>(null);
   const suppressCanvasClickRef = useRef(false);
+  const resultsSidebarResizeRef = useRef<{
+    pointerId: number;
+    startClientX: number;
+    startDesiredWidthPx: number;
+  } | null>(null);
   const dragStateRef = useRef<
     | { kind: 'batch'; batchId: number; lastX: number; lastY: number }
     | {
@@ -169,6 +188,9 @@ export function CanvasView() {
   const placedNodesRef = useRef(placedNodes);
   placedNodesRef.current = placedNodes;
 
+  const resultsSidebarWidthPxRef = useRef(resultsSidebarWidthPx);
+  resultsSidebarWidthPxRef.current = resultsSidebarWidthPx;
+
   const consumedInputIds = useMemo(() => getResourceIdsConsumedInRecipes(), []);
 
   const categories = useMemo(() => {
@@ -191,14 +213,80 @@ export function CanvasView() {
 
   const selectedDef = selectedResourceId ? resources[selectedResourceId] : undefined;
 
+  const effectiveResultsSidebarWidthPx = useMemo(
+    () =>
+      clampCanvasResultsSidebarWidthPxForViewport(
+        resultsSidebarWidthPx,
+        viewportWidthForSidebar,
+      ),
+    [resultsSidebarWidthPx, viewportWidthForSidebar],
+  );
+
   const selectResource = useCallback((id: string) => {
     setSelectedResourceId((prev) => (prev === id ? null : id));
     setPlaceError(null);
   }, []);
 
+  const handleResultsSidebarResizePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      resultsSidebarResizeRef.current = {
+        pointerId: e.pointerId,
+        startClientX: e.clientX,
+        startDesiredWidthPx: resultsSidebarWidthPxRef.current,
+      };
+      document.body.style.userSelect = 'none';
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        resultsSidebarResizeRef.current = null;
+        document.body.style.userSelect = '';
+      }
+    },
+    [],
+  );
+
+  const handleResultsSidebarResizePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      const s = resultsSidebarResizeRef.current;
+      if (!s || e.pointerId !== s.pointerId) return;
+      const nextDesired = clampCanvasResultsSidebarWidthPx(
+        s.startDesiredWidthPx + (s.startClientX - e.clientX),
+      );
+      setResultsSidebarWidthPx(nextDesired);
+    },
+    [],
+  );
+
+  const handleResultsSidebarResizePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      const s = resultsSidebarResizeRef.current;
+      if (!s || e.pointerId !== s.pointerId) return;
+      resultsSidebarResizeRef.current = null;
+      document.body.style.userSelect = '';
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     saveCanvasResultsSidebarVisible(resultsSidebarVisible);
   }, [resultsSidebarVisible]);
+
+  useEffect(() => {
+    saveCanvasResultsSidebarWidthPx(resultsSidebarWidthPx);
+  }, [resultsSidebarWidthPx]);
+
+  useEffect(() => {
+    const onResize = () => setViewportWidthForSidebar(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1281,15 +1369,37 @@ export function CanvasView() {
       </div>
 
       {resultsSidebarVisible ? (
-        <CanvasResultsSidebar
-          outcome={canvasOutcome}
-          onHide={() => setResultsSidebarVisible(false)}
-          blockResourceOrder={
-            selectedBatchId != null ? selectedBlockResourceIdsOrdered ?? [] : undefined
-          }
-          selectedBlockLabel={selectedBatchId != null ? selectedBlockTitle : null}
-          effectiveTargetResourceId={effectiveTargetResourceId}
-        />
+        <div
+          className="canvas-results-sidebar-shell"
+          style={{
+            flex: `0 0 ${effectiveResultsSidebarWidthPx}px`,
+            width: effectiveResultsSidebarWidthPx,
+            minWidth: 0,
+          }}
+        >
+          <div
+            className="canvas-results-sidebar-resize-handle"
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize results panel"
+            aria-valuenow={effectiveResultsSidebarWidthPx}
+            aria-valuemin={CANVAS_RESULTS_SIDEBAR_WIDTH_MIN_PX}
+            aria-valuemax={CANVAS_RESULTS_SIDEBAR_WIDTH_MAX_PX}
+            onPointerDown={handleResultsSidebarResizePointerDown}
+            onPointerMove={handleResultsSidebarResizePointerMove}
+            onPointerUp={handleResultsSidebarResizePointerUp}
+            onPointerCancel={handleResultsSidebarResizePointerUp}
+          />
+          <CanvasResultsSidebar
+            outcome={canvasOutcome}
+            onHide={() => setResultsSidebarVisible(false)}
+            blockResourceOrder={
+              selectedBatchId != null ? selectedBlockResourceIdsOrdered ?? [] : undefined
+            }
+            selectedBlockLabel={selectedBatchId != null ? selectedBlockTitle : null}
+            effectiveTargetResourceId={effectiveTargetResourceId}
+          />
+        </div>
       ) : (
         <button
           type="button"
