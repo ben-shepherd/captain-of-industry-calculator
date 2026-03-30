@@ -10,6 +10,7 @@ import {
 import {
   clampPlacedPositions,
   CANVAS_PLACE_DEFAULT_RATE,
+  CANVAS_CARD_HEIGHT_PX,
   CANVAS_CARD_WIDTH_PX,
   collectDependencyEdges,
   flattenDependencyTreeUniqueFirst,
@@ -34,6 +35,9 @@ import { CanvasResourceThumb } from './CanvasResourceThumb';
 
 /** Shown on the canvas when the user leaves the block name empty. */
 const DEFAULT_CANVAS_BLOCK_LABEL = 'Unnamed';
+
+/** Horizontal gap from card edge when anchoring an “expand upstream” placement. */
+const EXPAND_UPSTREAM_FROM_CARD_GAP_PX = 28;
 
 type PlacedCanvasNode = {
   key: string;
@@ -182,6 +186,34 @@ export function CanvasView() {
     const displayLabel = blockTitle.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
     setPlacedBlockLabels((prev) => ({ ...prev, [batch]: displayLabel }));
     setPlaceError(null);
+  }
+
+  function beginExpandUpstreamFromCard(resourceId: string, cardX: number, cardY: number) {
+    if (pendingPlacement) {
+      setPendingPlacement(null);
+      setDependentPick({});
+      setBlockLabelDraft('');
+    }
+    try {
+      const recipeIdx = firstProducingRecipeIndex(resourceId);
+      const { tree } = resolve(resourceId, CANVAS_PLACE_DEFAULT_RATE, recipeIdx, 'full');
+      const unique = flattenDependencyTreeUniqueFirst(tree);
+      const anchorX = cardX + CANVAS_CARD_WIDTH_PX + EXPAND_UPSTREAM_FROM_CARD_GAP_PX;
+      const anchorY = cardY + CANVAS_CARD_HEIGHT_PX / 2;
+      setPendingPlacement({
+        anchorX,
+        anchorY,
+        resourceId,
+        uniqueNodes: unique,
+        tree,
+      });
+      setDependentPick({});
+      setBlockLabelDraft('');
+      setSelectedResourceId(null);
+      setPlaceError(null);
+    } catch {
+      setPlaceError('Could not resolve this resource chain.');
+    }
   }
 
   function handleWorkspaceClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -617,6 +649,9 @@ export function CanvasView() {
             consumptionPerMin={node.consumptionPerMin}
             onProductionChange={updatePlacedNodeProduction}
             onConsumptionChange={updatePlacedNodeConsumption}
+            onAddUpstreamChain={() =>
+              beginExpandUpstreamFromCard(node.resourceId, node.x, node.y)
+            }
             onBatchPointerDown={handleBatchPointerDown}
             style={{
               position: 'absolute',

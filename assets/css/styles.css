@@ -525,21 +525,52 @@ img.canvas-resource-icon {
 }
 
 .canvas-placed-card-header {
-  padding: 0.28rem 0.45rem;
+  padding: 0.28rem 0.35rem 0.28rem 0.45rem;
   background: #6200ee;
   color: #fff;
   min-height: 1.5rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
 }
 
 .canvas-placed-card-title {
+  flex: 1;
+  min-width: 0;
   font-size: 0.68rem;
   font-weight: 700;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.canvas-placed-card-expand-upstream {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  background: color-mix(in srgb, #fff 18%, transparent);
+  border: 1px solid color-mix(in srgb, #fff 45%, transparent);
+  border-radius: 4px;
+}
+
+.canvas-placed-card-expand-upstream:hover {
+  background: color-mix(in srgb, #fff 32%, transparent);
+}
+
+.canvas-placed-card-expand-upstream:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
 }
 
 .canvas-placed-card-body {

@@ -75,6 +75,8 @@ type Props = {
   consumptionPerMin: string;
   onProductionChange: (key: string, value: string) => void;
   onConsumptionChange: (key: string, value: string) => void;
+  /** Open the placement dialog to add this resource’s upstream chain without using the sidebar. */
+  onAddUpstreamChain: () => void;
   style: React.CSSProperties;
   onBatchPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
@@ -89,6 +91,7 @@ export function CanvasPlacedCard({
   consumptionPerMin,
   onProductionChange,
   onConsumptionChange,
+  onAddUpstreamChain,
   style,
   onBatchPointerDown,
 }: Props) {
@@ -107,6 +110,20 @@ export function CanvasPlacedCard({
     >
       <div className="canvas-placed-card-header">
         <span className="canvas-placed-card-title">{label}</span>
+        <button
+          type="button"
+          className="canvas-placed-card-expand-upstream"
+          title="Add upstream resources for this resource"
+          aria-label={`Add upstream resource chain for ${label}`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onAddUpstreamChain();
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          +
+        </button>
       </div>
       <div className="canvas-placed-card-body">
         {url ? (
