@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { DependencyNode } from '../../../assets/js/contracts';
 import { firstProducingRecipeIndex } from '../../../assets/js/app/state';
 import { resolve } from '../../../assets/js/calculator/resolver';
@@ -33,6 +40,11 @@ import {
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
 } from '../../utils/canvasSidebarStorage';
+import type { PersistedPlacedNode, WorkspaceScroll } from '../../utils/canvasWorkspaceStorage';
+import {
+  loadCanvasWorkspace,
+  saveCanvasWorkspace,
+} from '../../utils/canvasWorkspaceStorage';
 import { CanvasWorkspaceLayer } from './CanvasWorkspaceLayer';
 import { CanvasPlacedCard } from './CanvasPlacedCard';
 import { CanvasPlacementGhost } from './CanvasPlacementGhost';
@@ -63,18 +75,7 @@ function isCanvasViewportPanTarget(e: React.PointerEvent): boolean {
   return true;
 }
 
-type PlacedCanvasNode = {
-  key: string;
-  batchId: number;
-  resourceId: string;
-  label: string;
-  x: number;
-  y: number;
-  /** User-entered production rate (per minute); string for controlled input / future parsing. */
-  productionPerMin: string;
-  /** User-entered consumption rate (per minute). */
-  consumptionPerMin: string;
-};
+type PlacedCanvasNode = PersistedPlacedNode;
 
 type PendingPlacement = {
   anchorX: number;
@@ -85,20 +86,23 @@ type PendingPlacement = {
 };
 
 export function CanvasView() {
-  const [search, setSearch] = useState('');
+  const initialCanvas = useMemo(() => loadCanvasWorkspace(), []);
+  const [search, setSearch] = useState(initialCanvas.search);
   const [expandedByLevel, setExpandedByLevel] = useState(loadCanvasSidebarExpanded);
   const [selectedResourceId, setSelectedResourceId] = useState<string | null>(null);
-  const [placementSeq, setPlacementSeq] = useState(0);
-  const [placedNodes, setPlacedNodes] = useState<PlacedCanvasNode[]>([]);
+  const [placementSeq, setPlacementSeq] = useState(initialCanvas.placementSeq);
+  const [placedNodes, setPlacedNodes] = useState<PlacedCanvasNode[]>(initialCanvas.placedNodes);
   const [placeError, setPlaceError] = useState<string | null>(null);
   const [pointerInWorkspace, setPointerInWorkspace] = useState(false);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [pendingPlacement, setPendingPlacement] = useState<PendingPlacement | null>(null);
   const [dependentPick, setDependentPick] = useState<Record<string, boolean>>({});
   const [blockLabelDraft, setBlockLabelDraft] = useState('');
-  const [placedBlockLabels, setPlacedBlockLabels] = useState<Record<number, string>>({});
+  const [placedBlockLabels, setPlacedBlockLabels] = useState<Record<number, string>>(
+    initialCanvas.placedBlockLabels,
+  );
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
-  const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>([]);
+  const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>(initialCanvas.placedEdges);
   const [workspaceViewport, setWorkspaceViewport] = useState({ w: 0, h: 0 });
   const [canvasPanning, setCanvasPanning] = useState(false);
   const canvasPanRef = useRef<{
@@ -117,6 +121,21 @@ export function CanvasView() {
 
   const workspaceRef = useRef<HTMLDivElement>(null);
   const hasCenteredInitialCanvasScrollRef = useRef(false);
+  const pendingScrollRestoreRef = useRef<WorkspaceScroll | null>(initialCanvas.workspaceScroll);
+  const workspacePersistRef = useRef({
+    placementSeq,
+    placedNodes,
+    placedEdges,
+    placedBlockLabels,
+    search,
+  });
+  workspacePersistRef.current = {
+    placementSeq,
+    placedNodes,
+    placedEdges,
+    placedBlockLabels,
+    search,
+  };
   const placedNodesRef = useRef(placedNodes);
   placedNodesRef.current = placedNodes;
 
@@ -443,7 +462,65 @@ export function CanvasView() {
     return () => ro.disconnect();
   }, []);
 
-  /** Scroll so the large default canvas is centered in the viewport once sizes are known. */
+  /** Persist workspace (nodes, edges, labels, search, scroll). */
+  useEffect(() => {
+    saveCanvasWorkspace({
+      placementSeq,
+      placedNodes,
+      placedEdges,
+      placedBlockLabels,
+      search,
+      workspaceScroll: workspaceRef.current
+        ? {
+            scrollLeft: workspaceRef.current.scrollLeft,
+            scrollTop: workspaceRef.current.scrollTop,
+          }
+        : undefined,
+    });
+  }, [placementSeq, placedNodes, placedEdges, placedBlockLabels, search]);
+
+  /** Debounced save when the user only pans/scrolls the workspace. */
+  useEffect(() => {
+    const el = workspaceRef.current;
+    if (!el) return;
+    let tid: number | undefined;
+    const onScroll = () => {
+      if (tid !== undefined) window.clearTimeout(tid);
+      tid = window.setTimeout(() => {
+        tid = undefined;
+        saveCanvasWorkspace({
+          ...workspacePersistRef.current,
+          workspaceScroll: {
+            scrollLeft: el.scrollLeft,
+            scrollTop: el.scrollTop,
+          },
+        });
+      }, 350);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      if (tid !== undefined) window.clearTimeout(tid);
+      el.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
+  /** Flush latest scroll + graph state when leaving the canvas view (unmount). */
+  useEffect(() => {
+    return () => {
+      const el = workspaceRef.current;
+      saveCanvasWorkspace({
+        ...workspacePersistRef.current,
+        workspaceScroll: el
+          ? { scrollLeft: el.scrollLeft, scrollTop: el.scrollTop }
+          : undefined,
+      });
+    };
+  }, []);
+
+  /**
+   * Initial scroll: restore from storage if present; otherwise center the large default canvas
+   * once sizes are known.
+   */
   useLayoutEffect(() => {
     const el = workspaceRef.current;
     if (!el || hasCenteredInitialCanvasScrollRef.current) return;
@@ -451,8 +528,21 @@ export function CanvasView() {
     const w = canvasSurfaceSize.w;
     const h = canvasSurfaceSize.h;
     if (w <= 0 || h <= 0) return;
-    el.scrollLeft = Math.max(0, (w - el.clientWidth) / 2);
-    el.scrollTop = Math.max(0, (h - el.clientHeight) / 2);
+    const pending = pendingScrollRestoreRef.current;
+    if (pending) {
+      el.scrollLeft = Math.min(
+        Math.max(0, pending.scrollLeft),
+        Math.max(0, w - el.clientWidth),
+      );
+      el.scrollTop = Math.min(
+        Math.max(0, pending.scrollTop),
+        Math.max(0, h - el.clientHeight),
+      );
+      pendingScrollRestoreRef.current = null;
+    } else {
+      el.scrollLeft = Math.max(0, (w - el.clientWidth) / 2);
+      el.scrollTop = Math.max(0, (h - el.clientHeight) / 2);
+    }
     hasCenteredInitialCanvasScrollRef.current = true;
   }, [canvasSurfaceSize.w, canvasSurfaceSize.h]);
 

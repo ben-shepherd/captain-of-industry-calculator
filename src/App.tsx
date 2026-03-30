@@ -13,6 +13,7 @@ import { ResultsSection } from './components/results/ResultsSection';
 import { TargetResourcePanel } from './components/target/TargetResourcePanel';
 import { useCalculation } from './hooks/useCalculation';
 import { loadAppView, saveAppView, clearAppViewStorage } from './utils/appViewStorage';
+import { clearCanvasWorkspaceStorage } from './utils/canvasWorkspaceStorage';
 
 export function App() {
   const [view, setView] = useState<AppView>(() => loadAppView());
@@ -31,6 +32,7 @@ export function App() {
         onViewChange={setView}
         onResetPersistedChrome={() => {
           clearAppViewStorage();
+          clearCanvasWorkspaceStorage();
           setView('calculator');
         }}
       />
