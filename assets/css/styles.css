@@ -777,6 +777,32 @@ img.canvas-resource-icon {
   text-overflow: ellipsis;
 }
 
+.canvas-block-label-input {
+  flex: 1;
+  min-width: 4rem;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.08rem 0.25rem;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.25;
+  color: inherit;
+  text-align: center;
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, #888);
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+  cursor: text;
+  user-select: text;
+  touch-action: auto;
+}
+
+.canvas-block-label-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
 .canvas-block-label-remove {
   flex-shrink: 0;
   display: flex;

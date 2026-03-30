@@ -101,6 +101,12 @@ export function CanvasView() {
   const [placedBlockLabels, setPlacedBlockLabels] = useState<Record<number, string>>(
     initialCanvas.placedBlockLabels,
   );
+  const [blockLabelRename, setBlockLabelRename] = useState<{
+    batchId: number;
+    draft: string;
+  } | null>(null);
+  const skipBlockLabelRenameCommitRef = useRef(false);
+  const blockLabelRenameInputRef = useRef<HTMLInputElement>(null);
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
   const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>(initialCanvas.placedEdges);
   const [workspaceViewport, setWorkspaceViewport] = useState({ w: 0, h: 0 });
@@ -169,6 +175,12 @@ export function CanvasView() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
+      if (blockLabelRename) {
+        e.preventDefault();
+        skipBlockLabelRenameCommitRef.current = true;
+        setBlockLabelRename(null);
+        return;
+      }
       if (pendingPlacement) {
         setPendingPlacement(null);
         setDependentPick({});
@@ -180,7 +192,16 @@ export function CanvasView() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [pendingPlacement]);
+  }, [pendingPlacement, blockLabelRename]);
+
+  /** Only when entering rename for a batch — not on every draft keystroke (select() would replace text). */
+  useLayoutEffect(() => {
+    if (!blockLabelRename) return;
+    const el = blockLabelRenameInputRef.current;
+    if (!el) return;
+    el.focus();
+    el.select();
+  }, [blockLabelRename?.batchId]);
 
   function toggleCategory(level: number) {
     setExpandedByLevel((prev) => {
@@ -649,13 +670,37 @@ export function CanvasView() {
   function handleBlockLabelPointerDown(e: React.PointerEvent<HTMLDivElement>) {
     if (e.button !== 0) return;
     if ((e.target as HTMLElement).closest('button')) return;
+    if ((e.target as HTMLElement).closest('input, textarea')) return;
     e.preventDefault();
     e.stopPropagation();
     const raw = e.currentTarget.getAttribute('data-batch-id');
     const batchId = raw != null ? Number(raw) : NaN;
     if (Number.isNaN(batchId)) return;
-    dragStateRef.current = { kind: 'batch', batchId, lastX: e.clientX, lastY: e.clientY };
-    document.body.style.cursor = 'grabbing';
+    if (blockLabelRename?.batchId === batchId) return;
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    let started = false;
+
+    const onMove = (ev: PointerEvent) => {
+      if (started) return;
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      if (dx * dx + dy * dy < 25) return;
+      started = true;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      dragStateRef.current = { kind: 'batch', batchId, lastX: ev.clientX, lastY: ev.clientY };
+      document.body.style.cursor = 'grabbing';
+    };
+
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
   }
 
   function handleWorkspacePointerDown(e: React.PointerEvent<HTMLDivElement>) {
@@ -934,7 +979,7 @@ export function CanvasView() {
               key={`block-label-${bl.batchId}`}
               className="canvas-block-label"
               data-batch-id={bl.batchId}
-              title="Drag to move entire block"
+              title="Drag to move entire block · Double-click label to rename"
               onPointerDown={handleBlockLabelPointerDown}
               style={{
                 position: 'absolute',
@@ -944,7 +989,61 @@ export function CanvasView() {
                 zIndex: 3,
               }}
             >
-              <span className="canvas-block-label-text">{bl.title}</span>
+              {blockLabelRename?.batchId === bl.batchId ? (
+                <input
+                  ref={blockLabelRenameInputRef}
+                  type="text"
+                  className="canvas-block-label-input"
+                  aria-label="Block name"
+                  value={blockLabelRename.draft}
+                  onChange={(e) =>
+                    setBlockLabelRename((prev) =>
+                      prev && prev.batchId === bl.batchId
+                        ? { ...prev, draft: e.target.value }
+                        : prev,
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      (e.target as HTMLInputElement).blur();
+                    }
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      skipBlockLabelRenameCommitRef.current = true;
+                      setBlockLabelRename(null);
+                    }
+                  }}
+                  onBlur={() => {
+                    if (skipBlockLabelRenameCommitRef.current) {
+                      skipBlockLabelRenameCommitRef.current = false;
+                      return;
+                    }
+                    setBlockLabelRename((prev) => {
+                      if (!prev || prev.batchId !== bl.batchId) return prev;
+                      const displayLabel = prev.draft.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
+                      setPlacedBlockLabels((p) => ({ ...p, [bl.batchId]: displayLabel }));
+                      return null;
+                    });
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <span
+                  className="canvas-block-label-text"
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setBlockLabelRename({
+                      batchId: bl.batchId,
+                      draft: placedBlockLabels[bl.batchId] ?? '',
+                    });
+                  }}
+                >
+                  {bl.title}
+                </span>
+              )}
               <button
                 type="button"
                 className="canvas-block-label-remove"
