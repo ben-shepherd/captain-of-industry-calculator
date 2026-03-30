@@ -16,9 +16,11 @@ import {
 export type AppHeaderProps = {
   activeView: AppView;
   onViewChange: (view: AppView) => void;
+  /** After full data wipe: clear other persisted UI (e.g. active view) and return to calculator. */
+  onResetPersistedChrome?: () => void;
 };
 
-export function AppHeader({ activeView, onViewChange }: AppHeaderProps) {
+export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: AppHeaderProps) {
   const state = useCoiStore();
   const importInputRef = useRef<HTMLInputElement>(null);
   const showGuide = !state.userGuideVisible && activeView === 'calculator';
@@ -157,6 +159,7 @@ export function AppHeader({ activeView, onViewChange }: AppHeaderProps) {
                 return;
               }
               wipeAllPersistedDataAndResetToDefaults();
+              onResetPersistedChrome?.();
             }}
           >
             Reset

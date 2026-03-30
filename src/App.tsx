@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCoiStore } from '../assets/js/app/coiExternalStore';
 import type { AppView } from './appView';
 import { NetFlowChartSection } from './components/charts/NetFlowChartSection';
@@ -12,16 +12,28 @@ import { UserGuide } from './components/layout/UserGuide';
 import { ResultsSection } from './components/results/ResultsSection';
 import { TargetResourcePanel } from './components/target/TargetResourcePanel';
 import { useCalculation } from './hooks/useCalculation';
+import { loadAppView, saveAppView, clearAppViewStorage } from './utils/appViewStorage';
 
 export function App() {
-  const [view, setView] = useState<AppView>('calculator');
+  const [view, setView] = useState<AppView>(() => loadAppView());
+
+  useEffect(() => {
+    saveAppView(view);
+  }, [view]);
   const state = useCoiStore();
   const outcome = useCalculation(state);
   const chainTotals = outcome.ok && outcome.result ? outcome.result.totals : {};
 
   return (
     <div className="app-root">
-      <AppHeader activeView={view} onViewChange={setView} />
+      <AppHeader
+        activeView={view}
+        onViewChange={setView}
+        onResetPersistedChrome={() => {
+          clearAppViewStorage();
+          setView('calculator');
+        }}
+      />
       {view === 'calculator' ? (
         <div className="app-page" id="app-main-view">
           <UserGuide />
