@@ -8,7 +8,6 @@ import {
   resources,
 } from '../../../assets/js/data/resources';
 import {
-  clampPlacedPositions,
   CANVAS_PLACE_DEFAULT_RATE,
   CANVAS_CARD_HEIGHT_PX,
   CANVAS_CARD_WIDTH_PX,
@@ -16,8 +15,11 @@ import {
   CANVAS_WORKSPACE_EDGE_PAD_PX,
   collectDependencyEdges,
   computeCanvasContentExtent,
+  finalizeNewBatchPositions,
+  finalizeSingleCardPosition,
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
+  nodeToAxisRect,
   type CanvasDependencyEdge,
   type CanvasPlacementStyle,
 } from '../../utils/canvasPlacement';
@@ -79,7 +81,11 @@ export function CanvasView() {
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
   const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>([]);
   const [workspaceViewport, setWorkspaceViewport] = useState({ w: 0, h: 0 });
-  const dragStateRef = useRef<{ batchId: number; lastX: number; lastY: number } | null>(null);
+  const dragStateRef = useRef<
+    | { kind: 'batch'; batchId: number; lastX: number; lastY: number }
+    | { kind: 'card'; canvasKey: string; lastX: number; lastY: number }
+    | null
+  >(null);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
   const placedNodesRef = useRef(placedNodes);
@@ -164,26 +170,23 @@ export function CanvasView() {
         ? Math.max(CANVAS_CARD_WIDTH_PX, el.clientWidth - pad * 2)
         : undefined;
     const raw = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length, style, wrapW);
-    let maxR = 0;
-    let maxB = 0;
-    for (const n of placedNodesRef.current) {
-      maxR = Math.max(maxR, n.x + CANVAS_CARD_WIDTH_PX);
-      maxB = Math.max(maxB, n.y + CANVAS_CARD_HEIGHT_PX);
-    }
-    for (const p of raw) {
-      maxR = Math.max(maxR, p.x + CANVAS_CARD_WIDTH_PX);
-      maxB = Math.max(maxB, p.y + CANVAS_CARD_HEIGHT_PX);
-    }
-    const boundsW =
-      el && el.clientWidth > 0
-        ? Math.max(el.clientWidth, el.scrollWidth, maxR + pad)
-        : maxR + pad;
-    const boundsH =
-      el && el.clientHeight > 0
-        ? Math.max(el.clientHeight, el.scrollHeight, maxB + pad)
-        : maxB + pad;
+    const staticRects = placedNodesRef.current.map((n) =>
+      nodeToAxisRect(n.x, n.y, CANVAS_CARD_WIDTH_PX, CANVAS_CARD_HEIGHT_PX),
+    );
+    const restNodes = placedNodesRef.current.map((n) => ({ x: n.x, y: n.y }));
     const positions =
-      boundsW > 0 && boundsH > 0 ? clampPlacedPositions(raw, boundsW, boundsH) : raw;
+      el && el.clientWidth > 0
+        ? finalizeNewBatchPositions(
+            raw,
+            staticRects,
+            restNodes,
+            CANVAS_CARD_WIDTH_PX,
+            CANVAS_CARD_HEIGHT_PX,
+            pad,
+            el,
+          )
+        : raw;
+
     const batch = placementSeq;
     setPlacementSeq((s) => s + 1);
 
@@ -414,44 +417,78 @@ export function CanvasView() {
       const dy = e.clientY - d.lastY;
       d.lastX = e.clientX;
       d.lastY = e.clientY;
-      const bid = d.batchId;
-      setPlacedNodes((prev) =>
-        prev.map((n) => (n.batchId === bid ? { ...n, x: n.x + dx, y: n.y + dy } : n)),
-      );
+      if (d.kind === 'batch') {
+        const bid = d.batchId;
+        setPlacedNodes((prev) =>
+          prev.map((n) => (n.batchId === bid ? { ...n, x: n.x + dx, y: n.y + dy } : n)),
+        );
+      } else {
+        const key = d.canvasKey;
+        setPlacedNodes((prev) =>
+          prev.map((n) => (n.key === key ? { ...n, x: n.x + dx, y: n.y + dy } : n)),
+        );
+      }
     };
     const onUp = () => {
       const d = dragStateRef.current;
       if (!d) return;
       dragStateRef.current = null;
       document.body.style.removeProperty('cursor');
-      const bid = d.batchId;
-      setPlacedNodes((prev) => {
-        const batch = prev.filter((n) => n.batchId === bid);
-        const rest = prev.filter((n) => n.batchId !== bid);
-        const wel = workspaceRef.current;
-        if (!wel || batch.length === 0) return prev;
-        const positions = batch.map((n) => ({ x: n.x, y: n.y }));
-        const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
-        let maxR = 0;
-        let maxB = 0;
-        for (const n of rest) {
-          maxR = Math.max(maxR, n.x + CANVAS_CARD_WIDTH_PX);
-          maxB = Math.max(maxB, n.y + CANVAS_CARD_HEIGHT_PX);
-        }
-        for (const n of batch) {
-          maxR = Math.max(maxR, n.x + CANVAS_CARD_WIDTH_PX);
-          maxB = Math.max(maxB, n.y + CANVAS_CARD_HEIGHT_PX);
-        }
-        const boundsW = Math.max(wel.clientWidth, wel.scrollWidth, maxR + pad);
-        const boundsH = Math.max(wel.clientHeight, wel.scrollHeight, maxB + pad);
-        const clamped = clampPlacedPositions(positions, boundsW, boundsH);
-        const merged = batch.map((n, i) => ({
-          ...n,
-          x: clamped[i]!.x,
-          y: clamped[i]!.y,
-        }));
-        return [...rest, ...merged];
-      });
+      const pad = CANVAS_WORKSPACE_EDGE_PAD_PX;
+      if (d.kind === 'batch') {
+        const bid = d.batchId;
+        setPlacedNodes((prev) => {
+          const batch = prev.filter((n) => n.batchId === bid);
+          const rest = prev.filter((n) => n.batchId !== bid);
+          const wel = workspaceRef.current;
+          if (!wel || batch.length === 0) return prev;
+          const staticRects = rest.map((n) =>
+            nodeToAxisRect(n.x, n.y, CANVAS_CARD_WIDTH_PX, CANVAS_CARD_HEIGHT_PX),
+          );
+          const restNodes = rest.map((n) => ({ x: n.x, y: n.y }));
+          const positions = batch.map((n) => ({ x: n.x, y: n.y }));
+          const finalized = finalizeNewBatchPositions(
+            positions,
+            staticRects,
+            restNodes,
+            CANVAS_CARD_WIDTH_PX,
+            CANVAS_CARD_HEIGHT_PX,
+            pad,
+            wel,
+          );
+          const merged = batch.map((n, i) => ({
+            ...n,
+            x: finalized[i]!.x,
+            y: finalized[i]!.y,
+          }));
+          return [...rest, ...merged];
+        });
+      } else {
+        const canvasKey = d.canvasKey;
+        setPlacedNodes((prev) => {
+          const node = prev.find((n) => n.key === canvasKey);
+          if (!node) return prev;
+          const rest = prev.filter((n) => n.key !== canvasKey);
+          const wel = workspaceRef.current;
+          if (!wel) return prev;
+          const staticRects = rest.map((n) =>
+            nodeToAxisRect(n.x, n.y, CANVAS_CARD_WIDTH_PX, CANVAS_CARD_HEIGHT_PX),
+          );
+          const restNodes = rest.map((n) => ({ x: n.x, y: n.y }));
+          const pos = finalizeSingleCardPosition(
+            { x: node.x, y: node.y },
+            staticRects,
+            restNodes,
+            CANVAS_CARD_WIDTH_PX,
+            CANVAS_CARD_HEIGHT_PX,
+            pad,
+            wel,
+          );
+          return prev.map((n) =>
+            n.key === canvasKey ? { ...n, x: pos.x, y: pos.y } : n,
+          );
+        });
+      }
     };
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
@@ -461,15 +498,26 @@ export function CanvasView() {
     };
   }, []);
 
-  function handleBatchPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+  function handleCardPointerDown(e: React.PointerEvent<HTMLDivElement>) {
     if (e.button !== 0) return;
     if ((e.target as HTMLElement).closest('input, textarea, select, button, label')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const key = e.currentTarget.getAttribute('data-canvas-node-key');
+    if (!key) return;
+    dragStateRef.current = { kind: 'card', canvasKey: key, lastX: e.clientX, lastY: e.clientY };
+    document.body.style.cursor = 'grabbing';
+  }
+
+  function handleBlockLabelPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('button')) return;
     e.preventDefault();
     e.stopPropagation();
     const raw = e.currentTarget.getAttribute('data-batch-id');
     const batchId = raw != null ? Number(raw) : NaN;
     if (Number.isNaN(batchId)) return;
-    dragStateRef.current = { batchId, lastX: e.clientX, lastY: e.clientY };
+    dragStateRef.current = { kind: 'batch', batchId, lastX: e.clientX, lastY: e.clientY };
     document.body.style.cursor = 'grabbing';
   }
 
@@ -675,6 +723,9 @@ export function CanvasView() {
             <div
               key={`block-label-${bl.batchId}`}
               className="canvas-block-label"
+              data-batch-id={bl.batchId}
+              title="Drag to move entire block"
+              onPointerDown={handleBlockLabelPointerDown}
               style={{
                 position: 'absolute',
                 left: bl.left,
@@ -735,10 +786,10 @@ export function CanvasView() {
               consumptionPerMin={node.consumptionPerMin}
               onProductionChange={updatePlacedNodeProduction}
               onConsumptionChange={updatePlacedNodeConsumption}
-              onAddUpstreamChain={() =>
-                beginExpandUpstreamFromCard(node.resourceId, node.x, node.y)
-              }
-              onBatchPointerDown={handleBatchPointerDown}
+            onAddUpstreamChain={() =>
+              beginExpandUpstreamFromCard(node.resourceId, node.x, node.y)
+            }
+            onCardPointerDown={handleCardPointerDown}
               style={{
                 position: 'absolute',
                 left: node.x,

@@ -11,9 +11,16 @@ export type CanvasPlacementStyle = 'horizontal' | 'vertical' | 'auto';
 
 /** Layout dimensions — keep in sync with `.canvas-placed-card` in CSS. */
 export const CANVAS_CARD_WIDTH_PX = 140;
-/** Includes header, icon, production/consumption rows, and bulk step buttons. */
-export const CANVAS_CARD_HEIGHT_PX = 164;
+/**
+ * Total card height used for layout, overlap checks, and dependency anchors.
+ * Must be ≥ the rendered height (header + body + both flow rows with bulk buttons);
+ * if CSS changes, measure a card and update this value.
+ */
+export const CANVAS_CARD_HEIGHT_PX = 256;
 const GAP_PX = 12;
+
+/** Minimum gap between card edges in layout and overlap resolution (matches `GAP_PX`). */
+export const CANVAS_CARD_GAP_PX = GAP_PX;
 
 /** Minimum inset from the workspace edges when clamping placed cards. */
 export const CANVAS_WORKSPACE_EDGE_PAD_PX = 8;
@@ -97,6 +104,188 @@ export function clampPlacedPositions(
   }
 
   return out;
+}
+
+/** Axis-aligned rectangle for overlap tests (card bounds in canvas space). */
+export type CanvasAxisRect = { left: number; top: number; right: number; bottom: number };
+
+export function nodeToAxisRect(
+  x: number,
+  y: number,
+  cardW: number,
+  cardH: number,
+): CanvasAxisRect {
+  return { left: x, top: y, right: x + cardW, bottom: y + cardH };
+}
+
+function rectsOverlap(a: CanvasAxisRect, b: CanvasAxisRect): boolean {
+  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+}
+
+function inflateRect(r: CanvasAxisRect, margin: number): CanvasAxisRect {
+  return {
+    left: r.left - margin,
+    top: r.top - margin,
+    right: r.right + margin,
+    bottom: r.bottom + margin,
+  };
+}
+
+function groupOverlapsInflatedStatics(
+  positions: Array<{ x: number; y: number }>,
+  cardW: number,
+  cardH: number,
+  staticRects: CanvasAxisRect[],
+  gapPx: number,
+): boolean {
+  const half = gapPx / 2;
+  for (const p of positions) {
+    const r = inflateRect(nodeToAxisRect(p.x, p.y, cardW, cardH), half);
+    for (const s of staticRects) {
+      const si = inflateRect(s, half);
+      if (rectsOverlap(r, si)) return true;
+    }
+  }
+  for (let i = 0; i < positions.length; i++) {
+    for (let j = i + 1; j < positions.length; j++) {
+      const ri = inflateRect(
+        nodeToAxisRect(positions[i]!.x, positions[i]!.y, cardW, cardH),
+        half,
+      );
+      const rj = inflateRect(
+        nodeToAxisRect(positions[j]!.x, positions[j]!.y, cardW, cardH),
+        half,
+      );
+      if (rectsOverlap(ri, rj)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Move a rigid group of cards down (in small steps) until no overlap with `staticRects`
+ * and no internal overlap, using at least `gapPx` clearance between card edges.
+ */
+export function separateGroupedPositionsFromStatics(
+  positions: Array<{ x: number; y: number }>,
+  cardW: number,
+  cardH: number,
+  staticRects: CanvasAxisRect[],
+  gapPx: number = GAP_PX,
+): Array<{ x: number; y: number }> {
+  const out = positions.map((p) => ({ x: p.x, y: p.y }));
+  const step = Math.max(4, Math.ceil(gapPx / 3));
+  let guard = 0;
+  while (
+    groupOverlapsInflatedStatics(out, cardW, cardH, staticRects, gapPx) &&
+    guard < 8000
+  ) {
+    for (const p of out) {
+      p.y += step;
+    }
+    guard++;
+  }
+  return out;
+}
+
+/**
+ * Move one card down until it clears all `staticRects` (with gap), ignoring other instances.
+ */
+export function separateOnePositionFromStatics(
+  pos: { x: number; y: number },
+  cardW: number,
+  cardH: number,
+  staticRects: CanvasAxisRect[],
+  gapPx: number = GAP_PX,
+): { x: number; y: number } {
+  const out = { ...pos };
+  const step = Math.max(4, Math.ceil(gapPx / 3));
+  let guard = 0;
+  while (
+    groupOverlapsInflatedStatics([out], cardW, cardH, staticRects, gapPx) &&
+    guard < 8000
+  ) {
+    out.y += step;
+    guard++;
+  }
+  return out;
+}
+
+/**
+ * Clamp new batch positions to the workspace, separate from existing cards, repeat so
+ * clamp and non-overlap stay consistent after placement.
+ */
+export function finalizeNewBatchPositions(
+  rawPositions: Array<{ x: number; y: number }>,
+  staticRects: CanvasAxisRect[],
+  restNodes: Array<{ x: number; y: number }>,
+  cardW: number,
+  cardH: number,
+  pad: number,
+  wel: HTMLElement,
+): Array<{ x: number; y: number }> {
+  let pos = rawPositions.map((p) => ({ x: p.x, y: p.y }));
+  const measureBounds = () => {
+    let maxR = pad;
+    let maxB = pad;
+    for (const n of restNodes) {
+      maxR = Math.max(maxR, n.x + cardW);
+      maxB = Math.max(maxB, n.y + cardH);
+    }
+    for (const p of pos) {
+      maxR = Math.max(maxR, p.x + cardW);
+      maxB = Math.max(maxB, p.y + cardH);
+    }
+    return {
+      w: Math.max(wel.clientWidth, wel.scrollWidth, maxR + pad),
+      h: Math.max(wel.clientHeight, wel.scrollHeight, maxB + pad),
+    };
+  };
+  let { w, h } = measureBounds();
+  if (w > 0 && h > 0) pos = clampPlacedPositions(pos, w, h);
+  pos = separateGroupedPositionsFromStatics(pos, cardW, cardH, staticRects);
+  ({ w, h } = measureBounds());
+  if (w > 0 && h > 0) pos = clampPlacedPositions(pos, w, h);
+  pos = separateGroupedPositionsFromStatics(pos, cardW, cardH, staticRects);
+  ({ w, h } = measureBounds());
+  if (w > 0 && h > 0) pos = clampPlacedPositions(pos, w, h);
+  return pos;
+}
+
+/** After dragging one card, clamp to workspace and separate from other cards. */
+export function finalizeSingleCardPosition(
+  pos: { x: number; y: number },
+  staticRects: CanvasAxisRect[],
+  restNodes: Array<{ x: number; y: number }>,
+  cardW: number,
+  cardH: number,
+  pad: number,
+  wel: HTMLElement,
+): { x: number; y: number } {
+  let p = { ...pos };
+  const measureBounds = () => {
+    let maxR = pad;
+    let maxB = pad;
+    for (const n of restNodes) {
+      maxR = Math.max(maxR, n.x + cardW);
+      maxB = Math.max(maxB, n.y + cardH);
+    }
+    maxR = Math.max(maxR, p.x + cardW);
+    maxB = Math.max(maxB, p.y + cardH);
+    return {
+      w: Math.max(wel.clientWidth, wel.scrollWidth, maxR + pad),
+      h: Math.max(wel.clientHeight, wel.scrollHeight, maxB + pad),
+    };
+  };
+  let { w, h } = measureBounds();
+  if (w > 0 && h > 0) p = clampPlacedPositions([p], w, h)[0]!;
+  p = separateOnePositionFromStatics(p, cardW, cardH, staticRects);
+  ({ w, h } = measureBounds());
+  if (w > 0 && h > 0) p = clampPlacedPositions([p], w, h)[0]!;
+  p = separateOnePositionFromStatics(p, cardW, cardH, staticRects);
+  ({ w, h } = measureBounds());
+  if (w > 0 && h > 0) p = clampPlacedPositions([p], w, h)[0]!;
+  return p;
 }
 
 /**

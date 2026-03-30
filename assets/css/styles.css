@@ -515,9 +515,11 @@ img.canvas-resource-icon {
   fill: color-mix(in srgb, var(--color-accent) 45%, #555);
 }
 
+/* Min height matches CANVAS_CARD_HEIGHT_PX in src/utils/canvasPlacement.ts (layout / overlap). */
 .canvas-placed-card {
   z-index: 2;
   width: 140px;
+  min-height: 256px;
   box-sizing: border-box;
   border-radius: var(--radius);
   border: 1px solid color-mix(in srgb, #333 18%, #ccc);
@@ -746,6 +748,13 @@ img.canvas-resource-icon {
   border-radius: var(--radius);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.canvas-block-label:active {
+  cursor: grabbing;
 }
 
 .canvas-block-label-text {

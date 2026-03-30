@@ -78,7 +78,8 @@ type Props = {
   /** Open the placement dialog to add this resource’s upstream chain without using the sidebar. */
   onAddUpstreamChain: () => void;
   style: React.CSSProperties;
-  onBatchPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
+  /** Drag the single resource card (move this node only). */
+  onCardPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
 
 export function CanvasPlacedCard({
@@ -93,7 +94,7 @@ export function CanvasPlacedCard({
   onConsumptionChange,
   onAddUpstreamChain,
   style,
-  onBatchPointerDown,
+  onCardPointerDown,
 }: Props) {
   const url = def?.imageUrl;
   const prodId = `canvas-placed-prod-${canvasNodeKey}`;
@@ -105,8 +106,10 @@ export function CanvasPlacedCard({
       style={style}
       data-resource-id={resourceId}
       data-batch-id={String(batchId)}
+      data-canvas-node-key={canvasNodeKey}
       aria-label={label}
-      onPointerDown={onBatchPointerDown}
+      title="Drag to move this resource"
+      onPointerDown={onCardPointerDown}
     >
       <div className="canvas-placed-card-header">
         <span className="canvas-placed-card-title">{label}</span>
