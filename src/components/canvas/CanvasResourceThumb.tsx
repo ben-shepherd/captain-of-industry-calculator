@@ -11,9 +11,11 @@ type Props = {
   resourceId: string;
   def: ResourceDef;
   category: CanvasResourceTooltipContext;
+  isSelected: boolean;
+  onSelect: (resourceId: string) => void;
 };
 
-export function CanvasResourceThumb({ resourceId, def, category }: Props) {
+export function CanvasResourceThumb({ resourceId, def, category, isSelected, onSelect }: Props) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ left: 0, top: 0 });
 
@@ -64,15 +66,17 @@ export function CanvasResourceThumb({ resourceId, def, category }: Props) {
 
   return (
     <>
-      <div
+      <button
+        type="button"
         className="canvas-resource-thumb"
         role="listitem"
-        tabIndex={0}
+        aria-pressed={isSelected}
         aria-label={ariaLabel}
         onMouseEnter={onOpen}
         onMouseLeave={onClose}
         onFocus={onOpen}
         onBlur={onClose}
+        onClick={() => onSelect(resourceId)}
       >
         {url ? (
           <img
@@ -86,7 +90,7 @@ export function CanvasResourceThumb({ resourceId, def, category }: Props) {
             {def.label.slice(0, 1)}
           </span>
         )}
-      </div>
+      </button>
       {open &&
         createPortal(
           <div

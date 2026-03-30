@@ -1,18 +1,55 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { DependencyNode } from '../../../assets/js/contracts';
+import { firstProducingRecipeIndex } from '../../../assets/js/app/state';
+import { resolve } from '../../../assets/js/calculator/resolver';
 import {
   getResourceIdsConsumedInRecipes,
   RESOURCE_SEGMENTS,
+  resources,
 } from '../../../assets/js/data/resources';
-import { CanvasResourceThumb } from './CanvasResourceThumb';
+import {
+  CANVAS_PLACE_DEFAULT_RATE,
+  flattenDependencyTreeUniqueFirst,
+  layoutPlacedNodes,
+} from '../../utils/canvasPlacement';
 import {
   createExpandedMapAll,
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
 } from '../../utils/canvasSidebarStorage';
+import { CanvasPlacedCard } from './CanvasPlacedCard';
+import { CanvasPlacementGhost } from './CanvasPlacementGhost';
+import { CanvasPlacementPicker } from './CanvasPlacementPicker';
+import { CanvasResourceThumb } from './CanvasResourceThumb';
+
+type PlacedCanvasNode = {
+  key: string;
+  resourceId: string;
+  label: string;
+  x: number;
+  y: number;
+};
+
+type PendingPlacement = {
+  anchorX: number;
+  anchorY: number;
+  resourceId: string;
+  uniqueNodes: DependencyNode[];
+};
 
 export function CanvasView() {
   const [search, setSearch] = useState('');
   const [expandedByLevel, setExpandedByLevel] = useState(loadCanvasSidebarExpanded);
+  const [selectedResourceId, setSelectedResourceId] = useState<string | null>(null);
+  const [placementSeq, setPlacementSeq] = useState(0);
+  const [placedNodes, setPlacedNodes] = useState<PlacedCanvasNode[]>([]);
+  const [placeError, setPlaceError] = useState<string | null>(null);
+  const [pointerInWorkspace, setPointerInWorkspace] = useState(false);
+  const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
+  const [pendingPlacement, setPendingPlacement] = useState<PendingPlacement | null>(null);
+  const [dependentPick, setDependentPick] = useState<Record<string, boolean>>({});
+
+  const workspaceRef = useRef<HTMLDivElement>(null);
 
   const consumedInputIds = useMemo(() => getResourceIdsConsumedInRecipes(), []);
 
@@ -34,6 +71,28 @@ export function CanvasView() {
     }).filter((seg) => seg.entries.length > 0);
   }, [search, consumedInputIds]);
 
+  const selectedDef = selectedResourceId ? resources[selectedResourceId] : undefined;
+
+  const selectResource = useCallback((id: string) => {
+    setSelectedResourceId((prev) => (prev === id ? null : id));
+    setPlaceError(null);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (pendingPlacement) {
+        setPendingPlacement(null);
+        setDependentPick({});
+        return;
+      }
+      setSelectedResourceId(null);
+      setPlaceError(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [pendingPlacement]);
+
   function toggleCategory(level: number) {
     setExpandedByLevel((prev) => {
       const next = { ...prev, [level]: !(prev[level] ?? true) };
@@ -53,6 +112,88 @@ export function CanvasView() {
     saveCanvasSidebarExpanded(next);
     setExpandedByLevel(next);
   }
+
+  function commitPlacementAtAnchor(anchorX: number, anchorY: number, nodesToPlace: DependencyNode[]) {
+    if (nodesToPlace.length === 0) return;
+    const positions = layoutPlacedNodes(anchorX, anchorY, nodesToPlace.length);
+    const batch = placementSeq;
+    setPlacementSeq((s) => s + 1);
+
+    const next: PlacedCanvasNode[] = nodesToPlace.map((node, i) => ({
+      key: `p${batch}-${i}-${node.id}`,
+      resourceId: node.id,
+      label: node.label,
+      x: positions[i]?.x ?? anchorX,
+      y: positions[i]?.y ?? anchorY,
+    }));
+
+    setPlacedNodes((prev) => [...prev, ...next]);
+    setPlaceError(null);
+  }
+
+  function handleWorkspaceClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (pendingPlacement) return;
+    if (!selectedResourceId || !workspaceRef.current) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('.canvas-placed-card')) return;
+
+    const rect = workspaceRef.current.getBoundingClientRect();
+    const anchorX = e.clientX - rect.left;
+    const anchorY = e.clientY - rect.top;
+
+    try {
+      const recipeIdx = firstProducingRecipeIndex(selectedResourceId);
+      const { tree } = resolve(
+        selectedResourceId,
+        CANVAS_PLACE_DEFAULT_RATE,
+        recipeIdx,
+        'full',
+      );
+      const unique = flattenDependencyTreeUniqueFirst(tree);
+      const dependents = unique.slice(1);
+
+      if (dependents.length === 0) {
+        commitPlacementAtAnchor(anchorX, anchorY, unique);
+        setSelectedResourceId(null);
+      } else {
+        setPendingPlacement({
+          anchorX,
+          anchorY,
+          resourceId: selectedResourceId,
+          uniqueNodes: unique,
+        });
+        setDependentPick({});
+        setSelectedResourceId(null);
+      }
+    } catch {
+      setPlaceError('Could not resolve this resource chain. Try another resource.');
+    }
+  }
+
+  function confirmPendingPlacement() {
+    if (!pendingPlacement) return;
+    const { anchorX, anchorY, uniqueNodes } = pendingPlacement;
+    const toPlace = uniqueNodes.filter((node, i) => i === 0 || dependentPick[node.id] === true);
+    commitPlacementAtAnchor(anchorX, anchorY, toPlace);
+    setPendingPlacement(null);
+    setDependentPick({});
+  }
+
+  function cancelPendingPlacement() {
+    setPendingPlacement(null);
+    setDependentPick({});
+  }
+
+  const pendingRootDef = pendingPlacement ? resources[pendingPlacement.resourceId] : undefined;
+  const pendingDependents = pendingPlacement ? pendingPlacement.uniqueNodes.slice(1) : [];
+
+  const workspaceClassName = [
+    'canvas-workspace',
+    selectedResourceId ? 'canvas-workspace--placing' : '',
+    selectedResourceId && pointerInWorkspace ? 'canvas-workspace--placing-hover' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className="canvas-view" id="app-canvas-view" aria-label="Blueprint canvas">
@@ -131,6 +272,8 @@ export function CanvasView() {
                           resourceId={id}
                           def={def}
                           category={{ level: seg.level, groupLabel: seg.groupLabel }}
+                          isSelected={selectedResourceId === id}
+                          onSelect={selectResource}
                         />
                       ))}
                     </div>
@@ -141,9 +284,82 @@ export function CanvasView() {
           )}
         </div>
       </aside>
-      <div className="canvas-workspace">
-        <p className="canvas-workspace-hint">Canvas</p>
+      <div
+        ref={workspaceRef}
+        className={workspaceClassName}
+        onMouseEnter={() => setPointerInWorkspace(true)}
+        onMouseLeave={() => {
+          setPointerInWorkspace(false);
+          setPointer(null);
+        }}
+        onMouseMove={(e) => {
+          if (!workspaceRef.current) return;
+          const r = workspaceRef.current.getBoundingClientRect();
+          setPointer({ x: e.clientX - r.left, y: e.clientY - r.top });
+        }}
+        onClick={handleWorkspaceClick}
+      >
+        {placedNodes.length === 0 && !selectedResourceId ? (
+          <p className="canvas-workspace-hint">Canvas</p>
+        ) : null}
+
+        {selectedResourceId && pointerInWorkspace && pointer && selectedDef ? (
+          <>
+            <div className="canvas-workspace-place-hint" aria-live="polite">
+              Click to place {selectedDef.label}
+            </div>
+            <CanvasPlacementGhost
+              left={pointer.x}
+              top={pointer.y}
+              label={selectedDef.label}
+              imageUrl={selectedDef.imageUrl || undefined}
+            />
+          </>
+        ) : null}
+
+        {placeError ? (
+          <p className="canvas-workspace-error" role="alert">
+            {placeError}
+          </p>
+        ) : null}
+
+        {placedNodes.map((node) => (
+          <CanvasPlacedCard
+            key={node.key}
+            resourceId={node.resourceId}
+            def={resources[node.resourceId]}
+            label={node.label}
+            style={{
+              position: 'absolute',
+              left: node.x,
+              top: node.y,
+            }}
+          />
+        ))}
       </div>
+
+      {pendingPlacement && pendingRootDef ? (
+        <CanvasPlacementPicker
+          rootId={pendingPlacement.resourceId}
+          rootLabel={pendingRootDef.label}
+          dependents={pendingDependents}
+          resources={resources}
+          selected={dependentPick}
+          onToggle={(id) =>
+            setDependentPick((prev) => ({ ...prev, [id]: !prev[id] }))
+          }
+          onSelectAllDependents={() => {
+            const next: Record<string, boolean> = {};
+            for (const d of pendingDependents) {
+              next[d.id] = true;
+            }
+            setDependentPick(next);
+          }}
+          onClearDependents={() => setDependentPick({})}
+          onConfirm={confirmPendingPlacement}
+          onCancel={cancelPendingPlacement}
+        />
+      ) : null}
     </div>
   );
 }
