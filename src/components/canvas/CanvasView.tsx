@@ -10,6 +10,7 @@ import {
 import {
   clampPlacedPositions,
   CANVAS_PLACE_DEFAULT_RATE,
+  CANVAS_CARD_WIDTH_PX,
   collectDependencyEdges,
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
@@ -59,6 +60,8 @@ export function CanvasView() {
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [pendingPlacement, setPendingPlacement] = useState<PendingPlacement | null>(null);
   const [dependentPick, setDependentPick] = useState<Record<string, boolean>>({});
+  const [blockLabelDraft, setBlockLabelDraft] = useState('');
+  const [placedBlockLabels, setPlacedBlockLabels] = useState<Record<number, string>>({});
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
   const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>([]);
   const [linkLayerSize, setLinkLayerSize] = useState({ w: 0, h: 0 });
@@ -99,6 +102,7 @@ export function CanvasView() {
       if (pendingPlacement) {
         setPendingPlacement(null);
         setDependentPick({});
+        setBlockLabelDraft('');
         return;
       }
       setSelectedResourceId(null);
@@ -134,6 +138,7 @@ export function CanvasView() {
     nodesToPlace: DependencyNode[],
     style: CanvasPlacementStyle,
     tree: DependencyNode,
+    blockTitle: string,
   ) {
     if (nodesToPlace.length === 0) return;
     const el = workspaceRef.current;
@@ -163,6 +168,10 @@ export function CanvasView() {
     const edges = collectDependencyEdges(tree, placedIds, keyByResourceId);
     setPlacedEdges((prev) => [...prev, ...edges]);
     setPlacedNodes((prev) => [...prev, ...nodes]);
+    const trimmed = blockTitle.trim();
+    if (trimmed) {
+      setPlacedBlockLabels((prev) => ({ ...prev, [batch]: trimmed }));
+    }
     setPlaceError(null);
   }
 
@@ -185,22 +194,17 @@ export function CanvasView() {
         'full',
       );
       const unique = flattenDependencyTreeUniqueFirst(tree);
-      const dependents = unique.slice(1);
 
-      if (dependents.length === 0) {
-        commitPlacementAtAnchor(anchorX, anchorY, unique, placementStyle, tree);
-        setSelectedResourceId(null);
-      } else {
-        setPendingPlacement({
-          anchorX,
-          anchorY,
-          resourceId: selectedResourceId,
-          uniqueNodes: unique,
-          tree,
-        });
-        setDependentPick({});
-        setSelectedResourceId(null);
-      }
+      setPendingPlacement({
+        anchorX,
+        anchorY,
+        resourceId: selectedResourceId,
+        uniqueNodes: unique,
+        tree,
+      });
+      setDependentPick({});
+      setBlockLabelDraft('');
+      setSelectedResourceId(null);
     } catch {
       setPlaceError('Could not resolve this resource chain. Try another resource.');
     }
@@ -210,14 +214,16 @@ export function CanvasView() {
     if (!pendingPlacement) return;
     const { anchorX, anchorY, uniqueNodes, tree } = pendingPlacement;
     const toPlace = uniqueNodes.filter((node, i) => i === 0 || dependentPick[node.id] === true);
-    commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle, tree);
+    commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle, tree, blockLabelDraft);
     setPendingPlacement(null);
     setDependentPick({});
+    setBlockLabelDraft('');
   }
 
   function cancelPendingPlacement() {
     setPendingPlacement(null);
     setDependentPick({});
+    setBlockLabelDraft('');
   }
 
   const pendingRootDef = pendingPlacement ? resources[pendingPlacement.resourceId] : undefined;
@@ -230,6 +236,33 @@ export function CanvasView() {
     }
     return m;
   }, [placedNodes]);
+
+  const blockLabelOverlays = useMemo(() => {
+    const byBatch = new Map<number, PlacedCanvasNode[]>();
+    for (const n of placedNodes) {
+      const list = byBatch.get(n.batchId) ?? [];
+      list.push(n);
+      byBatch.set(n.batchId, list);
+    }
+    const out: Array<{ batchId: number; title: string; left: number; top: number }> = [];
+    for (const [bidStr, title] of Object.entries(placedBlockLabels)) {
+      const trimmed = title.trim();
+      if (!trimmed) continue;
+      const bid = Number(bidStr);
+      const batchNodes = byBatch.get(bid);
+      if (!batchNodes?.length) continue;
+      const minX = Math.min(...batchNodes.map((n) => n.x));
+      const maxX = Math.max(...batchNodes.map((n) => n.x + CANVAS_CARD_WIDTH_PX));
+      const minY = Math.min(...batchNodes.map((n) => n.y));
+      out.push({
+        batchId: bid,
+        title: trimmed,
+        left: (minX + maxX) / 2,
+        top: minY - 6,
+      });
+    }
+    return out;
+  }, [placedNodes, placedBlockLabels]);
 
   useLayoutEffect(() => {
     const el = workspaceRef.current;
@@ -471,6 +504,22 @@ export function CanvasView() {
           </p>
         ) : null}
 
+        {blockLabelOverlays.map((bl) => (
+          <div
+            key={`block-label-${bl.batchId}`}
+            className="canvas-block-label"
+            style={{
+              position: 'absolute',
+              left: bl.left,
+              top: bl.top,
+              transform: 'translate(-50%, -100%)',
+              zIndex: 3,
+            }}
+          >
+            {bl.title}
+          </div>
+        ))}
+
         {placedEdges.length > 0 && linkLayerSize.w > 0 && linkLayerSize.h > 0 ? (
           <div
             className="canvas-workspace-links-wrap"
@@ -517,6 +566,8 @@ export function CanvasView() {
           rootLabel={pendingRootDef.label}
           dependents={pendingDependents}
           resources={resources}
+          blockLabel={blockLabelDraft}
+          onBlockLabelChange={setBlockLabelDraft}
           selected={dependentPick}
           onToggle={(id) =>
             setDependentPick((prev) => ({ ...prev, [id]: !prev[id] }))

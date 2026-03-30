@@ -7,6 +7,8 @@ type Props = {
   dependents: DependencyNode[];
   resources: ResourcesMap;
   selected: Record<string, boolean>;
+  blockLabel: string;
+  onBlockLabelChange: (value: string) => void;
   onToggle: (id: string) => void;
   onSelectAllDependents: () => void;
   onClearDependents: () => void;
@@ -20,6 +22,8 @@ export function CanvasPlacementPicker({
   dependents,
   resources: resMap,
   selected,
+  blockLabel,
+  onBlockLabelChange,
   onToggle,
   onSelectAllDependents,
   onClearDependents,
@@ -54,6 +58,21 @@ export function CanvasPlacementPicker({
           <span className="canvas-placement-picker-id" title={rootId}>
             {rootId}
           </span>
+        </div>
+
+        <div className="canvas-placement-picker-block-name field">
+          <label htmlFor="canvas-placement-block-label">Block name</label>
+          <input
+            id="canvas-placement-block-label"
+            type="text"
+            className="canvas-placement-picker-block-input"
+            placeholder="e.g. Basic copper factory"
+            value={blockLabel}
+            onChange={(e) => onBlockLabelChange(e.target.value)}
+            autoComplete="off"
+            maxLength={120}
+          />
+          <p className="canvas-placement-picker-block-hint">Shown above this group on the canvas (optional).</p>
         </div>
 
         {dependents.length > 0 ? (
