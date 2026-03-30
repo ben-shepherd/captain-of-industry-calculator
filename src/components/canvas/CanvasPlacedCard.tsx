@@ -4,16 +4,26 @@ const RATE_STEP = 1;
 /** Larger step sizes shown as quick-add buttons (−100 … +100). */
 const BULK_STEPS = [100, 10, 5] as const;
 
-/** Parse user text to a number; adjust by delta; return a compact string for the input. */
+/** Parse user text to a number; adjust by delta; result is never below 0. */
 function adjustRateString(current: string, delta: number): string {
   const trimmed = String(current).trim().replace(',', '.');
   const n = parseFloat(trimmed);
-  const base = Number.isFinite(n) ? n : 0;
-  const next = base + delta;
-  if (!Number.isFinite(next)) return '';
+  const base = Number.isFinite(n) ? Math.max(0, n) : 0;
+  const next = Math.max(0, base + delta);
+  if (!Number.isFinite(next)) return '0';
   if (Number.isInteger(next)) return String(next);
   const rounded = Math.round(next * 1000) / 1000;
   return String(rounded);
+}
+
+/** Reject negative values while typing; keep partial positive input (e.g. "1."). */
+function sanitizeNonNegativeRateInput(raw: string): string {
+  const trimmed = String(raw).trim().replace(',', '.');
+  if (trimmed === '') return '';
+  if (trimmed === '-' || trimmed === '+') return '';
+  const n = parseFloat(trimmed);
+  if (Number.isFinite(n) && n < 0) return '0';
+  return raw;
 }
 
 function RateBulkRow({
@@ -161,7 +171,9 @@ export function CanvasPlacedCard({
               inputMode="decimal"
               className="canvas-placed-card-flow-input"
               value={productionPerMin}
-              onChange={(e) => onProductionChange(canvasNodeKey, e.target.value)}
+              onChange={(e) =>
+                onProductionChange(canvasNodeKey, sanitizeNonNegativeRateInput(e.target.value))
+              }
               onPointerDown={(e) => e.stopPropagation()}
               placeholder="0"
               autoComplete="off"
@@ -214,7 +226,9 @@ export function CanvasPlacedCard({
               inputMode="decimal"
               className="canvas-placed-card-flow-input"
               value={consumptionPerMin}
-              onChange={(e) => onConsumptionChange(canvasNodeKey, e.target.value)}
+              onChange={(e) =>
+                onConsumptionChange(canvasNodeKey, sanitizeNonNegativeRateInput(e.target.value))
+              }
               onPointerDown={(e) => e.stopPropagation()}
               placeholder="0"
               autoComplete="off"

@@ -1,5 +1,6 @@
 import { resources } from '../../assets/js/data/resources';
 import type { CanvasDependencyEdge } from './canvasPlacement';
+import { clampCanvasRateString } from './canvasBlockResults';
 
 export const CANVAS_WORKSPACE_STORAGE_KEY = 'coi-canvas-workspace';
 const VERSION = 1;
@@ -55,8 +56,12 @@ function validateNodes(raw: unknown): PersistedPlacedNode[] {
     const label = typeof o.label === 'string' ? o.label : resources[resourceId]?.label ?? resourceId;
     const x = isFiniteNum(o.x) ? o.x : 0;
     const y = isFiniteNum(o.y) ? o.y : 0;
-    const productionPerMin = typeof o.productionPerMin === 'string' ? o.productionPerMin : '';
-    const consumptionPerMin = typeof o.consumptionPerMin === 'string' ? o.consumptionPerMin : '';
+    const productionPerMin = clampCanvasRateString(
+      typeof o.productionPerMin === 'string' ? o.productionPerMin : '',
+    );
+    const consumptionPerMin = clampCanvasRateString(
+      typeof o.consumptionPerMin === 'string' ? o.consumptionPerMin : '',
+    );
     out.push({
       key,
       batchId,

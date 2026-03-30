@@ -18,6 +18,20 @@ export function parseCanvasRateString(s: string | undefined): number {
 }
 
 /**
+ * Normalize a stored rate string: never negative; empty stays empty.
+ * Used when loading persisted workspace and after edits.
+ */
+export function clampCanvasRateString(s: string): string {
+  const trimmed = String(s).trim().replace(',', '.');
+  if (trimmed === '') return '';
+  const n = parseFloat(trimmed);
+  if (!Number.isFinite(n)) return '';
+  const clamped = Math.max(0, n);
+  if (Number.isInteger(clamped)) return String(clamped);
+  return String(Math.round(clamped * 1000) / 1000);
+}
+
+/**
  * Net-flow rows for a canvas block: one row per unique resource the user placed,
  * in placement order. Fills in chain data when present; otherwise uses totals/production only.
  */
