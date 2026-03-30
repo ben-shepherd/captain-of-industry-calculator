@@ -29,6 +29,7 @@ import {
   layoutPlacedNodes,
   nodeToAxisRect,
   computeBlockSelectionHighlightRect,
+  scrollWorkspaceToShowRect,
   type CanvasDependencyEdge,
   type CanvasPlacementStyle,
 } from '../../utils/canvasPlacement';
@@ -170,7 +171,17 @@ export function CanvasView() {
   >(null);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
+  /** Inner surface; card `left`/`top` are relative to this element (not the scroll container). */
+  const workspaceSurfaceRef = useRef<HTMLDivElement>(null);
   const hasCenteredInitialCanvasScrollRef = useRef(false);
+
+  /** Map viewport coordinates to the same space as `node.x` / `node.y` (surface-relative). */
+  const clientPointToSurfaceCoords = useCallback((clientX: number, clientY: number) => {
+    const surf = workspaceSurfaceRef.current;
+    if (!surf) return null;
+    const r = surf.getBoundingClientRect();
+    return { x: clientX - r.left, y: clientY - r.top };
+  }, []);
   const pendingScrollRestoreRef = useRef<WorkspaceScroll | null>(initialCanvas.workspaceScroll);
   const workspacePersistRef = useRef({
     placementSeq,
@@ -399,6 +410,18 @@ export function CanvasView() {
     const displayLabel = blockTitle.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
     setPlacedBlockLabels((prev) => ({ ...prev, [batch]: displayLabel }));
     setPlaceError(null);
+
+    if (el && el.clientWidth > 0 && positions.length > 0) {
+      const minX = Math.min(...positions.map((p) => p.x));
+      const maxX = Math.max(...positions.map((p) => p.x + CANVAS_CARD_WIDTH_PX));
+      const minY = Math.min(...positions.map((p) => p.y));
+      const maxY = Math.max(...positions.map((p) => p.y + CANVAS_CARD_HEIGHT_PX));
+      scrollWorkspaceToShowRect(
+        el,
+        { left: minX, top: minY, right: maxX, bottom: maxY },
+        32,
+      );
+    }
   }
 
   function beginExpandUpstreamFromCard(resourceId: string, cardX: number, cardY: number) {
@@ -541,9 +564,9 @@ export function CanvasView() {
       const wel = workspaceRef.current;
       if (!wel) return;
 
-      const rect = wel.getBoundingClientRect();
-      const anchorX = e.clientX - rect.left + wel.scrollLeft;
-      const anchorY = e.clientY - rect.top + wel.scrollTop;
+      const pt = clientPointToSurfaceCoords(e.clientX, e.clientY);
+      if (!pt) return;
+      const { x: anchorX, y: anchorY } = pt;
 
       const hitBatchId = findBatchAtCanvasPoint(anchorX, anchorY);
 
@@ -576,7 +599,7 @@ export function CanvasView() {
         setPlaceError('Could not resolve this resource chain. Try another resource.');
       }
     },
-    [pendingPlacement, selectedResourceId, findBatchAtCanvasPoint],
+    [pendingPlacement, selectedResourceId, findBatchAtCanvasPoint, clientPointToSurfaceCoords],
   );
 
   /** Unique resource ids in first-seen (placement) order within the selected block. */
@@ -1228,13 +1251,9 @@ export function CanvasView() {
           setPointer(null);
         }}
         onMouseMove={(e) => {
-          const wel = workspaceRef.current;
-          if (!wel) return;
-          const r = wel.getBoundingClientRect();
-          setPointer({
-            x: e.clientX - r.left + wel.scrollLeft,
-            y: e.clientY - r.top + wel.scrollTop,
-          });
+          const pt = clientPointToSurfaceCoords(e.clientX, e.clientY);
+          if (!pt) return;
+          setPointer({ x: pt.x, y: pt.y });
         }}
         onPointerDown={handleWorkspacePointerDown}
         onPointerMove={handleWorkspacePointerMove}
@@ -1243,6 +1262,7 @@ export function CanvasView() {
         onClick={handleWorkspaceClick}
       >
         <div
+          ref={workspaceSurfaceRef}
           className="canvas-workspace-surface"
           style={{
             width: canvasSurfaceSize.w,

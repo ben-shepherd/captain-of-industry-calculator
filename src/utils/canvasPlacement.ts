@@ -145,6 +145,33 @@ export function clampPlacedPositions(
   return out;
 }
 
+/**
+ * Scroll the workspace so a rectangle in canvas/surface coordinates is visible.
+ * Uses two passes so adjusting one edge can satisfy the opposite after overlap/clamp moves.
+ */
+export function scrollWorkspaceToShowRect(
+  wel: HTMLElement,
+  rect: { left: number; top: number; right: number; bottom: number },
+  marginPx: number = 24,
+): void {
+  const vw = wel.clientWidth;
+  const vh = wel.clientHeight;
+  if (vw <= 0 || vh <= 0) return;
+  const maxSl = Math.max(0, wel.scrollWidth - vw);
+  const maxSt = Math.max(0, wel.scrollHeight - vh);
+  const m = marginPx;
+  let sl = wel.scrollLeft;
+  let st = wel.scrollTop;
+  for (let i = 0; i < 2; i++) {
+    if (rect.left < sl + m) sl = rect.left - m;
+    if (rect.right > sl + vw - m) sl = rect.right - vw + m;
+    if (rect.top < st + m) st = rect.top - m;
+    if (rect.bottom > st + vh - m) st = rect.bottom - vh + m;
+  }
+  wel.scrollLeft = Math.min(maxSl, Math.max(0, sl));
+  wel.scrollTop = Math.min(maxSt, Math.max(0, st));
+}
+
 /** Axis-aligned rectangle for overlap tests (card bounds in canvas space). */
 export type CanvasAxisRect = { left: number; top: number; right: number; bottom: number };
 
