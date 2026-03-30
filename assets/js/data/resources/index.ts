@@ -8,7 +8,7 @@ import { powerNuclearResources } from "./power-nuclear";
 import { wastePollutionResources } from "./waste-pollution";
 
 /** Ordered layers used for picker grouping (natural → … → waste). */
-const RESOURCE_SEGMENTS: readonly {
+export const RESOURCE_SEGMENTS: readonly {
   level: number;
   groupLabel: string;
   map: ResourcesMap;
@@ -50,4 +50,25 @@ export function getResourcePickerGroups(): ResourcePickerGroup[] {
  */
 export function getResourceEntriesInPickerOrder(): { id: string; label: string }[] {
   return getResourcePickerGroups().flatMap((g) => g.entries);
+}
+
+let cachedConsumedInputIds: ReadonlySet<string> | undefined;
+
+/**
+ * Resource IDs that appear as an input to at least one recipe somewhere in the graph.
+ * Resources that are only produced (e.g. unusable raw materials with no downstream use)
+ * are omitted from this set and can be hidden from palette-style UIs.
+ */
+export function getResourceIdsConsumedInRecipes(): ReadonlySet<string> {
+  if (cachedConsumedInputIds) return cachedConsumedInputIds;
+  const ids = new Set<string>();
+  for (const def of Object.values(resources)) {
+    for (const recipe of def.recipes) {
+      for (const inputId of Object.keys(recipe.inputs)) {
+        ids.add(inputId);
+      }
+    }
+  }
+  cachedConsumedInputIds = ids;
+  return ids;
 }

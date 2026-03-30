@@ -1,11 +1,22 @@
 import { describe, it, expect } from "vitest";
-import { resources } from "../../assets/js/data/resources";
+import {
+  getResourceIdsConsumedInRecipes,
+  resources,
+} from "../../assets/js/data/resources";
 
 describe("resources dataset", () => {
   const entries = Object.entries(resources);
 
   it("contains at least one resource", () => {
     expect(entries.length).toBeGreaterThan(0);
+  });
+
+  it("getResourceIdsConsumedInRecipes only references known ids", () => {
+    const consumed = getResourceIdsConsumedInRecipes();
+    expect(consumed.size).toBeGreaterThan(0);
+    for (const id of consumed) {
+      expect(resources[id]).toBeDefined();
+    }
   });
 
   it.each(entries)("%s has a valid label", (_id, resource) => {
