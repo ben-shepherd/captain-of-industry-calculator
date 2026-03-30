@@ -57,6 +57,25 @@ body {
   min-height: 100vh;
 }
 
+/**
+ * Canvas route: lock the shell to the viewport so the flex row cannot grow with the
+ * tallest column (otherwise the results panel never gets a bounded height and wheel
+ * scrolling chains to the canvas / page instead of the sidebar body).
+ */
+@media (min-width: 701px) {
+  .app-root--canvas {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-root--canvas .canvas-view {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+}
+
 .app-view-switch {
   display: inline-flex;
   flex-wrap: wrap;
@@ -82,6 +101,8 @@ body {
   min-height: 0;
   width: 100%;
   background: var(--color-bg);
+  /* Keep panes in the viewport; each column scrolls on its own (no single page scroll). */
+  overflow: hidden;
 }
 
 .canvas-sidebar {
@@ -102,6 +123,8 @@ body {
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
+  align-self: stretch;
 }
 
 .canvas-results-sidebar-resize-handle {
@@ -136,6 +159,7 @@ body {
   width: 100%;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
   background: var(--color-surface);
   border-left: 1px solid var(--color-border);
   box-shadow: -2px 0 12px rgba(0, 0, 0, 0.2);
@@ -231,6 +255,7 @@ body {
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0 var(--gap) var(--gap);
 }
 
@@ -369,6 +394,7 @@ body {
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -566,6 +592,7 @@ img.canvas-resource-icon {
   min-width: 0;
   min-height: 12rem;
   overflow: auto;
+  overscroll-behavior: contain;
   background-color: #ffffff;
 }
 
@@ -1354,6 +1381,7 @@ img.canvas-resource-icon {
   position: sticky;
   top: 0;
   z-index: 50;
+  flex-shrink: 0;
   width: 100%;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);

@@ -39,6 +39,7 @@ export function CanvasResultsSidebar({
       className="canvas-results-sidebar"
       role="region"
       aria-labelledby={headingId}
+      onWheel={(e) => e.stopPropagation()}
     >
       <div className="canvas-results-sidebar-header">
         <div className="canvas-results-sidebar-title-wrap">

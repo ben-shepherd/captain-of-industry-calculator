@@ -26,7 +26,11 @@ export function App() {
   const chainTotals = outcome.ok && outcome.result ? outcome.result.totals : {};
 
   return (
-    <div className="app-root">
+    <div
+      className={['app-root', view === 'canvas' ? 'app-root--canvas' : '']
+        .filter(Boolean)
+        .join(' ')}
+    >
       <AppHeader
         activeView={view}
         onViewChange={setView}
