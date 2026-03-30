@@ -32,6 +32,9 @@ import { CanvasPlacementGhost } from './CanvasPlacementGhost';
 import { CanvasPlacementPicker } from './CanvasPlacementPicker';
 import { CanvasResourceThumb } from './CanvasResourceThumb';
 
+/** Shown on the canvas when the user leaves the block name empty. */
+const DEFAULT_CANVAS_BLOCK_LABEL = 'Unnamed';
+
 type PlacedCanvasNode = {
   key: string;
   batchId: number;
@@ -72,6 +75,8 @@ export function CanvasView() {
   const dragStateRef = useRef<{ batchId: number; lastX: number; lastY: number } | null>(null);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
+  const placedNodesRef = useRef(placedNodes);
+  placedNodesRef.current = placedNodes;
 
   const consumedInputIds = useMemo(() => getResourceIdsConsumedInRecipes(), []);
 
@@ -174,10 +179,8 @@ export function CanvasView() {
     const edges = collectDependencyEdges(tree, placedIds, keyByResourceId);
     setPlacedEdges((prev) => [...prev, ...edges]);
     setPlacedNodes((prev) => [...prev, ...nodes]);
-    const trimmed = blockTitle.trim();
-    if (trimmed) {
-      setPlacedBlockLabels((prev) => ({ ...prev, [batch]: trimmed }));
-    }
+    const displayLabel = blockTitle.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
+    setPlacedBlockLabels((prev) => ({ ...prev, [batch]: displayLabel }));
     setPlaceError(null);
   }
 
@@ -185,6 +188,7 @@ export function CanvasView() {
     if (pendingPlacement) return;
     if (!selectedResourceId || !workspaceRef.current) return;
     const target = e.target as HTMLElement;
+    if (target.closest('.canvas-block-label')) return;
     if (target.closest('.canvas-placed-card')) return;
 
     const rect = workspaceRef.current.getBoundingClientRect();
@@ -263,24 +267,50 @@ export function CanvasView() {
       byBatch.set(n.batchId, list);
     }
     const out: Array<{ batchId: number; title: string; left: number; top: number }> = [];
-    for (const [bidStr, title] of Object.entries(placedBlockLabels)) {
-      const trimmed = title.trim();
-      if (!trimmed) continue;
-      const bid = Number(bidStr);
-      const batchNodes = byBatch.get(bid);
-      if (!batchNodes?.length) continue;
+    for (const [bid, batchNodes] of byBatch) {
+      if (!batchNodes.length) continue;
+      const title =
+        placedBlockLabels[bid]?.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
       const minX = Math.min(...batchNodes.map((n) => n.x));
       const maxX = Math.max(...batchNodes.map((n) => n.x + CANVAS_CARD_WIDTH_PX));
       const minY = Math.min(...batchNodes.map((n) => n.y));
       out.push({
         batchId: bid,
-        title: trimmed,
+        title,
         left: (minX + maxX) / 2,
         top: minY - 6,
       });
     }
     return out;
   }, [placedNodes, placedBlockLabels]);
+
+  function removePlacedBlock(batchId: number) {
+    const prev = placedNodesRef.current;
+    const keySet = new Set(
+      prev.filter((n) => n.batchId === batchId).map((n) => n.key),
+    );
+    setPlacedNodes((nodes) => nodes.filter((n) => n.batchId !== batchId));
+    setPlacedEdges((ePrev) =>
+      ePrev.filter((e) => !keySet.has(e.fromKey) && !keySet.has(e.toKey)),
+    );
+    setPlacedBlockLabels((lPrev) => {
+      const next = { ...lPrev };
+      delete next[batchId];
+      return next;
+    });
+  }
+
+  function requestRemoveBlock(batchId: number, title: string) {
+    const name = title.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
+    if (
+      !window.confirm(
+        `Remove “${name}” and all resources in this block? This cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+    removePlacedBlock(batchId);
+  }
 
   useLayoutEffect(() => {
     const el = workspaceRef.current;
@@ -535,7 +565,20 @@ export function CanvasView() {
               zIndex: 3,
             }}
           >
-            {bl.title}
+            <span className="canvas-block-label-text">{bl.title}</span>
+            <button
+              type="button"
+              className="canvas-block-label-remove"
+              aria-label={`Remove block ${bl.title}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                requestRemoveBlock(bl.batchId, bl.title);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              ×
+            </button>
           </div>
         ))}
 

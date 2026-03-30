@@ -72,7 +72,9 @@ export function CanvasPlacementPicker({
             autoComplete="off"
             maxLength={120}
           />
-          <p className="canvas-placement-picker-block-hint">Shown above this group on the canvas (optional).</p>
+          <p className="canvas-placement-picker-block-hint">
+            Shown above this group on the canvas. Leave blank to use the name &quot;Unnamed&quot;.
+          </p>
         </div>
 
         {dependents.length > 0 ? (
