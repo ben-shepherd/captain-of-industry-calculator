@@ -1,5 +1,8 @@
 import type { DependencyNode } from '../../assets/js/contracts';
 
+/** Directed link from input card key → consumer card key (material flow in the dependency tree). */
+export type CanvasDependencyEdge = { fromKey: string; toKey: string };
+
 /** Default output rate (per minute) when resolving a placed resource — mirrors app default target rate. */
 export const CANVAS_PLACE_DEFAULT_RATE = 12;
 
@@ -77,6 +80,33 @@ export function flattenDependencyTreeUniqueFirst(root: DependencyNode): Dependen
 
   walk(root);
   return out;
+}
+
+/**
+ * Edges for resources that appear in the placed set: each child (input) → parent (consumer).
+ */
+export function collectDependencyEdges(
+  tree: DependencyNode,
+  placedIds: Set<string>,
+  keyByResourceId: Map<string, string>,
+): CanvasDependencyEdge[] {
+  const edges: CanvasDependencyEdge[] = [];
+
+  function walk(node: DependencyNode): void {
+    for (const child of node.children) {
+      if (placedIds.has(node.id) && placedIds.has(child.id)) {
+        const toKey = keyByResourceId.get(node.id);
+        const fromKey = keyByResourceId.get(child.id);
+        if (fromKey && toKey) {
+          edges.push({ fromKey, toKey });
+        }
+      }
+      walk(child);
+    }
+  }
+
+  walk(tree);
+  return edges;
 }
 
 /**

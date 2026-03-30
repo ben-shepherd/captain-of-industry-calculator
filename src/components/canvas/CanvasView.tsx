@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { DependencyNode } from '../../../assets/js/contracts';
 import { firstProducingRecipeIndex } from '../../../assets/js/app/state';
 import { resolve } from '../../../assets/js/calculator/resolver';
@@ -10,8 +10,10 @@ import {
 import {
   clampPlacedPositions,
   CANVAS_PLACE_DEFAULT_RATE,
+  collectDependencyEdges,
   flattenDependencyTreeUniqueFirst,
   layoutPlacedNodes,
+  type CanvasDependencyEdge,
   type CanvasPlacementStyle,
 } from '../../utils/canvasPlacement';
 import {
@@ -23,6 +25,7 @@ import {
   loadCanvasSidebarExpanded,
   saveCanvasSidebarExpanded,
 } from '../../utils/canvasSidebarStorage';
+import { CanvasDependencyLinks } from './CanvasDependencyLinks';
 import { CanvasPlacedCard } from './CanvasPlacedCard';
 import { CanvasPlacementGhost } from './CanvasPlacementGhost';
 import { CanvasPlacementPicker } from './CanvasPlacementPicker';
@@ -30,6 +33,7 @@ import { CanvasResourceThumb } from './CanvasResourceThumb';
 
 type PlacedCanvasNode = {
   key: string;
+  batchId: number;
   resourceId: string;
   label: string;
   x: number;
@@ -41,6 +45,7 @@ type PendingPlacement = {
   anchorY: number;
   resourceId: string;
   uniqueNodes: DependencyNode[];
+  tree: DependencyNode;
 };
 
 export function CanvasView() {
@@ -55,6 +60,9 @@ export function CanvasView() {
   const [pendingPlacement, setPendingPlacement] = useState<PendingPlacement | null>(null);
   const [dependentPick, setDependentPick] = useState<Record<string, boolean>>({});
   const [placementStyle, setPlacementStyle] = useState<CanvasPlacementStyle>(loadCanvasPlacementStyle);
+  const [placedEdges, setPlacedEdges] = useState<CanvasDependencyEdge[]>([]);
+  const [linkLayerSize, setLinkLayerSize] = useState({ w: 0, h: 0 });
+  const dragStateRef = useRef<{ batchId: number; lastX: number; lastY: number } | null>(null);
 
   const workspaceRef = useRef<HTMLDivElement>(null);
 
@@ -125,6 +133,7 @@ export function CanvasView() {
     anchorY: number,
     nodesToPlace: DependencyNode[],
     style: CanvasPlacementStyle,
+    tree: DependencyNode,
   ) {
     if (nodesToPlace.length === 0) return;
     const el = workspaceRef.current;
@@ -136,15 +145,24 @@ export function CanvasView() {
     const batch = placementSeq;
     setPlacementSeq((s) => s + 1);
 
-    const next: PlacedCanvasNode[] = nodesToPlace.map((node, i) => ({
-      key: `p${batch}-${i}-${node.id}`,
-      resourceId: node.id,
-      label: node.label,
-      x: positions[i]?.x ?? anchorX,
-      y: positions[i]?.y ?? anchorY,
-    }));
+    const keyByResourceId = new Map<string, string>();
+    const nodes: PlacedCanvasNode[] = nodesToPlace.map((node, i) => {
+      const key = `p${batch}-${i}-${node.id}`;
+      keyByResourceId.set(node.id, key);
+      return {
+        key,
+        batchId: batch,
+        resourceId: node.id,
+        label: node.label,
+        x: positions[i]?.x ?? anchorX,
+        y: positions[i]?.y ?? anchorY,
+      };
+    });
 
-    setPlacedNodes((prev) => [...prev, ...next]);
+    const placedIds = new Set(nodesToPlace.map((n) => n.id));
+    const edges = collectDependencyEdges(tree, placedIds, keyByResourceId);
+    setPlacedEdges((prev) => [...prev, ...edges]);
+    setPlacedNodes((prev) => [...prev, ...nodes]);
     setPlaceError(null);
   }
 
@@ -170,7 +188,7 @@ export function CanvasView() {
       const dependents = unique.slice(1);
 
       if (dependents.length === 0) {
-        commitPlacementAtAnchor(anchorX, anchorY, unique, placementStyle);
+        commitPlacementAtAnchor(anchorX, anchorY, unique, placementStyle, tree);
         setSelectedResourceId(null);
       } else {
         setPendingPlacement({
@@ -178,6 +196,7 @@ export function CanvasView() {
           anchorY,
           resourceId: selectedResourceId,
           uniqueNodes: unique,
+          tree,
         });
         setDependentPick({});
         setSelectedResourceId(null);
@@ -189,9 +208,9 @@ export function CanvasView() {
 
   function confirmPendingPlacement() {
     if (!pendingPlacement) return;
-    const { anchorX, anchorY, uniqueNodes } = pendingPlacement;
+    const { anchorX, anchorY, uniqueNodes, tree } = pendingPlacement;
     const toPlace = uniqueNodes.filter((node, i) => i === 0 || dependentPick[node.id] === true);
-    commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle);
+    commitPlacementAtAnchor(anchorX, anchorY, toPlace, placementStyle, tree);
     setPendingPlacement(null);
     setDependentPick({});
   }
@@ -203,6 +222,79 @@ export function CanvasView() {
 
   const pendingRootDef = pendingPlacement ? resources[pendingPlacement.resourceId] : undefined;
   const pendingDependents = pendingPlacement ? pendingPlacement.uniqueNodes.slice(1) : [];
+
+  const nodePositions = useMemo(() => {
+    const m = new Map<string, { x: number; y: number }>();
+    for (const n of placedNodes) {
+      m.set(n.key, { x: n.x, y: n.y });
+    }
+    return m;
+  }, [placedNodes]);
+
+  useLayoutEffect(() => {
+    const el = workspaceRef.current;
+    if (!el) return;
+    const measure = () => {
+      setLinkLayerSize({ w: el.scrollWidth, h: el.scrollHeight });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [placedNodes]);
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      const d = dragStateRef.current;
+      if (!d) return;
+      const dx = e.clientX - d.lastX;
+      const dy = e.clientY - d.lastY;
+      d.lastX = e.clientX;
+      d.lastY = e.clientY;
+      const bid = d.batchId;
+      setPlacedNodes((prev) =>
+        prev.map((n) => (n.batchId === bid ? { ...n, x: n.x + dx, y: n.y + dy } : n)),
+      );
+    };
+    const onUp = () => {
+      const d = dragStateRef.current;
+      if (!d) return;
+      dragStateRef.current = null;
+      document.body.style.removeProperty('cursor');
+      const bid = d.batchId;
+      setPlacedNodes((prev) => {
+        const batch = prev.filter((n) => n.batchId === bid);
+        const rest = prev.filter((n) => n.batchId !== bid);
+        const wel = workspaceRef.current;
+        if (!wel || batch.length === 0) return prev;
+        const positions = batch.map((n) => ({ x: n.x, y: n.y }));
+        const clamped = clampPlacedPositions(positions, wel.clientWidth, wel.clientHeight);
+        const merged = batch.map((n, i) => ({
+          ...n,
+          x: clamped[i]!.x,
+          y: clamped[i]!.y,
+        }));
+        return [...rest, ...merged];
+      });
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+  }, []);
+
+  function handleBatchPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const raw = e.currentTarget.getAttribute('data-batch-id');
+    const batchId = raw != null ? Number(raw) : NaN;
+    if (Number.isNaN(batchId)) return;
+    dragStateRef.current = { batchId, lastX: e.clientX, lastY: e.clientY };
+    document.body.style.cursor = 'grabbing';
+  }
 
   const workspaceClassName = [
     'canvas-workspace',
@@ -379,12 +471,37 @@ export function CanvasView() {
           </p>
         ) : null}
 
+        {placedEdges.length > 0 && linkLayerSize.w > 0 && linkLayerSize.h > 0 ? (
+          <div
+            className="canvas-workspace-links-wrap"
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: linkLayerSize.w,
+              height: linkLayerSize.h,
+              pointerEvents: 'none',
+              zIndex: 1,
+            }}
+            aria-hidden
+          >
+            <CanvasDependencyLinks
+              width={linkLayerSize.w}
+              height={linkLayerSize.h}
+              edges={placedEdges}
+              nodePositions={nodePositions}
+            />
+          </div>
+        ) : null}
+
         {placedNodes.map((node) => (
           <CanvasPlacedCard
             key={node.key}
             resourceId={node.resourceId}
             def={resources[node.resourceId]}
             label={node.label}
+            batchId={node.batchId}
+            onBatchPointerDown={handleBatchPointerDown}
             style={{
               position: 'absolute',
               left: node.x,

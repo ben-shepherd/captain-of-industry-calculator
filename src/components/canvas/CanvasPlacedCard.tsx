@@ -5,17 +5,28 @@ type Props = {
   resourceId: string;
   def: ResourceDef | undefined;
   label: string;
+  batchId: number;
   style: React.CSSProperties;
+  onBatchPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
 
-export function CanvasPlacedCard({ resourceId, def, label, style }: Props) {
+export function CanvasPlacedCard({
+  resourceId,
+  def,
+  label,
+  batchId,
+  style,
+  onBatchPointerDown,
+}: Props) {
   const url = def?.imageUrl;
   return (
     <div
       className="canvas-placed-card"
       style={style}
       data-resource-id={resourceId}
+      data-batch-id={String(batchId)}
       aria-label={label}
+      onPointerDown={onBatchPointerDown}
     >
       <div className="canvas-placed-card-header">
         <span className="canvas-placed-card-title">{label}</span>

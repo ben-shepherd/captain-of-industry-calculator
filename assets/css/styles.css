@@ -487,6 +487,25 @@ img.canvas-resource-icon {
   word-break: break-word;
 }
 
+.canvas-workspace-links-wrap {
+  overflow: visible;
+}
+
+.canvas-dependency-links {
+  display: block;
+  overflow: visible;
+}
+
+.canvas-dependency-links-line {
+  stroke: color-mix(in srgb, var(--color-accent) 55%, #666);
+  stroke-width: 2;
+  fill: none;
+}
+
+.canvas-dependency-links-arrowhead {
+  fill: color-mix(in srgb, var(--color-accent) 45%, #555);
+}
+
 .canvas-placed-card {
   z-index: 2;
   width: 140px;
@@ -497,6 +516,12 @@ img.canvas-resource-icon {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   background: #f3f3f3;
   user-select: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.canvas-placed-card:active {
+  cursor: grabbing;
 }
 
 .canvas-placed-card-header {
