@@ -33,6 +33,7 @@ export function NetFlowChartSection({
   filteredEmptyMessage = 'No chart data for resources in this block (they may not appear in the current target chain).',
   targetResourceIdForDisplay,
   blockResourceOrder,
+  canvasBlockProduction,
 }: {
   outcome: CalculationOutcome;
   /** Placeholder copy when the user is on Canvas (no target panel on this view). */
@@ -44,10 +45,15 @@ export function NetFlowChartSection({
   targetResourceIdForDisplay?: string | null;
   /** Canvas: chart series match every resource in the selected block (placement order). */
   blockResourceOrder?: string[];
+  /** Canvas: merge over global production (card rates for the selected block). */
+  canvasBlockProduction?: Record<string, number>;
 }) {
   const state = useCoiStore();
   const netChartStyle = state.netFlowChartStyle;
-  const production = state.production;
+  const production = useMemo(() => {
+    if (!canvasBlockProduction) return state.production;
+    return { ...state.production, ...canvasBlockProduction };
+  }, [state.production, canvasBlockProduction]);
   const effectiveTargetId = targetResourceIdForDisplay ?? state.resourceId;
 
   const { rows, emptyMessage } = useMemo((): {

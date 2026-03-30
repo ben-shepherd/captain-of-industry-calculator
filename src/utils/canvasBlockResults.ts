@@ -8,6 +8,15 @@ import type {
 import { resources } from '../../assets/js/data/resources';
 import { formatNetTotals, formatTotals } from '../../assets/js/formatters/flatFormatter';
 
+/** Parse canvas card rate text (production/consumption per minute). */
+export function parseCanvasRateString(s: string | undefined): number {
+  const t = String(s ?? '')
+    .trim()
+    .replace(',', '.');
+  const n = parseFloat(t);
+  return Number.isFinite(n) ? n : 0;
+}
+
 /**
  * Net-flow rows for a canvas block: one row per unique resource the user placed,
  * in placement order. Fills in chain data when present; otherwise uses totals/production only.

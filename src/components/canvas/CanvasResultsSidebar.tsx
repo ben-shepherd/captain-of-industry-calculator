@@ -13,12 +13,15 @@ const RESIZE_HELP_TOOLTIP =
 export function CanvasResultsSidebar({
   outcome,
   onHide,
+  canvasBlockProduction,
   blockResourceOrder,
   selectedBlockLabel,
   effectiveTargetResourceId,
 }: {
   outcome: CalculationOutcome;
   onHide: () => void;
+  /** When a block is selected: effective supply per resource (production − consumption) from canvas cards. */
+  canvasBlockProduction?: Record<string, number>;
   /** Unique resource ids in placement order for the selected block (one row per placed type). */
   blockResourceOrder?: string[];
   /** Human-readable block name when a block is selected. */
@@ -88,6 +91,7 @@ export function CanvasResultsSidebar({
             noTargetMessage={CANVAS_NO_TARGET}
             targetResourceIdForDisplay={effectiveTargetResourceId}
             blockResourceOrder={blockResourceOrder}
+            canvasBlockProduction={canvasBlockProduction}
           />
         </section>
         <NetFlowChartSection
@@ -95,6 +99,7 @@ export function CanvasResultsSidebar({
           context="canvas"
           targetResourceIdForDisplay={effectiveTargetResourceId}
           blockResourceOrder={blockResourceOrder}
+          canvasBlockProduction={canvasBlockProduction}
         />
       </div>
     </aside>

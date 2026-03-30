@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import { setResourceId } from '../../../assets/js/app/state';
 import { calculateNet } from '../../../assets/js/calculator/net';
@@ -26,6 +26,8 @@ export function NetFlowTable({
   targetResourceIdForDisplay,
   /** Canvas: unique resource ids in placement order — shows one row per resource the user placed in the block. */
   blockResourceOrder,
+  /** Canvas: merge over global production (card rates for the selected block). */
+  canvasBlockProduction,
 }: {
   outcome: CalculationOutcome;
   /** Shown when no global target resource is set (e.g. canvas uses Calculator-specific copy). */
@@ -39,10 +41,14 @@ export function NetFlowTable({
    */
   targetResourceIdForDisplay?: string | null;
   blockResourceOrder?: string[];
+  canvasBlockProduction?: Record<string, number>;
 }) {
   const state = useCoiStore();
   const resourceId = targetResourceIdForDisplay ?? state.resourceId;
-  const production = state.production;
+  const production = useMemo(() => {
+    if (!canvasBlockProduction) return state.production;
+    return { ...state.production, ...canvasBlockProduction };
+  }, [state.production, canvasBlockProduction]);
 
   function renderBody(result: CalculationResult): ReactNode {
     let rows: ReturnType<typeof formatNetTotals>;

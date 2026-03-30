@@ -32,6 +32,7 @@ import {
   type CanvasDependencyEdge,
   type CanvasPlacementStyle,
 } from '../../utils/canvasPlacement';
+import { parseCanvasRateString } from '../../utils/canvasBlockResults';
 import {
   loadCanvasPlacementStyle,
   saveCanvasPlacementStyle,
@@ -599,9 +600,48 @@ export function CanvasView() {
     return node?.resourceId ?? null;
   }, [placedNodes, selectedBatchId]);
 
+  const blockAnchorNode = useMemo(() => {
+    if (selectedBatchId == null) return null;
+    return placedNodes.find((n) => n.batchId === selectedBatchId) ?? null;
+  }, [placedNodes, selectedBatchId]);
+
   /** While a block is selected on the canvas, sidebar math uses that block only (not the Calculator target). */
   const effectiveTargetResourceId =
     selectedBatchId != null ? blockAnchorResourceId : state.resourceId ?? null;
+
+  /** Target rate for `calculate`: block anchor production, or Calculator target rate. */
+  const effectiveCanvasTargetRate = useMemo(() => {
+    if (selectedBatchId == null) return state.targetRate;
+    const anchor = blockAnchorNode;
+    if (!anchor) return state.targetRate;
+    const r = parseCanvasRateString(anchor.productionPerMin);
+    if (r > 0 && Number.isFinite(r)) return r;
+    return CANVAS_PLACE_DEFAULT_RATE;
+  }, [selectedBatchId, blockAnchorNode, state.targetRate]);
+
+  /** Recipe index for `calculate`: anchor’s first producing recipe when a block is selected. */
+  const effectiveCanvasTargetRecipeIdx = useMemo(() => {
+    if (selectedBatchId == null) return state.targetRecipeIdx;
+    if (!effectiveTargetResourceId) return state.targetRecipeIdx;
+    return firstProducingRecipeIndex(effectiveTargetResourceId);
+  }, [selectedBatchId, effectiveTargetResourceId, state.targetRecipeIdx]);
+
+  /**
+   * Per-resource effective supply (production − consumption) from cards in the selected block,
+   * merged over global production for net flow.
+   */
+  const canvasBlockProductionForNet = useMemo(() => {
+    if (selectedBatchId == null) return undefined;
+    const out: Record<string, number> = {};
+    for (const n of placedNodes) {
+      if (n.batchId !== selectedBatchId) continue;
+      const p = parseCanvasRateString(n.productionPerMin);
+      const c = parseCanvasRateString(n.consumptionPerMin);
+      const add = Math.max(0, p - c);
+      out[n.resourceId] = (out[n.resourceId] ?? 0) + add;
+    }
+    return out;
+  }, [placedNodes, selectedBatchId]);
 
   const canvasOutcome = useMemo((): CalculationOutcome => {
     if (!effectiveTargetResourceId) {
@@ -610,8 +650,8 @@ export function CanvasView() {
     try {
       const result = calculate(
         effectiveTargetResourceId,
-        state.targetRate,
-        state.targetRecipeIdx,
+        effectiveCanvasTargetRate,
+        effectiveCanvasTargetRecipeIdx,
         state.baseRequirementsMode,
       );
       return { ok: true, result };
@@ -620,8 +660,8 @@ export function CanvasView() {
     }
   }, [
     effectiveTargetResourceId,
-    state.targetRate,
-    state.targetRecipeIdx,
+    effectiveCanvasTargetRate,
+    effectiveCanvasTargetRecipeIdx,
     state.baseRequirementsMode,
   ]);
 
@@ -1393,6 +1433,7 @@ export function CanvasView() {
           <CanvasResultsSidebar
             outcome={canvasOutcome}
             onHide={() => setResultsSidebarVisible(false)}
+            canvasBlockProduction={canvasBlockProductionForNet}
             blockResourceOrder={
               selectedBatchId != null ? selectedBlockResourceIdsOrdered ?? [] : undefined
             }
