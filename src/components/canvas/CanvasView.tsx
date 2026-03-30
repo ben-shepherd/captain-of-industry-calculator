@@ -39,6 +39,10 @@ type PlacedCanvasNode = {
   label: string;
   x: number;
   y: number;
+  /** User-entered production rate (per minute); string for controlled input / future parsing. */
+  productionPerMin: string;
+  /** User-entered consumption rate (per minute). */
+  consumptionPerMin: string;
 };
 
 type PendingPlacement = {
@@ -161,6 +165,8 @@ export function CanvasView() {
         label: node.label,
         x: positions[i]?.x ?? anchorX,
         y: positions[i]?.y ?? anchorY,
+        productionPerMin: '',
+        consumptionPerMin: '',
       };
     });
 
@@ -224,6 +230,18 @@ export function CanvasView() {
     setPendingPlacement(null);
     setDependentPick({});
     setBlockLabelDraft('');
+  }
+
+  function updatePlacedNodeProduction(key: string, value: string) {
+    setPlacedNodes((prev) =>
+      prev.map((n) => (n.key === key ? { ...n, productionPerMin: value } : n)),
+    );
+  }
+
+  function updatePlacedNodeConsumption(key: string, value: string) {
+    setPlacedNodes((prev) =>
+      prev.map((n) => (n.key === key ? { ...n, consumptionPerMin: value } : n)),
+    );
   }
 
   const pendingRootDef = pendingPlacement ? resources[pendingPlacement.resourceId] : undefined;
@@ -320,6 +338,7 @@ export function CanvasView() {
 
   function handleBatchPointerDown(e: React.PointerEvent<HTMLDivElement>) {
     if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('input, textarea, select, button, label')) return;
     e.preventDefault();
     e.stopPropagation();
     const raw = e.currentTarget.getAttribute('data-batch-id');
@@ -546,10 +565,15 @@ export function CanvasView() {
         {placedNodes.map((node) => (
           <CanvasPlacedCard
             key={node.key}
+            canvasNodeKey={node.key}
             resourceId={node.resourceId}
             def={resources[node.resourceId]}
             label={node.label}
             batchId={node.batchId}
+            productionPerMin={node.productionPerMin}
+            consumptionPerMin={node.consumptionPerMin}
+            onProductionChange={updatePlacedNodeProduction}
+            onConsumptionChange={updatePlacedNodeConsumption}
             onBatchPointerDown={handleBatchPointerDown}
             style={{
               position: 'absolute',

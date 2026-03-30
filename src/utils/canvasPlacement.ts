@@ -11,7 +11,8 @@ export type CanvasPlacementStyle = 'horizontal' | 'vertical';
 
 /** Layout dimensions — keep in sync with `.canvas-placed-card` in CSS. */
 export const CANVAS_CARD_WIDTH_PX = 140;
-export const CANVAS_CARD_HEIGHT_PX = 72;
+/** Includes header, icon, production/consumption rows, and bulk step buttons. */
+export const CANVAS_CARD_HEIGHT_PX = 164;
 const GAP_PX = 12;
 
 /** Minimum inset from the workspace edges when clamping placed cards. */
