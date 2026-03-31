@@ -19,7 +19,7 @@ export function loadAppView(): AppView {
   } catch {
     // ignore
   }
-  return 'calculator';
+  return 'home';
 }
 
 export function saveAppView(view: AppView): void {

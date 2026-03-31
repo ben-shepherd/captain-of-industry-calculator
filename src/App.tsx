@@ -9,6 +9,7 @@ import { RecentResources } from './components/configuration/RecentResources';
 import { AppHeader } from './components/layout/AppHeader';
 import { Footer } from './components/layout/Footer';
 import { UserGuide } from './components/layout/UserGuide';
+import { HomeView } from './components/home/HomeView';
 import { ResultsSection } from './components/results/ResultsSection';
 import { TargetResourcePanel } from './components/target/TargetResourcePanel';
 import { useCalculation } from './hooks/useCalculation';
@@ -45,10 +46,12 @@ export function App() {
           clearCanvasResultsSidebarStorage();
           clearCanvasPlacementStyleStorage();
           clearCanvasSidebarExpandedStorage();
-          setView('calculator');
+          setView('home');
         }}
       />
-      {view === 'calculator' ? (
+      {view === 'home' ? (
+        <HomeView onChoose={setView} />
+      ) : view === 'calculator' ? (
         <div className="app-page" id="app-main-view">
           <UserGuide />
           <RecentResources />

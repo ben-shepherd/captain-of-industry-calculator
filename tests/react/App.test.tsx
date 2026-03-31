@@ -13,4 +13,11 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByRole('heading', { name: /resource calculator/i })).toBeDefined();
   });
+
+  it('shows the homepage view chooser when no view is saved', () => {
+    render(<App />);
+    expect(screen.getAllByRole('heading', { name: /choose your view/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('button', { name: /calculator/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('button', { name: /canvas/i }).length).toBeGreaterThan(0);
+  });
 });

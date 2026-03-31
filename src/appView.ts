@@ -1,1 +1,1 @@
-export type AppView = 'calculator' | 'canvas';
+export type AppView = 'home' | 'calculator' | 'canvas';
