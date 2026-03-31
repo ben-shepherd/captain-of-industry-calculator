@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ResourceDef } from '../../../assets/js/contracts';
 import {
@@ -6,6 +6,7 @@ import {
   canvasResourceAriaSummary,
   type CanvasResourceTooltipContext,
 } from '../../utils/canvasResourceTooltip';
+import { clampTooltipToViewport } from '../../utils/clampTooltipToViewport';
 
 type Props = {
   resourceId: string;
@@ -18,18 +19,18 @@ type Props = {
 export function CanvasResourceThumb({ resourceId, def, category, isSelected, onSelect }: Props) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ left: 0, top: 0 });
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   const model = buildCanvasResourceTooltipModel(resourceId, def, category);
+  const ariaLabel = useMemo(() => canvasResourceAriaSummary(model), [model]);
 
   function showAt(el: HTMLElement) {
     const rect = el.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
-    const left = Math.max(
-      12,
-      Math.min(centerX, window.innerWidth - 12),
-    );
-    const top = rect.bottom + 8;
-    setPos({ left, top });
+    // Initial position (will be refined after tooltip is mounted/measured).
+    setPos({ left: centerX, top: rect.bottom + 8 });
+    setAnchorRect(rect);
     setOpen(true);
   }
 
@@ -45,12 +46,44 @@ export function CanvasResourceThumb({ resourceId, def, category, isSelected, onS
     if (!open) return;
     const close = () => setOpen(false);
     window.addEventListener('scroll', close, true);
-    window.addEventListener('resize', close);
     return () => {
       window.removeEventListener('scroll', close, true);
-      window.removeEventListener('resize', close);
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (!anchorRect) return;
+    const el = tooltipRef.current;
+    if (!el) return;
+
+    const padding = 12;
+    const gap = 8;
+
+    const reposition = () => {
+      const tRect = el.getBoundingClientRect();
+      const { left, top } = clampTooltipToViewport({
+        anchorRect,
+        tooltipRect: tRect,
+        viewport: { width: window.innerWidth, height: window.innerHeight },
+        padding,
+        gap,
+      });
+      setPos({ left, top });
+    };
+
+    reposition();
+    window.addEventListener('resize', reposition);
+    return () => window.removeEventListener('resize', reposition);
+  }, [
+    open,
+    anchorRect,
+    model.label,
+    model.recipeLine,
+    model.unitLine,
+    model.categoryLine,
+    model.buildingsLine,
+  ]);
 
   useEffect(() => {
     if (!open) return;
@@ -62,7 +95,6 @@ export function CanvasResourceThumb({ resourceId, def, category, isSelected, onS
   }, [open]);
 
   const url = def.imageUrl;
-  const ariaLabel = canvasResourceAriaSummary(model);
 
   return (
     <>
@@ -94,6 +126,7 @@ export function CanvasResourceThumb({ resourceId, def, category, isSelected, onS
       {open &&
         createPortal(
           <div
+            ref={tooltipRef}
             className="canvas-tooltip"
             role="tooltip"
             aria-hidden
