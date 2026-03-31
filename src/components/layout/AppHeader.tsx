@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import type { AppView } from '../../appView';
-import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import {
   applyLoadedState,
   getSnapshot,
@@ -22,9 +21,7 @@ export type AppHeaderProps = {
 };
 
 export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: AppHeaderProps) {
-  const state = useCoiStore();
   const importInputRef = useRef<HTMLInputElement>(null);
-  const showGuide = !state.userGuideVisible && activeView === 'calculator';
   const showToolbarActions = activeView !== 'home';
 
   const restoreChromeFromImport = (chrome: {
@@ -66,16 +63,6 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
           <div className="app-brand-text">
             <div className="app-heading-row">
               <h1>Resource Calculator</h1>
-              <button
-                type="button"
-                id="show-user-guide"
-                className="btn btn-secondary app-show-user-guide"
-                hidden={!showGuide}
-                aria-label="Show how to use this calculator"
-                onClick={() => setUserGuideVisible(true)}
-              >
-                Show guide
-              </button>
             </div>
             {activeView === 'home' ? (
               <p className="subtitle">Production chains and blueprint layouts</p>
@@ -109,6 +96,19 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
             <span className="app-view-switch-sep" aria-hidden="true">
               ·
             </span>
+            <button
+              type="button"
+              id="show-user-guide"
+              className="btn btn-secondary"
+              aria-label={
+                activeView === 'canvas'
+                  ? 'Help: how to use the canvas'
+                  : 'Help: how to use the calculator'
+              }
+              onClick={() => setUserGuideVisible(true)}
+            >
+              Help
+            </button>
             <button
               type="button"
               id="export-saved-data"

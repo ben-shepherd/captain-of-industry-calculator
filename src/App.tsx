@@ -49,11 +49,13 @@ export function App() {
           setView('home');
         }}
       />
+      {view === 'calculator' || view === 'canvas' ? (
+        <UserGuide activeView={view} />
+      ) : null}
       {view === 'home' ? (
         <HomeView onChoose={setView} />
       ) : view === 'calculator' ? (
         <div className="app-page" id="app-main-view">
-          <UserGuide />
           <RecentResources />
           <TargetResourcePanel />
           <main className="app-main">
