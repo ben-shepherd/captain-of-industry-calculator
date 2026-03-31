@@ -51,7 +51,9 @@ const emptyV4 = {
   baseRequirementsMode: "direct" as AppState["baseRequirementsMode"],
   netFlowChartStyle: "line" as AppState["netFlowChartStyle"],
   userGuideExpanded: true,
-  userGuideVisible: true,
+  userGuideVisible: false,
+  userGuideDismissedCalculator: false,
+  userGuideDismissedCanvas: false,
 };
 
 describe("saveState + loadState round-trip", () => {
@@ -186,7 +188,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });
@@ -218,7 +222,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });
@@ -252,7 +258,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });
@@ -287,7 +295,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });
@@ -323,7 +333,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });
@@ -360,7 +372,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });
@@ -384,7 +398,7 @@ describe("migration", () => {
         userGuideExpanded: true,
         userGuideVisible: true,
         recentTargetResourceIds: [],
-      },
+      } as unknown as AppState,
     };
     expect(migrateEnvelopeToAppState(envelope)).toEqual({
       ...envelope.data,
@@ -392,7 +406,9 @@ describe("migration", () => {
       baseRequirementsMode: "direct",
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: false,
+      userGuideDismissedCanvas: false,
       recentTargetResourceIds: [],
     });
   });
@@ -427,13 +443,15 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       targetRecipeIdx: 0,
       recentTargetResourceIds: [],
     });
   });
 
-  it("migrates v11 envelope without userGuideVisible to v12", () => {
+  it("migrates v11 envelope without userGuideVisible to current version", () => {
     localStorage.setItem(
       "coi-calculator-state",
       JSON.stringify({
@@ -466,7 +484,9 @@ describe("migration", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       targetRecipeIdx: 0,
       recentTargetResourceIds: [],
     });
@@ -510,7 +530,9 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
       inputsSections: { ...defaultInputsSections },
       netFlowChartStyle: "line",
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
+      userGuideDismissedCalculator: true,
+      userGuideDismissedCanvas: true,
       recentTargetResourceIds: [],
     });
   });

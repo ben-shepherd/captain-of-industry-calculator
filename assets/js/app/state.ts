@@ -46,7 +46,9 @@ const DEFAULT_STATE: AppState = {
   inputsSections: { ...DEFAULT_INPUTS_SECTIONS },
   netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
   userGuideExpanded: true,
-  userGuideVisible: true,
+  userGuideVisible: false,
+  userGuideDismissedCalculator: false,
+  userGuideDismissedCanvas: false,
 };
 
 let state: AppState = { ...DEFAULT_STATE };
@@ -136,6 +138,12 @@ export function applyLoadedState(saved: AppState): void {
   state.netFlowChartStyle = normalizeNetFlowChartStyle(state.netFlowChartStyle);
   state.userGuideExpanded = normalizeUserGuideExpanded(state.userGuideExpanded);
   state.userGuideVisible = normalizeUserGuideVisible(state.userGuideVisible);
+  state.userGuideDismissedCalculator = normalizeUserGuideDismissed(
+    state.userGuideDismissedCalculator,
+  );
+  state.userGuideDismissedCanvas = normalizeUserGuideDismissed(
+    state.userGuideDismissedCanvas,
+  );
   state.recentTargetResourceIds = normalizeRecentTargetResourceIds(
     state.recentTargetResourceIds,
   );
@@ -206,7 +214,11 @@ function normalizeUserGuideExpanded(v: unknown): boolean {
 }
 
 function normalizeUserGuideVisible(v: unknown): boolean {
-  return typeof v === "boolean" ? v : true;
+  return typeof v === "boolean" ? v : false;
+}
+
+function normalizeUserGuideDismissed(v: unknown): boolean {
+  return typeof v === "boolean" ? v : false;
 }
 
 function normalizeRecentTargetResourceIds(
@@ -500,6 +512,17 @@ export function setUserGuideVisible(visible: boolean): void {
   persist();
 }
 
+/** Mark the current view’s help as seen and hide the modal (Close / Escape). */
+export function dismissUserGuideForView(view: "calculator" | "canvas"): void {
+  if (view === "calculator") {
+    state.userGuideDismissedCalculator = true;
+  } else {
+    state.userGuideDismissedCanvas = true;
+  }
+  state.userGuideVisible = false;
+  persist();
+}
+
 /**
  * Return a plain snapshot of the full state (useful for debugging / tests).
  */
@@ -523,6 +546,8 @@ export function getSnapshot(): AppState {
     netFlowChartStyle: state.netFlowChartStyle,
     userGuideExpanded: state.userGuideExpanded,
     userGuideVisible: state.userGuideVisible,
+    userGuideDismissedCalculator: state.userGuideDismissedCalculator,
+    userGuideDismissedCanvas: state.userGuideDismissedCanvas,
     recentTargetResourceIds: [...state.recentTargetResourceIds],
   };
 }

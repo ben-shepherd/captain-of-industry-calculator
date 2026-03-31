@@ -14,7 +14,7 @@ import {
  */
 
 const STORAGE_KEY = "coi-calculator-state";
-const STATE_VERSION = 12;
+const STATE_VERSION = 13;
 
 const CHROME_KEY_APP_VIEW = 'coi-app-view';
 const CHROME_KEY_CANVAS_WORKSPACE = 'coi-canvas-workspace';
@@ -247,9 +247,9 @@ export function migrateEnvelopeToAppState(
       inputsSections: { production: true, presets: true },
       netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
       userGuideExpanded: true,
-      userGuideVisible: true,
+      userGuideVisible: false,
       recentTargetResourceIds: [],
-    };
+    } as unknown as AppState;
     version = 2;
   }
 
@@ -371,9 +371,30 @@ export function migrateEnvelopeToAppState(
     const d = data as AppState & { userGuideVisible?: boolean };
     data = {
       ...d,
-      userGuideVisible: d.userGuideVisible ?? true,
+      userGuideVisible: d.userGuideVisible ?? false,
     };
     version = 12;
+  }
+
+  if (version === 12) {
+    const d = data as AppState & {
+      userGuideDismissedCalculator?: boolean;
+      userGuideDismissedCanvas?: boolean;
+    };
+    const wasDismissed = d.userGuideVisible === false;
+    data = {
+      ...d,
+      userGuideDismissedCalculator:
+        typeof d.userGuideDismissedCalculator === "boolean"
+          ? d.userGuideDismissedCalculator
+          : wasDismissed,
+      userGuideDismissedCanvas:
+        typeof d.userGuideDismissedCanvas === "boolean"
+          ? d.userGuideDismissedCanvas
+          : wasDismissed,
+      userGuideVisible: false,
+    };
+    version = 13;
   }
 
   if (version !== STATE_VERSION) {

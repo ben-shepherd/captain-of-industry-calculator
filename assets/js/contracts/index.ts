@@ -133,8 +133,12 @@ export interface AppState {
   netFlowChartStyle: NetFlowChartStyle;
   /** Top-of-page user guide `<details>` expanded (when visible). */
   userGuideExpanded: boolean;
-  /** Whether the user guide panel is shown; when false, use header "Show guide" to restore. */
+  /** Whether the user guide panel is shown; when false, use header "Help" to restore. */
   userGuideVisible: boolean;
+  /** After the user closes the calculator help once, we stop auto-opening it on that view. */
+  userGuideDismissedCalculator: boolean;
+  /** After the user closes the canvas help once, we stop auto-opening it on that view. */
+  userGuideDismissedCanvas: boolean;
   /**
    * Most-recent target resources (max 12) for quick recall under the user guide.
    */

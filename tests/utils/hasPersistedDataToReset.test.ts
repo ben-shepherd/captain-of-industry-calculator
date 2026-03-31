@@ -14,7 +14,7 @@ describe('hasPersistedDataToReset', () => {
   it('is true when main calculator envelope exists', () => {
     localStorage.setItem(
       'coi-calculator-state',
-      JSON.stringify({ version: 12, savedAt: 0, data: {} }),
+      JSON.stringify({ version: 13, savedAt: 0, data: {} }),
     );
     expect(hasPersistedDataToReset()).toBe(true);
   });

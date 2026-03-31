@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
-import { setUserGuideVisible } from '../../../assets/js/app/state';
+import { dismissUserGuideForView, setUserGuideVisible } from '../../../assets/js/app/state';
 
 export type UserGuideActiveView = 'calculator' | 'canvas';
 
@@ -12,6 +12,15 @@ export function UserGuide({ activeView }: Props) {
   const state = useCoiStore();
   const visible = state.userGuideVisible;
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  /** Auto-open the first time the user enters each view (calculator vs canvas are tracked separately). */
+  useEffect(() => {
+    if (activeView === 'calculator' && !state.userGuideDismissedCalculator) {
+      setUserGuideVisible(true);
+    } else if (activeView === 'canvas' && !state.userGuideDismissedCanvas) {
+      setUserGuideVisible(true);
+    }
+  }, [activeView, state.userGuideDismissedCalculator, state.userGuideDismissedCanvas]);
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -37,7 +46,7 @@ export function UserGuide({ activeView }: Props) {
         .filter(Boolean)
         .join(' ')}
       aria-labelledby={titleId}
-      onClose={() => setUserGuideVisible(false)}
+      onClose={() => dismissUserGuideForView(activeView)}
     >
       <div className="user-guide-dialog-inner">
         <div className="user-guide-dialog-header">
@@ -48,7 +57,11 @@ export function UserGuide({ activeView }: Props) {
             type="button"
             className="btn btn-secondary user-guide-dialog-close"
             aria-label="Close help"
-            onClick={() => setUserGuideVisible(false)}
+            onClick={() => {
+              // Close the native dialog immediately; relying only on React state + useEffect can
+              // leave the modal open until the external store notifies subscribers (microtask).
+              dialogRef.current?.close();
+            }}
           >
             Close
           </button>
