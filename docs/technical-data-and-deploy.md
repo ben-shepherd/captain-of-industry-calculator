@@ -7,9 +7,11 @@
 Game data is compiled into TypeScript modules under [`assets/js/data/resources/`](../assets/js/data/resources/):
 
 - Segments (natural, semi-processed, crafted, food & medical, petrochemical, power & nuclear, waste & pollution) are merged in [`index.ts`](../assets/js/data/resources/index.ts) into a single **`resources`** map.
-- Each resource has **`label`**, **`unit`**, **`wikiUrl`**, and **`recipes[]`** with **`inputs`**, **`outputs`**, **`durationSec`**, **`building`**, **`name`** ([`ResourceDef` / `Recipe`](../assets/js/contracts/index.ts)).
+- Each resource has **`label`**, **`unit`**, **`wikiUrl`**, **`imageUrl`** (wiki icon URL or empty), and **`recipes[]`** with **`inputs`**, **`outputs`**, **`durationSec`**, **`building`**, **`name`** ([**`ResourceDef`** / **`Recipe`**](../assets/js/contracts/index.ts)).
 
-The UI picker uses **`getResourcePickerGroups()`** — level-labeled optgroups, alphabetical within each group.
+The UI picker uses **`getResourcePickerGroups()`** from [`index.ts`](../assets/js/data/resources/index.ts) — level-labeled optgroups, alphabetical within each group.
+
+**Layout:** shared static resource definitions stay under **`assets/js/data/`**; the React app under **`src/`** imports from there and from **`assets/js/contracts`**.
 
 ## Wiki tooling (maintainers)
 
@@ -22,7 +24,11 @@ Run these when updating the game; then review diffs and run **`pnpm test`**.
 
 ## Tests
 
-[`tests/`](../tests/) uses **Vitest**: calculator (`resolver`, `net`, `service`), persistence, formatters, production presets, resource data integrity, etc. CI is not wired for tests in the Pages workflow by default—run **`pnpm test`** locally before merging substantive changes.
+[`tests/`](../tests/) uses **Vitest**: calculator (`resolver`, `net`, `service`), persistence, formatters, production presets, resource data integrity, React utilities, etc.
+
+## CI
+
+The [Deploy to GitHub Pages](.github/workflows/deploy-pages.yml) workflow runs **`pnpm run typecheck`** and **`pnpm run test`** before **`pnpm run build`**. Still run tests locally when changing behavior.
 
 ## Build and base URL
 

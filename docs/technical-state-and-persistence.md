@@ -6,8 +6,9 @@
 
 Canonical definitions live in [`assets/js/contracts/index.ts`](../assets/js/contracts/index.ts):
 
-- **`AppState`** — `resourceId`, `targetRate`, `production`, `productionExtraIds`, `productionDismissedIds`, `productionPresets`, `resultsSections` (which results `<details>` panels are open: base / net / tree), `inputsSections` (which configuration `<details>` panels are open: target / production / presets).
-- **`PersistedEnvelope`** — `{ version, savedAt, data: AppState }`.
+- **`AppState`** — `resourceId`, `targetRate`, `targetRecipeIdx`, `baseRequirementsMode` (`direct` | `full`), `production`, `productionExtraIds`, `productionDismissedIds`, `productionPresets`, `resultsSections` (which results **`<details>`** panels are open: base / net / tree), `inputsSections` (which configuration **`<details>`** panels are open: **production** / **presets**), `netFlowChartStyle`, `userGuideExpanded`, `userGuideVisible`, `recentTargetResourceIds`
+- **`PersistedEnvelope`** — `{ version, savedAt, data: AppState }`
+- **`PersistedFullExportEnvelope`** — full backup format: `kind: 'coi-export'`, `formatVersion`, `savedAt`, nested **`app`** (`PersistedEnvelope`) and **`chrome`** (`PersistedChromeEnvelope`: `appView`, canvas workspace, sidebar, results sidebar, placement style — see [`contracts`](../assets/js/contracts/index.ts))
 
 ## In-memory state
 
@@ -18,14 +19,16 @@ Canonical definitions live in [`assets/js/contracts/index.ts`](../assets/js/cont
 ## Storage key and versioning
 
 - **Key:** `coi-calculator-state` (see [`persistence.ts`](../assets/js/app/persistence.ts)).
-- **`STATE_VERSION`:** current envelope version is **5**; every write stamps `version` and `savedAt`.
+- **`STATE_VERSION`:** current envelope version is **12**; every write stamps `version` and `savedAt`.
 
-Older stored JSON is **migrated** in `migrateEnvelopeToAppState` through versions **1 → 2 → 3 → 4 → 5**: **1→2** adds `productionExtraIds`, `resultsSections`, `inputsSections`, and related defaults; **2→3** adds `productionDismissedIds` and `productionPresets`; **3→4** normalizes `resultsSections`; **4→5** ensures `inputsSections` with defaults when absent. If migration cannot reach the current version, load may clear storage and return null.
+Older stored JSON is **migrated** in **`migrateEnvelopeToAppState`** in [`persistence.ts`](../assets/js/app/persistence.ts). The exact steps between versions evolve with the product; read that function (and tests in [`tests/app/persistence.test.ts`](../tests/app/persistence.test.ts)) for the authoritative chain. If migration cannot reach the current version, load may clear storage and return null.
 
 ## Export and import
 
-- **Export** builds the **same envelope shape** as localStorage (pretty-printed JSON) via `buildExportJson`—suitable for a downloaded backup file.
-- **Import** reads a file as text, passes it through **`parsePersistedEnvelope`** (no direct `localStorage` read), then **`applyLoadedState`** on success.
+- **App-only export** — **`buildExportJson`** builds the same **`PersistedEnvelope`** shape as `localStorage` (pretty-printed JSON).
+- **Full export** — **`buildFullExportJson`** builds a **`PersistedFullExportEnvelope`**: calculator state plus serialized **chrome** keys (current app view, canvas workspace, sidebar visibility, results sidebar width, placement style, etc.).
+- **Import (header)** — [`parseFullExportEnvelope`](../assets/js/app/persistence.ts) accepts the **full** format (`kind: 'coi-export'`) or **legacy** app-only JSON; on success, applies loaded state and restores chrome when present.
+- **`parsePersistedEnvelope`** — parses **AppState-only** JSON (no `kind`); used where only calculator data is needed.
 
 ```mermaid
 flowchart LR
@@ -36,18 +39,19 @@ flowchart LR
     LS[localStorage key coi-calculator-state]
   end
   subgraph file [File]
-    JSON[JSON file same envelope]
+    JSON[JSON file envelope or full export]
   end
   S -->|saveState| LS
-  JSON -->|parsePersistedEnvelope| S
-  S -->|buildExportJson| JSON
+  JSON -->|parseFullExportEnvelope| S
+  S -->|buildFullExportJson| JSON
 ```
 
 ## Reset
 
-Clearing persisted data removes the key from `localStorage` and resets in-memory state to defaults (see `wipeAllPersistedDataAndResetToDefaults` usage in [`events.ts`](../assets/js/ui/events.ts)).
+Clearing persisted data removes the key from `localStorage` and resets in-memory state to defaults — see **`wipeAllPersistedDataAndResetToDefaults`** in [`state.ts`](../assets/js/app/state.ts) and usage from [`AppHeader.tsx`](../src/components/layout/AppHeader.tsx).
 
 ## Related
 
-- [Architecture](technical-architecture.md) — event flow and toolbar sync
+- [Architecture](technical-architecture.md) — event flow and **`coiExternalStore`**
 - [UI and net flow](technical-ui-and-net.md) — what `AppState` drives in the UI
+- [Canvas](technical-canvas.md) — chrome keys and canvas storage

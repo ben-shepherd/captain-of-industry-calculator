@@ -1,6 +1,6 @@
 # Captain of Industry — Resource Calculator
 
-A static single-page app that helps you plan **production chains** for [*Captain of Industry*](https://www.captain-of-industry.com/): pick a **target resource** and **rate per minute**, see **base resources required**, optional **dependency tree** and **net flow** versus **your production**, with **presets** and **local persistence** (including JSON export/import).
+A static single-page app (React + Vite) that helps you plan **production chains** for [*Captain of Industry*](https://www.captain-of-industry.com/). It offers a **home** landing screen, a **calculator** view (target resource and rate per minute, **base resources** in direct or full-chain mode, **dependency tree**, **net flow** tables, and an optional **net flow chart**), and a **canvas** view for arranging dependency blocks on a workspace. **Presets**, **local persistence**, and JSON **export/import** (calculator state plus canvas and view preferences when using the header export) round out the tool.
 
 *Captain of Industry* is a trademark or registered trademark of its respective owners. This project is an independent fan tool and is not affiliated with or endorsed by them.
 

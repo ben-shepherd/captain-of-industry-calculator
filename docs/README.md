@@ -1,6 +1,6 @@
 # Captain of Industry — Resource Calculator
 
-This folder documents the **Captain of Industry — Resource Calculator**, a small single-page web app for planning production chains.
+This folder documents the **Captain of Industry — Resource Calculator**, a single-page web app (React, TypeScript, Vite) for planning production chains.
 
 ## Disclaimer
 
@@ -8,10 +8,11 @@ This is an **unofficial fan project**. It is not affiliated with or endorsed by 
 
 ## What the app does
 
-- Choose a **target resource** and a **target production rate** (per game minute).
-- See **base resources required** to sustain that rate through the dependency chain.
-- Optionally expand **Net flow** and **Dependency tree** to reason about surplus or deficit versus **your production** inputs.
-- **Search** resources, **save production presets**, and keep settings in the browser via **localStorage**, with **Export** / **Import** (JSON) and **Reset**.
+- Switch between a **home** screen, the **calculator**, and a **canvas** planning view from the header.
+- In the calculator, choose a **target resource** and **production rate** (per game minute), pick which **recipe** applies when several exist, and set **base requirements** to either one recipe step (**direct**) or a **full** expansion to leaf resources.
+- See **base resources required**, and optionally **Net flow** (surplus/deficit versus **your production**), **Dependency tree**, and a **net flow chart** with selectable chart styles.
+- On the **canvas**, place resource blocks on a large workspace, pan and organize chains, and use an optional **results** sidebar; layout and UI preferences persist per browser like the calculator.
+- **Search** resources, **save production presets** (grouped in the UI), and keep settings in the browser via **localStorage**. The header **Export** downloads JSON that includes calculator state and, when you use calculator and canvas, stored **canvas and view chrome**; **Import** restores from that file or from older app-only backups; **Reset** clears stored data.
 
 For how the implementation is structured, see the [technical documentation hub](technical.md).
 
@@ -34,4 +35,4 @@ Other useful commands:
 
 ## Further reading
 
-- [Technical documentation hub](technical.md) — architecture, calculator, state, UI, data, and deployment
+- [Technical documentation hub](technical.md) — architecture, calculator, state, UI, data, deployment, and canvas
