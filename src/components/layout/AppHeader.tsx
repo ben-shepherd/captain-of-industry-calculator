@@ -55,7 +55,7 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
       <div className="app-header-inner">
         <div className="app-brand">
           <img
-            src="/assets/img/logo.png"
+            src={`${import.meta.env.BASE_URL}assets/img/logo.png`}
             alt="Captain of Industry"
             className="app-logo"
             width={200}
