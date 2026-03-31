@@ -146,7 +146,6 @@ export function ProductionSection({ chainTotals }: { chainTotals: Record<string,
                   defaultValue={strVal}
                   placeholder="0"
                   aria-label={`Production rate (per min) for ${label}`}
-                  key={`${id}-${production[id] ?? 0}`}
                   onInput={(e) => {
                     const input = e.currentTarget;
                     const val = parseFloat(input.value);
