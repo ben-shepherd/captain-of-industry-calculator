@@ -802,7 +802,7 @@ export function CanvasView() {
         effectiveTargetResourceId,
         effectiveCanvasTargetRate,
         effectiveCanvasTargetRecipeIdx,
-        state.baseRequirementsMode,
+        'direct',
       );
       return { ok: true, result };
     } catch {
@@ -812,7 +812,6 @@ export function CanvasView() {
     effectiveTargetResourceId,
     effectiveCanvasTargetRate,
     effectiveCanvasTargetRecipeIdx,
-    state.baseRequirementsMode,
   ]);
 
   const selectedBlockTitle = useMemo(() => {
