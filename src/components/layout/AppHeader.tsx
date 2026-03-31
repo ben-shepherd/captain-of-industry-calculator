@@ -79,6 +79,9 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
                 Canvas
               </button>
             </div>
+            <span className="app-view-switch-sep" aria-hidden="true">
+              ·
+            </span>
             <button
               type="button"
               id="export-saved-data"

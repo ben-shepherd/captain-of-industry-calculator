@@ -83,6 +83,19 @@ body {
   gap: 0.35rem;
 }
 
+.app-view-switch-sep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin-inline: 0.15rem;
+  color: var(--color-balanced);
+  opacity: 0.75;
+  line-height: 1;
+  font-weight: 800;
+  user-select: none;
+}
+
 .app-view-tab[aria-pressed="true"] {
   border-color: var(--color-accent);
   background: color-mix(in srgb, var(--color-accent) 22%, var(--color-surface));
