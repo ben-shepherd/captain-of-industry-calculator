@@ -146,3 +146,33 @@ export interface PersistedEnvelope {
   savedAt: number;
   data: AppState;
 }
+
+export type PersistedAppView = 'home' | 'calculator' | 'canvas';
+
+export interface PersistedChromeEnvelope {
+  /**
+   * Raw localStorage values for persisted UI/chrome keys. Values are `null` when the key
+   * should be absent (i.e. removed from localStorage on restore).
+   */
+  appView: string | null;
+  canvasWorkspace: string | null;
+  canvasSidebarExpanded: string | null;
+  canvasResultsSidebarVisible: string | null;
+  canvasResultsSidebarWidthPx: string | null;
+  canvasPlacementStyle: string | null;
+}
+
+/**
+ * Full export file format including calculator state plus persisted UI/chrome keys
+ * (canvas workspace and preferences, and app view preference).
+ *
+ * This is separate from {@link PersistedEnvelope} so we can remain backward-compatible
+ * with older export files that only contain `AppState`.
+ */
+export interface PersistedFullExportEnvelope {
+  kind: 'coi-export';
+  formatVersion: 1;
+  savedAt: number;
+  app: PersistedEnvelope;
+  chrome: PersistedChromeEnvelope;
+}

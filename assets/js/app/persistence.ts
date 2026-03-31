@@ -1,7 +1,9 @@
 import {
   NET_FLOW_CHART_STYLE_DEFAULT,
   type AppState,
+  type PersistedChromeEnvelope,
   type PersistedEnvelope,
+  type PersistedFullExportEnvelope,
 } from '../contracts';
 
 /**
@@ -13,6 +15,13 @@ import {
 
 const STORAGE_KEY = "coi-calculator-state";
 const STATE_VERSION = 12;
+
+const CHROME_KEY_APP_VIEW = 'coi-app-view';
+const CHROME_KEY_CANVAS_WORKSPACE = 'coi-canvas-workspace';
+const CHROME_KEY_CANVAS_SIDEBAR_EXPANDED = 'coi-canvas-sidebar-expanded';
+const CHROME_KEY_CANVAS_RESULTS_SIDEBAR_VISIBLE = 'coi-canvas-results-sidebar-visible';
+const CHROME_KEY_CANVAS_RESULTS_SIDEBAR_WIDTH_PX = 'coi-canvas-results-sidebar-width-px';
+const CHROME_KEY_CANVAS_PLACEMENT_STYLE = 'coi-canvas-placement-style';
 
 /**
  * Write the current application state to localStorage.
@@ -41,6 +50,101 @@ export function buildExportJson(data: AppState): string {
     data,
   };
   return JSON.stringify(envelope, null, 2);
+}
+
+function safeGetItem(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * JSON for a full external backup file (calculator state + canvas/view chrome).
+ *
+ * Backward compatible: older code can still import the `app` portion by extracting it.
+ */
+export function buildFullExportJson(appState: AppState): string {
+  const app: PersistedEnvelope = {
+    version: STATE_VERSION,
+    savedAt: Date.now(),
+    data: appState,
+  };
+
+  const chrome: PersistedChromeEnvelope = {
+    appView: safeGetItem(CHROME_KEY_APP_VIEW),
+    canvasWorkspace: safeGetItem(CHROME_KEY_CANVAS_WORKSPACE),
+    canvasSidebarExpanded: safeGetItem(CHROME_KEY_CANVAS_SIDEBAR_EXPANDED),
+    canvasResultsSidebarVisible: safeGetItem(CHROME_KEY_CANVAS_RESULTS_SIDEBAR_VISIBLE),
+    canvasResultsSidebarWidthPx: safeGetItem(CHROME_KEY_CANVAS_RESULTS_SIDEBAR_WIDTH_PX),
+    canvasPlacementStyle: safeGetItem(CHROME_KEY_CANVAS_PLACEMENT_STYLE),
+  };
+
+  const envelope: PersistedFullExportEnvelope = {
+    kind: 'coi-export',
+    formatVersion: 1,
+    savedAt: Date.now(),
+    app,
+    chrome,
+  };
+
+  return JSON.stringify(envelope, null, 2);
+}
+
+function parseAppStateFromEnvelope(
+  envelope: Partial<PersistedEnvelope> | null,
+): AppState | null {
+  if (!envelope || typeof envelope.version !== 'number') return null;
+  if (envelope.version < STATE_VERSION) {
+    return migrateEnvelopeToAppState(envelope as PersistedEnvelope);
+  }
+  return (envelope.data ?? null) as AppState | null;
+}
+
+/**
+ * Parse a JSON string into a full export (AppState + chrome), or fallback to the older
+ * AppState-only export format. Returns null on failure without side effects.
+ */
+export function parseFullExportEnvelope(
+  raw: string,
+): { appState: AppState; chrome: PersistedChromeEnvelope } | { appState: AppState; chrome: null } | null {
+  try {
+    const parsed = JSON.parse(raw) as Partial<PersistedFullExportEnvelope> | Partial<PersistedEnvelope> | null;
+    if (!parsed || typeof parsed !== 'object') return null;
+
+    // New full export format.
+    if ((parsed as Partial<PersistedFullExportEnvelope>).kind === 'coi-export') {
+      const full = parsed as Partial<PersistedFullExportEnvelope>;
+      const appState = parseAppStateFromEnvelope(full.app ?? null);
+      if (!appState) return null;
+      const chromeRaw = full.chrome ?? ({} as Partial<PersistedChromeEnvelope>);
+      const chrome: PersistedChromeEnvelope = {
+        appView: typeof chromeRaw.appView === 'string' ? chromeRaw.appView : null,
+        canvasWorkspace: typeof chromeRaw.canvasWorkspace === 'string' ? chromeRaw.canvasWorkspace : null,
+        canvasSidebarExpanded: typeof chromeRaw.canvasSidebarExpanded === 'string'
+          ? chromeRaw.canvasSidebarExpanded
+          : null,
+        canvasResultsSidebarVisible: typeof chromeRaw.canvasResultsSidebarVisible === 'string'
+          ? chromeRaw.canvasResultsSidebarVisible
+          : null,
+        canvasResultsSidebarWidthPx: typeof chromeRaw.canvasResultsSidebarWidthPx === 'string'
+          ? chromeRaw.canvasResultsSidebarWidthPx
+          : null,
+        canvasPlacementStyle: typeof chromeRaw.canvasPlacementStyle === 'string'
+          ? chromeRaw.canvasPlacementStyle
+          : null,
+      };
+      return { appState, chrome };
+    }
+
+    // Old AppState-only export format.
+    const appState = parseAppStateFromEnvelope(parsed as Partial<PersistedEnvelope>);
+    if (!appState) return null;
+    return { appState, chrome: null };
+  } catch {
+    return null;
+  }
 }
 
 /**

@@ -8,10 +8,11 @@ import {
   wipeAllPersistedDataAndResetToDefaults,
 } from '../../../assets/js/app/state';
 import {
-  buildExportJson,
-  parsePersistedEnvelope,
+  buildFullExportJson,
+  parseFullExportEnvelope,
 } from '../../../assets/js/app/persistence';
 import { hasPersistedDataToReset } from '../../utils/hasPersistedDataToReset';
+import { notifyPersistedChromeChanged } from '../../utils/persistedChromeNotify';
 
 export type AppHeaderProps = {
   activeView: AppView;
@@ -25,6 +26,32 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
   const importInputRef = useRef<HTMLInputElement>(null);
   const showGuide = !state.userGuideVisible && activeView === 'calculator';
   const showToolbarActions = activeView !== 'home';
+
+  const restoreChromeFromImport = (chrome: {
+    appView: string | null;
+    canvasWorkspace: string | null;
+    canvasSidebarExpanded: string | null;
+    canvasResultsSidebarVisible: string | null;
+    canvasResultsSidebarWidthPx: string | null;
+    canvasPlacementStyle: string | null;
+  }): void => {
+    const apply = (key: string, value: string | null) => {
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch {
+        // ignore quota / private mode
+      }
+    };
+
+    apply('coi-app-view', chrome.appView);
+    apply('coi-canvas-workspace', chrome.canvasWorkspace);
+    apply('coi-canvas-sidebar-expanded', chrome.canvasSidebarExpanded);
+    apply('coi-canvas-results-sidebar-visible', chrome.canvasResultsSidebarVisible);
+    apply('coi-canvas-results-sidebar-width-px', chrome.canvasResultsSidebarWidthPx);
+    apply('coi-canvas-placement-style', chrome.canvasPlacementStyle);
+    notifyPersistedChromeChanged();
+  };
 
   return (
     <header className="app-header">
@@ -88,7 +115,7 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
               className="btn btn-secondary"
               aria-label="Export saved data as a JSON file"
               onClick={() => {
-                const json = buildExportJson(getSnapshot());
+                const json = buildFullExportJson(getSnapshot());
                 const blob = new Blob([json], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -129,7 +156,7 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
                 const reader = new FileReader();
                 reader.onload = () => {
                   const text = typeof reader.result === 'string' ? reader.result : '';
-                  const parsed = parsePersistedEnvelope(text);
+                  const parsed = parseFullExportEnvelope(text);
                   if (!parsed) {
                     window.alert(
                       'Could not read that file. Make sure it is valid JSON exported from this app.',
@@ -143,7 +170,8 @@ export function AppHeader({ activeView, onViewChange, onResetPersistedChrome }: 
                   ) {
                     return;
                   }
-                  applyLoadedState(parsed);
+                  if (parsed.chrome) restoreChromeFromImport(parsed.chrome);
+                  applyLoadedState(parsed.appState);
                 };
                 reader.onerror = () => {
                   window.alert('Could not read the selected file.');
