@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   buildExportJson,
+  buildFullExportJson,
+  parseFullExportEnvelope,
   parsePersistedEnvelope,
   saveState,
   loadState,
@@ -8,7 +10,7 @@ import {
   hasPersistedStorage,
   migrateEnvelopeToAppState,
 } from "../../assets/js/app/persistence";
-import type { AppState, PersistedEnvelope } from "../../assets/js/contracts";
+import type { AppState, PersistedEnvelope, PersistedFullExportEnvelope } from "../../assets/js/contracts";
 
 /**
  * Provide a minimal in-memory localStorage stub so tests
@@ -526,5 +528,79 @@ describe("buildExportJson + parsePersistedEnvelope", () => {
     expect(parsePersistedEnvelope("not-json{{{")).toBeNull();
     expect(loadState()).toEqual(state);
     expect(hasPersistedStorage()).toBe(true);
+  });
+});
+
+describe("buildFullExportJson + parseFullExportEnvelope", () => {
+  it("round-trips AppState and includes chrome keys", () => {
+    localStorage.setItem("coi-app-view", "canvas");
+    localStorage.setItem("coi-canvas-results-sidebar-visible", "false");
+    localStorage.setItem("coi-canvas-results-sidebar-width-px", "512");
+    localStorage.setItem("coi-canvas-placement-style", "horizontal");
+    localStorage.setItem(
+      "coi-canvas-sidebar-expanded",
+      JSON.stringify({ "1": true, "2": false }),
+    );
+    localStorage.setItem(
+      "coi-canvas-workspace",
+      JSON.stringify({ v: 1, placementSeq: 0, placedNodes: [], placedEdges: [], placedBlockLabels: {}, search: "" }),
+    );
+
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      targetRecipeIdx: 1,
+      production: { iron: 3 },
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+
+    const json = buildFullExportJson(state);
+    const parsed = parseFullExportEnvelope(json);
+    expect(parsed).not.toBeNull();
+    if (!parsed) return;
+    expect(parsed.appState).toEqual(state);
+    expect(parsed.chrome).not.toBeNull();
+    if (!parsed.chrome) return;
+    expect(parsed.chrome.appView).toBe("canvas");
+    expect(parsed.chrome.canvasResultsSidebarVisible).toBe("false");
+    expect(parsed.chrome.canvasResultsSidebarWidthPx).toBe("512");
+    expect(parsed.chrome.canvasPlacementStyle).toBe("horizontal");
+    expect(parsed.chrome.canvasSidebarExpanded).toContain('"2":false');
+    expect(parsed.chrome.canvasWorkspace).toContain('"v":1');
+  });
+
+  it("accepts old AppState-only export files", () => {
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      targetRecipeIdx: 1,
+      production: { iron: 3 },
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+    const json = buildExportJson(state);
+    expect(parseFullExportEnvelope(json)).toEqual({ appState: state, chrome: null });
+  });
+
+  it("returns null for invalid JSON", () => {
+    expect(parseFullExportEnvelope("not-json{{{")).toBeNull();
+  });
+
+  it("produces the PersistedFullExportEnvelope shape", () => {
+    const state: AppState = {
+      resourceId: "steel",
+      targetRate: 12,
+      targetRecipeIdx: 0,
+      production: {},
+      productionExtraIds: [],
+      ...emptyV4,
+    };
+    const json = buildFullExportJson(state);
+    const parsed = JSON.parse(json) as PersistedFullExportEnvelope;
+    expect(parsed.kind).toBe("coi-export");
+    expect(parsed.formatVersion).toBe(1);
+    expect(parsed.app.data).toEqual(state);
+    expect(typeof parsed.chrome).toBe("object");
   });
 });
