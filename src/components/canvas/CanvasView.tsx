@@ -976,6 +976,41 @@ export function CanvasView() {
     removePlacedBlock(batchId);
   }
 
+  function removePlacedNode(canvasNodeKey: string) {
+    const prev = placedNodesRef.current;
+    const node = prev.find((n) => n.key === canvasNodeKey);
+    if (!node) return;
+    const batchId = node.batchId;
+    const othersInBatch = prev.filter(
+      (n) => n.batchId === batchId && n.key !== canvasNodeKey,
+    );
+    setPlacedNodes((nodes) => nodes.filter((n) => n.key !== canvasNodeKey));
+    setPlacedEdges((ePrev) =>
+      ePrev.filter((e) => e.fromKey !== canvasNodeKey && e.toKey !== canvasNodeKey),
+    );
+    if (othersInBatch.length === 0) {
+      setSelectedBatchId((sel) => (sel === batchId ? null : sel));
+      setPlacedBlockLabels((lPrev) => {
+        const next = { ...lPrev };
+        delete next[batchId];
+        return next;
+      });
+    }
+  }
+
+  function requestRemovePlacedNode(canvasNodeKey: string) {
+    const prev = placedNodesRef.current;
+    const node = prev.find((n) => n.key === canvasNodeKey);
+    if (!node) return;
+    const isLastInBatch = prev.filter((n) => n.batchId === node.batchId).length === 1;
+    const label = node.label;
+    const msg = isLastInBatch
+      ? `Remove “${label}” from this block? The block will be removed because no resources remain.`
+      : `Remove “${label}” from this block?`;
+    if (!window.confirm(msg)) return;
+    removePlacedNode(canvasNodeKey);
+  }
+
   useLayoutEffect(() => {
     const el = workspaceRef.current;
     if (!el) return;
@@ -1679,6 +1714,7 @@ export function CanvasView() {
             onAddUpstreamChain={() =>
               beginExpandUpstreamFromCard(node.resourceId, node.x, node.y, node.batchId)
             }
+            onRemoveFromBlock={() => requestRemovePlacedNode(node.key)}
             onCardPointerDown={handleCardPointerDown}
               style={{
                 position: 'absolute',
