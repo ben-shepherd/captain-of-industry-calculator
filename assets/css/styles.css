@@ -729,6 +729,145 @@ img.canvas-resource-icon {
   box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-accent) 45%, transparent);
 }
 
+.canvas-workspace-toolbar {
+  position: sticky;
+  top: 0.65rem;
+  left: 0;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.65rem 0 0 0.65rem;
+  pointer-events: none;
+}
+
+.canvas-workspace-toolbar > * {
+  pointer-events: auto;
+}
+
+.canvas-workspace-toolbar-btn {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.canvas-workspace-toolbar-popover-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.canvas-blocks-panel {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.35rem);
+  width: min(18rem, calc(100vw - 2rem));
+  max-height: min(22rem, 55vh);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: calc(var(--radius) + 2px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 96%, #000);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+.canvas-blocks-panel-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 25%, transparent);
+}
+
+.canvas-blocks-panel-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-heading);
+}
+
+.canvas-blocks-panel-close {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-border) 20%, transparent);
+}
+
+.canvas-blocks-panel-close:hover {
+  color: var(--color-heading);
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.canvas-blocks-panel-close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.canvas-blocks-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.canvas-blocks-panel-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--color-border) 18%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 35%, transparent);
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.canvas-blocks-panel-item:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg));
+}
+
+.canvas-blocks-panel-item--active {
+  border-color: color-mix(in srgb, var(--color-accent) 65%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg));
+  color: var(--color-heading);
+}
+
+.canvas-blocks-panel-item-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8rem;
+  font-weight: 750;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.canvas-blocks-panel-item-id {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-balanced);
+}
+
 .canvas-workspace-hint {
   position: absolute;
   left: 50%;

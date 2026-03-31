@@ -113,6 +113,7 @@ export function CanvasView() {
   const state = useCoiStore();
   const initialCanvas = useMemo(() => loadCanvasWorkspace(), []);
   const [search, setSearch] = useState(initialCanvas.search);
+  const [blocksPanelOpen, setBlocksPanelOpen] = useState(false);
   const [resultsSidebarVisible, setResultsSidebarVisible] = useState(
     loadCanvasResultsSidebarVisible,
   );
@@ -866,6 +867,86 @@ export function CanvasView() {
     };
   }, [workspaceViewport, canvasContentExtent]);
 
+  const canvasBlocks = useMemo(() => {
+    const byBatch = new Map<number, PlacedCanvasNode[]>();
+    for (const n of placedNodes) {
+      const list = byBatch.get(n.batchId) ?? [];
+      list.push(n);
+      byBatch.set(n.batchId, list);
+    }
+    const out: Array<{
+      batchId: number;
+      title: string;
+      rect: { left: number; top: number; width: number; height: number } | null;
+    }> = [];
+    for (const [bid, batchNodes] of byBatch) {
+      if (!batchNodes.length) continue;
+      const label = blockLabelOverlays.find((bl) => bl.batchId === bid);
+      const title = placedBlockLabels[bid]?.trim() || DEFAULT_CANVAS_BLOCK_LABEL;
+      const rect = computeBlockSelectionHighlightRect(
+        batchNodes,
+        label ? { left: label.left, top: label.top } : undefined,
+        CANVAS_CARD_WIDTH_PX,
+        CANVAS_CARD_HEIGHT_PX,
+      );
+      out.push({ batchId: bid, title, rect });
+    }
+    out.sort((a, b) => a.title.localeCompare(b.title, 'en') || a.batchId - b.batchId);
+    return out;
+  }, [placedNodes, placedBlockLabels, blockLabelOverlays]);
+
+  const scrollWorkspaceToBlock = useCallback(
+    (batchId: number) => {
+      const wel = workspaceRef.current;
+      if (!wel) return;
+      const block = canvasBlocks.find((b) => b.batchId === batchId);
+      if (!block?.rect) return;
+      scrollWorkspaceToShowRect(
+        wel,
+        {
+          left: block.rect.left,
+          top: block.rect.top,
+          right: block.rect.left + block.rect.width,
+          bottom: block.rect.top + block.rect.height,
+        },
+        48,
+      );
+      setSelectedBatchId(batchId);
+    },
+    [canvasBlocks],
+  );
+
+  const fitCanvasToContent = useCallback(() => {
+    const wel = workspaceRef.current;
+    if (!wel) return;
+    if (placedNodesRef.current.length === 0 && blockLabelOverlays.length === 0) return;
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    for (const n of placedNodesRef.current) {
+      minX = Math.min(minX, n.x);
+      minY = Math.min(minY, n.y);
+      maxX = Math.max(maxX, n.x + CANVAS_CARD_WIDTH_PX);
+      maxY = Math.max(maxY, n.y + CANVAS_CARD_HEIGHT_PX);
+    }
+    for (const bl of blockLabelOverlays) {
+      // Approximate label bounds to match `computeCanvasContentExtent`.
+      minX = Math.min(minX, bl.left - 120);
+      maxX = Math.max(maxX, bl.left + 120);
+      minY = Math.min(minY, bl.top - 36);
+      maxY = Math.max(maxY, bl.top + 12);
+    }
+
+    if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) {
+      return;
+    }
+
+    scrollWorkspaceToShowRect(wel, { left: minX, top: minY, right: maxX, bottom: maxY }, 72);
+  }, [blockLabelOverlays]);
+
   function removePlacedBlock(batchId: number) {
     setSelectedBatchId((sel) => (sel === batchId ? null : sel));
     const prev = placedNodesRef.current;
@@ -1387,6 +1468,75 @@ export function CanvasView() {
         onPointerCancel={endCanvasPan}
         onClick={handleWorkspaceClick}
       >
+        <div className="canvas-workspace-toolbar" role="group" aria-label="Canvas view controls">
+          <button
+            type="button"
+            className="btn btn-secondary canvas-workspace-toolbar-btn"
+            onClick={() => {
+              setBlocksPanelOpen(false);
+              fitCanvasToContent();
+            }}
+            disabled={placedNodes.length === 0 && blockLabelOverlays.length === 0}
+            title="Scroll to show all blocks"
+          >
+            Fit
+          </button>
+          <div className="canvas-workspace-toolbar-popover-anchor">
+            <button
+              type="button"
+              className="btn btn-secondary canvas-workspace-toolbar-btn"
+              aria-expanded={blocksPanelOpen}
+              aria-controls="canvas-blocks-panel"
+              onClick={() => setBlocksPanelOpen((v) => !v)}
+              disabled={canvasBlocks.length === 0}
+              title="Jump to a block"
+            >
+              Blocks
+            </button>
+            {blocksPanelOpen ? (
+              <div
+                id="canvas-blocks-panel"
+                className="canvas-blocks-panel"
+                role="dialog"
+                aria-label="Blocks on canvas"
+              >
+                <div className="canvas-blocks-panel-header">
+                  <div className="canvas-blocks-panel-title">Blocks</div>
+                  <button
+                    type="button"
+                    className="canvas-blocks-panel-close"
+                    aria-label="Close blocks list"
+                    onClick={() => setBlocksPanelOpen(false)}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="canvas-blocks-panel-body">
+                  {canvasBlocks.map((b) => (
+                    <button
+                      key={b.batchId}
+                      type="button"
+                      className={[
+                        'canvas-blocks-panel-item',
+                        selectedBatchId === b.batchId ? 'canvas-blocks-panel-item--active' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      onClick={() => {
+                        setBlocksPanelOpen(false);
+                        scrollWorkspaceToBlock(b.batchId);
+                      }}
+                      title="Center this block in view"
+                    >
+                      <span className="canvas-blocks-panel-item-title">{b.title}</span>
+                      <span className="canvas-blocks-panel-item-id">#{b.batchId}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
         <div
           ref={workspaceSurfaceRef}
           className="canvas-workspace-surface"
