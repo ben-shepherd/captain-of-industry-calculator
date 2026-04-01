@@ -1523,9 +1523,9 @@ export function CanvasView() {
               fitCanvasToContent();
             }}
             disabled={placedNodes.length === 0 && blockLabelOverlays.length === 0}
-            title="Scroll to show all blocks"
+            title="Center the view to show all blocks"
           >
-            Fit
+            Center
           </button>
           <div className="canvas-workspace-toolbar-popover-anchor">
             <button
@@ -1535,7 +1535,7 @@ export function CanvasView() {
               aria-controls="canvas-blocks-panel"
               onClick={() => setBlocksPanelOpen((v) => !v)}
               disabled={canvasBlocks.length === 0}
-              title="Jump to a block"
+              title="Pick a block to center in view"
             >
               Blocks
             </button>
