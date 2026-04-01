@@ -1,4 +1,5 @@
 import type { Recipe } from '../../../assets/js/contracts';
+import { machinesNeededExact } from '../../../assets/js/calculator/machines';
 import { resources } from '../../../assets/js/data/resources';
 import { perMinute } from '../../../assets/js/ui/recipeDiagram';
 
@@ -50,16 +51,20 @@ function RecipeCard({
   recipeIdx,
   selected,
   onSelectRecipe,
+  targetRate,
 }: {
   resourceId: string;
   recipe: Recipe;
   recipeIdx: number;
   selected: boolean;
   onSelectRecipe: (idx: number) => void;
+  targetRate: number;
 }) {
   const { durationSec, inputs, outputs, building, name } = recipe;
   const outQty = outputs[resourceId] ?? 0;
   const outRate = perMinute(outQty, durationSec);
+  const machinesNeeded =
+    selected ? machinesNeededExact(targetRate, outQty, durationSec) : null;
 
   const inputIds = Object.keys(inputs).sort((a, b) => {
     const la = resources[a]?.label ?? a;
@@ -133,6 +138,11 @@ function RecipeCard({
           <span className="recipe-machine-sep">:</span>
           <span className="recipe-building-name">{building}</span>
         </div>
+        {selected && machinesNeeded !== null ? (
+          <div className="recipe-machines-needed" aria-label="Machines needed">
+            Machines needed: <strong>{formatRate(machinesNeeded)}</strong>
+          </div>
+        ) : null}
         <div className="recipe-io recipe-inputs">
           {inputIds.length === 0 ? (
             <span className="recipe-no-inputs" aria-label="No inputs">
@@ -192,10 +202,12 @@ function RecipeCard({
 
 export function TargetRecipeSection({
   resourceId,
+  targetRate,
   selectedRecipeIdx,
   onSelectRecipe,
 }: {
   resourceId: string;
+  targetRate: number;
   selectedRecipeIdx: number;
   onSelectRecipe: (idx: number) => void;
 }) {
@@ -247,6 +259,7 @@ export function TargetRecipeSection({
                 recipeIdx={idx}
                 selected={idx === selectedRecipeIdx}
                 onSelectRecipe={onSelectRecipe}
+                targetRate={targetRate}
               />
             ))}
           </ul>

@@ -11,6 +11,7 @@ export function TargetResourcePanel() {
   const state = useCoiStore();
   const resourceId = state.resourceId;
   const targetRecipeIdx = state.targetRecipeIdx;
+  const targetRate = state.targetRate;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchListDismissed, setSearchListDismissed] = useState(false);
@@ -337,6 +338,7 @@ export function TargetResourcePanel() {
 
         <TargetRecipeSection
           resourceId={resourceId}
+          targetRate={targetRate}
           selectedRecipeIdx={targetRecipeIdx}
           onSelectRecipe={(idx) => setTargetRecipeIdx(idx)}
         />
