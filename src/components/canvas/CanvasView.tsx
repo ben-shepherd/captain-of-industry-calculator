@@ -799,11 +799,12 @@ export function CanvasView() {
       return { ok: true, result: null };
     }
     try {
+      const canvasBaseRequirementsMode = selectedBatchId != null ? 'full' : state.baseRequirementsMode;
       const result = calculate(
         effectiveTargetResourceId,
         effectiveCanvasTargetRate,
         effectiveCanvasTargetRecipeIdx,
-        'direct',
+        canvasBaseRequirementsMode,
       );
       return { ok: true, result };
     } catch {
@@ -813,6 +814,8 @@ export function CanvasView() {
     effectiveTargetResourceId,
     effectiveCanvasTargetRate,
     effectiveCanvasTargetRecipeIdx,
+    selectedBatchId,
+    state.baseRequirementsMode,
   ]);
 
   const selectedBlockTitle = useMemo(() => {
