@@ -45,6 +45,7 @@ import {
 } from '../../utils/canvasSidebarStorage';
 import type { PersistedPlacedNode, WorkspaceScroll } from '../../utils/canvasWorkspaceStorage';
 import {
+  CANVAS_WORKSPACE_STORAGE_KEY,
   loadCanvasWorkspace,
   saveCanvasWorkspace,
 } from '../../utils/canvasWorkspaceStorage';
@@ -1067,6 +1068,15 @@ export function CanvasView() {
   /** Flush latest scroll + graph state when leaving the canvas view (unmount). */
   useEffect(() => {
     return () => {
+      // If the user hit the global Reset while on the canvas, storage is cleared before unmount.
+      // In that case, don't re-persist the stale in-memory workspace during cleanup.
+      try {
+        if (localStorage.getItem(CANVAS_WORKSPACE_STORAGE_KEY) === null) {
+          return;
+        }
+      } catch {
+        // ignore (private mode / unavailable storage)
+      }
       const el = workspaceRef.current;
       saveCanvasWorkspace({
         ...workspacePersistRef.current,
