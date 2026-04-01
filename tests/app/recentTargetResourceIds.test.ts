@@ -18,7 +18,7 @@ const minimalState: AppState = {
   productionDismissedIds: [],
   productionPresets: [],
   resultsSections: { base: true, net: true, tree: false },
-  inputsSections: { production: true, presets: true },
+  inputsSections: { targetRate: true, production: true, presets: true },
   netFlowChartStyle: "line",
   userGuideExpanded: true,
   userGuideVisible: false,

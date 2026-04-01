@@ -96,6 +96,7 @@ export interface ResultsSectionsState {
 
 /** Which configuration panel sections are expanded (`<details open>`). */
 export interface InputsSectionsState {
+  targetRate: boolean;
   production: boolean;
   presets: boolean;
 }

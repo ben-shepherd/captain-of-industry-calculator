@@ -6,6 +6,7 @@ import { CanvasView } from './components/canvas/CanvasView';
 import { ProductionSection } from './components/configuration/ProductionSection';
 import { PresetsSection } from './components/configuration/PresetsSection';
 import { RecentResources } from './components/configuration/RecentResources';
+import { TargetRateField } from './components/configuration/TargetRateField';
 import { AppHeader } from './components/layout/AppHeader';
 import { Footer } from './components/layout/Footer';
 import { UserGuide } from './components/layout/UserGuide';
@@ -61,6 +62,7 @@ export function App() {
           <main className="app-main">
             <section className="panel panel-inputs">
               <h2>Configuration</h2>
+              <TargetRateField />
               <ProductionSection chainTotals={chainTotals} />
               <PresetsSection />
             </section>

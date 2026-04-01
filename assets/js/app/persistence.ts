@@ -244,7 +244,7 @@ export function migrateEnvelopeToAppState(
       productionDismissedIds: [],
       productionPresets: [],
       resultsSections: { base: true, net: true, tree: false },
-      inputsSections: { production: true, presets: true },
+      inputsSections: { targetRate: true, production: true, presets: true },
       netFlowChartStyle: NET_FLOW_CHART_STYLE_DEFAULT,
       userGuideExpanded: true,
       userGuideVisible: false,
@@ -290,6 +290,7 @@ export function migrateEnvelopeToAppState(
     data = {
       ...d,
       inputsSections: {
+        targetRate: ins?.targetRate ?? true,
         production: ins?.production ?? true,
         presets: ins?.presets ?? true,
       },
@@ -327,6 +328,7 @@ export function migrateEnvelopeToAppState(
     data = {
       ...d,
       inputsSections: {
+        targetRate: (ins as AppState["inputsSections"] | undefined)?.targetRate ?? true,
         production: ins?.production ?? true,
         presets: ins?.presets ?? true,
       },

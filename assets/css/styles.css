@@ -1985,6 +1985,55 @@ img.canvas-resource-icon {
   z-index: 1;
 }
 
+.panel-inputs .field-target-rate-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.panel-inputs .field-target-rate-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-inputs .field-target-rate-resource-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.panel-inputs .field-target-rate-icon-placeholder {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px dashed var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 85%, var(--color-border));
+}
+
+.panel-inputs .field-target-rate-fields {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.panel-inputs .field-target-rate-resource-name,
+.panel-inputs .field-target-rate-hint {
+  margin: 0.2rem 0 0.45rem;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--color-balanced);
+}
+
+.panel-inputs .field-target-rate-resource-name {
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
 .panel h2:first-of-type {
   margin: calc(-1 * var(--gap)) calc(-1 * var(--gap)) var(--gap);
   padding: 0.55rem var(--gap);

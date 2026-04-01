@@ -26,6 +26,7 @@ const DEFAULT_RESULTS_SECTIONS: ResultsSectionsState = {
 };
 
 const DEFAULT_INPUTS_SECTIONS: InputsSectionsState = {
+  targetRate: true,
   production: true,
   presets: true,
 };
@@ -175,6 +176,7 @@ function normalizeInputsSections(
   is: AppState["inputsSections"] | undefined,
 ): InputsSectionsState {
   return {
+    targetRate: is?.targetRate ?? true,
     production: is?.production ?? true,
     presets: is?.presets ?? true,
   };

@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
-import {
-  setResourceId,
-  setTargetRate,
-  setTargetRecipeIdx,
-} from '../../../assets/js/app/state';
+import { setResourceId, setTargetRecipeIdx } from '../../../assets/js/app/state';
 import { getResourcePickerGroups, resources } from '../../../assets/js/data/resources';
 import { matchResourcesForSearch, TARGET_RESOURCE_PLACEHOLDER } from '../../../assets/js/ui/resourceSearch';
 import { TargetRecipeSection } from './TargetRecipeSection';
@@ -14,14 +10,12 @@ const SEARCH_HIT_ACTIVE = 'resource-search-hit-active';
 export function TargetResourcePanel() {
   const state = useCoiStore();
   const resourceId = state.resourceId;
-  const targetRate = state.targetRate;
   const targetRecipeIdx = state.targetRecipeIdx;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchListDismissed, setSearchListDismissed] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
-  const [targetRateText, setTargetRateText] = useState(() => String(targetRate));
 
   const searchWrapRef = useRef<HTMLDivElement>(null);
   const pickerWrapRef = useRef<HTMLDivElement>(null);
@@ -29,13 +23,6 @@ export function TargetResourcePanel() {
   const searchListRef = useRef<HTMLUListElement>(null);
   const pickerTriggerRef = useRef<HTMLButtonElement>(null);
   const pickerPanelRef = useRef<HTMLDivElement>(null);
-  const targetRateInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const input = targetRateInputRef.current;
-    const isFocused = input != null && document.activeElement === input;
-    if (!isFocused) setTargetRateText(String(targetRate));
-  }, [targetRate]);
 
   useEffect(() => {
     setSearchListDismissed(false);
@@ -107,8 +94,8 @@ export function TargetResourcePanel() {
   const wikiUrl = resourceId ? resources[resourceId]?.wikiUrl : '';
 
   return (
-    <section className="panel app-target-panel" aria-label="Target resource and production rate">
-      <h2>Target resource &amp; rate</h2>
+    <section className="panel app-target-panel" aria-label="Target resource">
+      <h2>Target resource</h2>
       <div className="app-target-panel-body">
         <div className="app-target-fields-row">
           <div className="field field-resource-target app-target-field-col">
@@ -329,29 +316,6 @@ export function TargetResourcePanel() {
                 ))}
               </select>
             </div>
-          </div>
-
-          <div className="field field-target-rate app-target-field-col">
-            <label htmlFor="target-rate">Target Rate (per min)</label>
-            <input
-              ref={targetRateInputRef}
-              id="target-rate"
-              type="number"
-              min={0.01}
-              step="any"
-              inputMode="decimal"
-              value={targetRateText}
-              onChange={(e) => {
-                const input = e.currentTarget;
-                const text = input.value;
-                setTargetRateText(text);
-
-                const val = parseFloat(text);
-                const valid = val > 0 && isFinite(val);
-                input.classList.toggle('input-invalid', !valid && text !== '');
-                if (valid) setTargetRate(val);
-              }}
-            />
             <p
               className="resource-wiki-link-wrap"
               id="resource-wiki-link-wrap"
