@@ -82,7 +82,6 @@ export function CanvasResultsSidebar({
             outcome={outcome}
             targetResourceIdForDisplay={effectiveTargetResourceId}
             noTargetMessage={CANVAS_NO_TARGET}
-            showModeToolbar={false}
             blockResourceOrder={blockResourceOrder}
           />
         </section>

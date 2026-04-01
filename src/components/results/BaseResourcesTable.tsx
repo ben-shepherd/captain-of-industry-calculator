@@ -2,9 +2,8 @@ import type { ReactNode } from 'react';
 import { useCoiStore } from '../../../assets/js/app/coiExternalStore';
 import { setBaseRequirementsMode, setResourceId } from '../../../assets/js/app/state';
 import type { CalculationResult } from '../../../assets/js/contracts';
-import { formatTotals } from '../../../assets/js/formatters/flatFormatter';
 import type { CalculationOutcome } from '../../hooks/useCalculation';
-import { baseTotalsRowsForBlockResourceOrder } from '../../utils/canvasBlockResults';
+import { baseTotalsRowsForCanvasDisplay } from '../../utils/canvasBlockResults';
 import { ResourceTargetButton } from '../shared/ResourceTargetButton';
 
 function TotalsPlaceholderRow({ colSpan, text }: { colSpan: number; text: string }) {
@@ -34,7 +33,10 @@ export function BaseResourcesTable({
   filterResourceIds?: ReadonlySet<string>;
   noTargetMessage?: string;
   showModeToolbar?: boolean;
-  /** Canvas: one row per placed resource type, in placement order. */
+  /**
+   * Canvas: in “This recipe only”, one row per placed resource type (placement order).
+   * In “Full dependency chain”, ignored for row selection — all chain totals are shown.
+   */
   blockResourceOrder?: string[];
 }) {
   const state = useCoiStore();
@@ -42,14 +44,12 @@ export function BaseResourcesTable({
   const baseMode = state.baseRequirementsMode;
 
   function renderTotalsBody(result: CalculationResult) {
-    let rows: ReturnType<typeof formatTotals>;
-    if (blockResourceOrder && blockResourceOrder.length > 0) {
-      rows = baseTotalsRowsForBlockResourceOrder(result, blockResourceOrder);
-    } else {
-      rows = formatTotals(result.totals);
-      if (filterResourceIds) {
-        rows = rows.filter((r) => filterResourceIds.has(r.id));
-      }
+    let rows = baseTotalsRowsForCanvasDisplay(result, blockResourceOrder, baseMode);
+    if (
+      filterResourceIds &&
+      (!blockResourceOrder?.length || baseMode === 'full')
+    ) {
+      rows = rows.filter((r) => filterResourceIds.has(r.id));
     }
     if (rows.length === 0) {
       return (

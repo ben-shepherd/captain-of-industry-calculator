@@ -799,12 +799,11 @@ export function CanvasView() {
       return { ok: true, result: null };
     }
     try {
-      const canvasBaseRequirementsMode = selectedBatchId != null ? 'full' : state.baseRequirementsMode;
       const result = calculate(
         effectiveTargetResourceId,
         effectiveCanvasTargetRate,
         effectiveCanvasTargetRecipeIdx,
-        canvasBaseRequirementsMode,
+        state.baseRequirementsMode,
       );
       return { ok: true, result };
     } catch {

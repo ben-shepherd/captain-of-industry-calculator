@@ -1,5 +1,6 @@
 import { calculateNet } from '../../assets/js/calculator/net';
 import type {
+  BaseRequirementsMode,
   CalculationResult,
   FormattedNetTotal,
   FormattedTotal,
@@ -95,4 +96,23 @@ export function baseTotalsRowsForBlockResourceOrder(
     });
   }
   return out;
+}
+
+/**
+ * Base resources table rows for Canvas: in **direct** mode, keep one row per placed card (in order).
+ * In **full** mode, show every resource in `result.totals` (full upstream chain for the block anchor).
+ */
+export function baseTotalsRowsForCanvasDisplay(
+  result: CalculationResult,
+  blockResourceOrder: string[] | undefined,
+  baseRequirementsMode: BaseRequirementsMode,
+): FormattedTotal[] {
+  if (
+    blockResourceOrder &&
+    blockResourceOrder.length > 0 &&
+    baseRequirementsMode !== 'full'
+  ) {
+    return baseTotalsRowsForBlockResourceOrder(result, blockResourceOrder);
+  }
+  return formatTotals(result.totals);
 }
