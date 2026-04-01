@@ -21,6 +21,7 @@ export function TargetResourcePanel() {
   const [searchListDismissed, setSearchListDismissed] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [targetRateText, setTargetRateText] = useState(() => String(targetRate));
 
   const searchWrapRef = useRef<HTMLDivElement>(null);
   const pickerWrapRef = useRef<HTMLDivElement>(null);
@@ -28,6 +29,13 @@ export function TargetResourcePanel() {
   const searchListRef = useRef<HTMLUListElement>(null);
   const pickerTriggerRef = useRef<HTMLButtonElement>(null);
   const pickerPanelRef = useRef<HTMLDivElement>(null);
+  const targetRateInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const input = targetRateInputRef.current;
+    const isFocused = input != null && document.activeElement === input;
+    if (!isFocused) setTargetRateText(String(targetRate));
+  }, [targetRate]);
 
   useEffect(() => {
     setSearchListDismissed(false);
@@ -326,17 +334,21 @@ export function TargetResourcePanel() {
           <div className="field field-target-rate app-target-field-col">
             <label htmlFor="target-rate">Target Rate (per min)</label>
             <input
+              ref={targetRateInputRef}
               id="target-rate"
               type="number"
               min={0.01}
               step="any"
-              key={`${resourceId}-${targetRate}`}
-              defaultValue={String(targetRate)}
-              onInput={(e) => {
+              inputMode="decimal"
+              value={targetRateText}
+              onChange={(e) => {
                 const input = e.currentTarget;
-                const val = parseFloat(input.value);
+                const text = input.value;
+                setTargetRateText(text);
+
+                const val = parseFloat(text);
                 const valid = val > 0 && isFinite(val);
-                input.classList.toggle('input-invalid', !valid && input.value !== '');
+                input.classList.toggle('input-invalid', !valid && text !== '');
                 if (valid) setTargetRate(val);
               }}
             />
